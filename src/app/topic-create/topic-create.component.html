@@ -1,6 +1,6 @@
 <h1><span i18n="@@topiccreate.title">Start a new topic</span></h1>
   <div id="post-form" class="formal">
-    <form id="post" class="container" method="post" action="https://viperstest.rusff.me/post.php?action=post&amp;fid=2">
+    <form id="post" class="container" method="post" action="">
       <fieldset id="post-preview" style="display:none">
         <legend><span i18n="@@topiccreate.previewMessage">Message preview</span></legend>
         <div class="fs-box">
@@ -26,21 +26,10 @@
           <div class="post-editor-container">
 
             <div class="profile-sidebar">
-              <div class="character-selector">
-                <select (change)="onCharacterChange($event)">
-                  <option value="account"><ng-container i18n="@@postform.account">Account</ng-container>: {{ accountName }}</option>
-                  @for (char of characters; track char.id) {
-                  <option [value]="char.id">{{ char.name }}</option>
-                  }
-                </select>
-              </div>
-
-              <div class="current-identity">
-                <p class="identity-name">{{ currentName }}</p>
-                <div class="avatar-box">
-                  <img [src]="currentAvatarUrl" alt="Avatar" />
-                </div>
-              </div>
+              <app-character-profile
+                [accountName]="accountName"
+                (characterSelected)="onCharacterSelected($event)">
+              </app-character-profile>
             </div>
 
             <div class="textarea-wrapper">
