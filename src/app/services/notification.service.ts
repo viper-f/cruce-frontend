@@ -37,14 +37,11 @@ export class NotificationService {
   }
 
   public connect(authToken: string): void {
-    // If we are already connected with the same token, do nothing
     if (this.ws && this.ws.readyState === WebSocket.OPEN && this.token === authToken) {
       return;
     }
 
-    // If we are connected but the token has changed, close and reconnect
     if (this.ws && (this.ws.readyState === WebSocket.OPEN || this.ws.readyState === WebSocket.CONNECTING)) {
-      console.log('NotificationService: Token changed, reconnecting...');
       this.ws.close();
     }
 
@@ -88,7 +85,6 @@ export class NotificationService {
     this.ws = new WebSocket(urlWithAuth);
 
     this.ws.onopen = () => {
-      console.log('NotificationService: Connection established.');
       this.reconnectAttempts = 0;
       this.processMessageQueue();
     };
@@ -104,28 +100,19 @@ export class NotificationService {
     this.ws.onclose = (event) => {
       this.ws = null;
       if (!this.explicitlyClosed) {
-        console.warn(`NotificationService: Connection closed. Code: ${event.code}, Reason: ${event.reason}`);
-        // If the closure might be auth-related (e.g. 1008 Policy Violation is often used for auth), try refreshing
-        // But standard codes vary. We'll try to refresh if we haven't exhausted attempts.
         this.handleConnectionFailure();
       }
     };
   }
 
   private handleConnectionFailure() {
-    // Try to refresh token before reconnecting
-    console.log('NotificationService: Attempting to refresh token before reconnecting...');
     this.authService.refreshToken().subscribe({
       next: (response) => {
-        console.log('NotificationService: Token refreshed successfully.');
         this.token = response.access_token;
         this.scheduleReconnect();
       },
       error: (err) => {
         console.error('NotificationService: Token refresh failed.', err);
-        // If refresh fails, we might still try to reconnect with old token or give up?
-        // Usually if refresh fails, we are logged out.
-        // But let's try standard reconnect backoff just in case it was a network blip
         this.scheduleReconnect();
       }
     });
@@ -139,15 +126,11 @@ export class NotificationService {
   }
 
   private scheduleReconnect(): void {
-    if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-      console.error('NotificationService: Max reconnect attempts reached.');
-      return;
-    }
+    if (this.reconnectAttempts >= this.maxReconnectAttempts) return;
     this.reconnectAttempts++;
     const backoff = Math.min(this.maxReconnectInterval, this.reconnectInterval * Math.pow(2, this.reconnectAttempts));
     const jitter = backoff * 0.5 * Math.random();
     const timeout = backoff - jitter;
-    console.log(`NotificationService: Scheduling reconnect in ${Math.round(timeout / 1000)}s.`);
     this.reconnectTimer = window.setTimeout(() => this._doConnect(), timeout);
   }
 

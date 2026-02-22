@@ -13,9 +13,7 @@ export interface TopicCreatedEvent {
 
 export interface PostCreatedEvent {
   type: 'post_created';
-  topic_id: number;
-  subforum_id: number;
-  post: Post;
+  data: Post;
 }
 
 export interface NotificationEvent {

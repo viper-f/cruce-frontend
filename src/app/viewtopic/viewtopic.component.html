@@ -25,7 +25,7 @@
     <h3>
       <span class="post-meta">
         <a class="sharelink" rel="nofollow" href="#p{{ post.id }}" onclick="return false;" title="" i18n="@@viewtopic.share">Share</a>
-        <a class="permalink" rel="nofollow">{{ post.date_created }}</a>
+        <a class="permalink" rel="nofollow">{{ post.date_created | date }}</a>
       </span>
       <strong class="post-number">{{ i + 1 }}</strong>
     </h3>
