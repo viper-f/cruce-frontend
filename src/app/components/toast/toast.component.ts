@@ -18,7 +18,7 @@ export class ToastComponent implements OnInit {
     this.notificationService.notification$.subscribe(event => {
       const newNotification: Notification = {
         id: Date.now(),
-        title: event.message_type,
+        title: event.title,
         message: event.message,
         from: 'System'
       };
