@@ -7,8 +7,17 @@
 
   <div class="linkst">
     <div class="inbox">
-      <p class="pagelink conl"><span><ng-container i18n="@@viewtopic.pages">Pages</ng-container>: <strong>1</strong></span></p>
-      <p class="postlink conr"><a href="/post.php?tid=8"><span i18n="@@viewtopic.reply">Reply</span></a></p>
+      <p class="pagelink conl">
+        <span><ng-container i18n="@@viewtopic.pages">Pages</ng-container>:
+          @for (p of [].constructor(totalPages()); track p; let i = $index) {
+            @if (i + 1 === page) {
+              <strong>{{ i + 1 }}</strong>
+            } @else {
+              <a [routerLink]="['/viewtopic', id]" [queryParams]="{ page: i + 1 }">{{ i + 1 }}</a>
+            }
+          }
+        </span>
+      </p>
       <div class="clearer"></div>
     </div>
   </div>
@@ -25,9 +34,9 @@
     <h3>
       <span class="post-meta">
         <a class="sharelink" rel="nofollow" href="#p{{ post.id }}" onclick="return false;" title="" i18n="@@viewtopic.share">Share</a>
-        <a class="permalink" rel="nofollow">{{ post.date_created | date }}</a>
+        <a class="permalink" rel="nofollow">{{ post.date_created }}</a>
       </span>
-      <strong class="post-number">{{ i + 1 }}</strong>
+      <strong class="post-number">{{ (page - 1) * postsPerPage + i + 1 }}</strong>
     </h3>
     <div class="container">
       <div class="post-main">
@@ -57,8 +66,17 @@
 
   <div class="linksb">
     <div class="inbox">
-      <p class="postlink conr"><a href="/post.php?tid=8"><span i18n="@@viewtopic.reply">Reply</span></a></p>
-      <p class="pagelink conl"><span><ng-container i18n="@@viewtopic.pages">Pages</ng-container>: <strong>1</strong></span></p>
+      <p class="pagelink conl">
+        <span><ng-container i18n="@@viewtopic.pages">Pages</ng-container>:
+          @for (p of [].constructor(totalPages()); track p; let i = $index) {
+            @if (i + 1 === page) {
+              <strong>{{ i + 1 }}</strong>
+            } @else {
+              <a [routerLink]="['/viewtopic', id]" [queryParams]="{ page: i + 1 }">{{ i + 1 }}</a>
+            }
+          }
+        </span>
+      </p>
       <div class="clearer"></div>
     </div>
   </div>

@@ -1,7 +1,7 @@
-import {Component, effect, inject, Input, OnInit, ViewChild, signal} from '@angular/core';
+import {Component, effect, inject, Input, OnInit, ViewChild, signal, computed} from '@angular/core';
 import {PostFormComponent} from '../components/post-form/post-form.component';
 import {TopicService} from '../services/topic.service';
-import {RouterLink} from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import {CommonModule} from '@angular/common';
 import {CharacterProfileComponent} from '../components/character-profile/character-profile.component';
 import {TopicType} from '../models/Topic';
@@ -37,6 +37,7 @@ export class ViewtopicComponent implements OnInit {
   forumService = inject(ForumService);
   characterService = inject(CharacterService);
   authService = inject(AuthService);
+  router = inject(Router);
 
   @Input() id?: number;
   @Input() page: number = 1;
@@ -53,6 +54,9 @@ export class ViewtopicComponent implements OnInit {
   showPostForm = signal<boolean>(true);
   loadProfiles = true;
   showAccount = true;
+
+  postsPerPage = 15;
+  totalPages = computed(() => Math.ceil(this.topic().post_number / this.postsPerPage));
 
   @ViewChild(PostFormComponent) postForm!: PostFormComponent;
 
@@ -76,7 +80,6 @@ export class ViewtopicComponent implements OnInit {
         if (t.type === TopicType.character) {
           this.loadProfiles = false;
           this.showAccount = true;
-          // "always use user account" - handled by CharacterProfileComponent when list is empty
         } else if (t.type === TopicType.episode) {
           this.loadProfiles = false;
           this.showAccount = false;
@@ -89,7 +92,6 @@ export class ViewtopicComponent implements OnInit {
       }
     });
 
-    // Effect to check if we should show the post form for episodes
     effect(() => {
       const t = this.topic();
       const profiles = this.userCharacterProfiles();
@@ -123,6 +125,12 @@ export class ViewtopicComponent implements OnInit {
 
   onCharacterSelected(characterId: number | null) {
     this.selectedCharacterId = characterId;
+  }
+
+  goToPage(pageNumber: number) {
+    if (pageNumber >= 1 && pageNumber <= this.totalPages()) {
+      this.router.navigate(['/viewtopic', this.id], { queryParams: { page: pageNumber } });
+    }
   }
 
   onSubmit(event: Event) {

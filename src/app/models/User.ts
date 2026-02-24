@@ -3,7 +3,6 @@ import { Faction } from './Faction';
 export interface User {
   id: number;
   username: string;
-  email: string;
   avatar: string;
   roles: Role[];
 }
