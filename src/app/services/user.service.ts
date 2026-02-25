@@ -1,7 +1,7 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { ApiService } from './api.service';
 import { UserShort } from '../models/UserShort';
-import { UserProfileResponse, UpdateSettingsRequest, User, UpdateSettingsResponse } from '../models/User';
+import { UserProfileResponse, UpdateSettingsRequest, User, UpdateSettingsResponse, UserListItem } from '../models/User';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -14,6 +14,9 @@ export class UserService {
 
   private userProfileSignal = signal<UserProfileResponse | null>(null);
   readonly userProfile = this.userProfileSignal.asReadonly();
+
+  private userListSignal = signal<UserListItem[]>([]);
+  readonly userList = this.userListSignal.asReadonly();
 
   loadUsersOnPage(pageType: string, pageId: number): void {
     this.apiService.get<UserShort[]>(`users/page/${pageType}/${pageId}`).subscribe({
@@ -35,6 +38,18 @@ export class UserService {
       error: (err) => {
         console.error('Failed to load user profile', err);
         this.userProfileSignal.set(null);
+      }
+    });
+  }
+
+  loadUserList(): void {
+    this.apiService.get<UserListItem[]>('user/list').subscribe({
+      next: (data) => {
+        this.userListSignal.set(data);
+      },
+      error: (err) => {
+        console.error('Failed to load user list', err);
+        this.userListSignal.set([]);
       }
     });
   }

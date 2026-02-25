@@ -75,6 +75,7 @@ export const TRANSLATIONS_RU = {
   "nav.characterlist": "Список персонажей",
   "nav.episodelist": "Список эпизодов",
   "nav.rules": "Правила",
+  "nav.userlist": "Список пользователей",
   "footer.poweredBy": "Работает на Cuento",
   "notifications.announcements": "Объявления",
   "notifications.myGamePosts": "Посты в моих играх",
@@ -140,5 +141,9 @@ export const TRANSLATIONS_RU = {
   "breadcrumbs.youAreHere": "Вы здесь",
   "topicreadby.title": "Тему просматривают",
   "topicreadby.guests": "Гостей",
-  "topicreadby.users": "Пользователей"
+  "topicreadby.users": "Пользователей",
+  "userlist.title": "Список пользователей",
+  "userlist.username": "Имя пользователя",
+  "userlist.characters": "Персонажи",
+  "userlist.noUsers": "Пользователи не найдены."
 };

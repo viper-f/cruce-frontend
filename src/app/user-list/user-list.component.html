@@ -1,0 +1,35 @@
+<div id="pun-main" class="main">
+  <div class="main-header">
+    <h1 i18n="@@userlist.title">User List</h1>
+  </div>
+  <div class="main-content">
+    <table cellspacing="0">
+      <thead>
+        <tr>
+          <th scope="col" i18n="@@userlist.username">Username</th>
+          <th scope="col" i18n="@@userlist.characters">Characters</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (user of userList(); track user.id; let isEven = $even) {
+          <tr [class.altstyle]="isEven">
+            <td>
+              <a [routerLink]="['/profile', user.id]">{{ user.username }}</a>
+            </td>
+            <td>
+              <div class="character-list-vertical">
+                @for (char of user.characters; track char.id) {
+                  <div><a [routerLink]="['/character', char.id]">{{ char.name }}</a></div>
+                }
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="2" i18n="@@userlist.noUsers">No users found.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

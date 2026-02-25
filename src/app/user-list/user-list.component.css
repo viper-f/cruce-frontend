@@ -1,0 +1,26 @@
+.character-list-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #e9e3d5;
+}
+
+th {
+  background-color: #1b3a6d;
+  color: #fcfaf2;
+  font-weight: bold;
+}
+
+tr.altstyle td {
+  background-color: #fcfaf2;
+}

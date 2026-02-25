@@ -1,4 +1,5 @@
 import { Faction } from './Faction';
+import { CharacterShort } from './Character';
 
 export interface User {
   id: number;
@@ -46,4 +47,10 @@ export interface UpdateSettingsRequest {
 export interface UpdateSettingsResponse {
   message: string;
   user: User;
+}
+
+export interface UserListItem {
+  id: number;
+  username: string;
+  characters: CharacterShort[];
 }
