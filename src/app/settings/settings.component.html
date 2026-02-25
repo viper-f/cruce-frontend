@@ -1,27 +1,27 @@
 <div id="pun-main" class="main">
   <div class="main-header">
-    <h1>Settings</h1>
+    <h1 i18n="@@settings.title">Settings</h1>
   </div>
   <div class="main-content">
     <form id="settings-form" class="container" (submit)="onSubmit($event)">
       <fieldset>
-        <legend>Profile</legend>
+        <legend i18n="@@settings.profile">Profile</legend>
         <div class="fs-box avatar-setting">
           <div class="current-avatar">
             <img [src]="avatarUrl" alt="Current Avatar">
           </div>
           <div class="avatar-input">
-            <label for="avatar_url">Avatar URL</label><br />
+            <label for="avatar_url" i18n="@@settings.avatarUrl">Avatar URL</label><br />
             <span class="input"><input id="avatar_url" type="text" name="avatar_url" [(ngModel)]="avatarUrl" /></span>
           </div>
         </div>
       </fieldset>
 
       <fieldset>
-        <legend>Localization</legend>
+        <legend i18n="@@settings.localization">Localization</legend>
         <div class="fs-box">
           <p class="inputfield">
-            <label for="language">Language</label><br />
+            <label for="language" i18n="@@settings.language">Language</label><br />
             <span class="input">
               <select id="language" name="language" [(ngModel)]="language">
                 <option value="en-US">English</option>
@@ -30,7 +30,7 @@
             </span>
           </p>
           <p class="inputfield">
-            <label for="timezone">Timezone</label><br />
+            <label for="timezone" i18n="@@settings.timezone">Timezone</label><br />
             <span class="input">
               <select id="timezone" name="timezone" [(ngModel)]="timezone">
                 @for (tz of timezones; track tz) {
@@ -43,24 +43,24 @@
       </fieldset>
 
       <fieldset>
-        <legend>Change Password</legend>
+        <legend i18n="@@settings.changePassword">Change Password</legend>
         <div class="fs-box">
           <p class="inputfield">
-            <label for="old_password">Old Password</label><br />
+            <label for="old_password" i18n="@@settings.oldPassword">Old Password</label><br />
             <span class="input"><input id="old_password" type="password" name="old_password" [(ngModel)]="oldPassword" /></span>
           </p>
           <p class="inputfield">
-            <label for="new_password">New Password</label><br />
+            <label for="new_password" i18n="@@settings.newPassword">New Password</label><br />
             <span class="input"><input id="new_password" type="password" name="new_password" [(ngModel)]="newPassword" /></span>
           </p>
           <p class="inputfield">
-            <label for="confirm_password">Confirm New Password</label><br />
+            <label for="confirm_password" i18n="@@settings.confirmPassword">Confirm New Password</label><br />
             <span class="input"><input id="confirm_password" type="password" name="confirm_password" [(ngModel)]="confirmPassword" /></span>
           </p>
         </div>
       </fieldset>
 
-      <p class="formsubmit"><input type="submit" class="button submit" value="Save Settings" /></p>
+      <p class="formsubmit"><input type="submit" class="button submit" value="Save Settings" i18n-value="@@settings.save" /></p>
     </form>
   </div>
 </div>

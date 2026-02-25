@@ -19,7 +19,6 @@ import {EpisodeTemplateEditComponent} from './admin/episode-template-edit/episod
 import {CharacterProfileTemplateEditComponent} from './admin/character-profile-template-edit/character-profile-template-edit.component';
 import {PermissionMatrixComponent} from './admin/permission-matrix/permission-matrix.component';
 import {CharacterProfileEditComponent} from './character-profile-edit/character-profile-edit.component';
-import { SettingsComponent } from './settings/settings.component';
 
 
 export const routes: Routes = [
@@ -43,12 +42,6 @@ export const routes: Routes = [
     path: 'messenger',
     component: MessengerComponent,
     data: { pageId: 'pun-messenger' }
-  },
-  {
-    path: 'settings',
-    component: SettingsComponent,
-    title: 'Settings',
-    data: { pageId: 'pun-settings' }
   },
   {
     path: 'viewforum/:id',

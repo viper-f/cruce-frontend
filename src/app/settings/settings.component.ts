@@ -17,7 +17,7 @@ export class SettingsComponent implements OnInit {
   private userService = inject(UserService);
 
   language: string = 'en-US';
-  timezone: string = 'UTC';
+  timezone: string = 'UTC+00:00';
   avatarUrl = '';
   oldPassword = '';
   newPassword = '';

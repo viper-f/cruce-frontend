@@ -1,4 +1,4 @@
-import {Component, effect, inject, Input, OnInit, ViewChild, signal, computed} from '@angular/core';
+import {Component, effect, inject, Input, OnInit, ViewChild, signal, computed, numberAttribute} from '@angular/core';
 import {PostFormComponent} from '../components/post-form/post-form.component';
 import {TopicService} from '../services/topic.service';
 import {Router, RouterLink} from '@angular/router';
@@ -39,8 +39,8 @@ export class ViewtopicComponent implements OnInit {
   authService = inject(AuthService);
   router = inject(Router);
 
-  @Input() id?: number;
-  @Input() page: number = 1;
+  @Input({ transform: numberAttribute }) id?: number;
+  @Input({ transform: numberAttribute, alias: 'page' }) pageNumber: number = 1;
 
   topic = this.topicService.topic;
   posts = this.topicService.posts;
@@ -56,11 +56,15 @@ export class ViewtopicComponent implements OnInit {
   showAccount = true;
 
   postsPerPage = 15;
-  totalPages = computed(() => Math.ceil(this.topic().post_number / this.postsPerPage));
+  totalPages = computed(() => {
+    const totalPosts = this.topic()?.post_number || 0;
+    return Math.ceil(totalPosts / this.postsPerPage);
+  });
 
   @ViewChild(PostFormComponent) postForm!: PostFormComponent;
 
   constructor() {
+    // Effect for breadcrumbs and profile loading
     effect(() => {
       const t = this.topic();
       const s = this.subforum();
@@ -76,7 +80,6 @@ export class ViewtopicComponent implements OnInit {
           { label: t.name }
         ];
 
-        // Handle character profiles based on topic type
         if (t.type === TopicType.character) {
           this.loadProfiles = false;
           this.showAccount = true;
@@ -92,6 +95,7 @@ export class ViewtopicComponent implements OnInit {
       }
     });
 
+    // Effect for showing/hiding post form
     effect(() => {
       const t = this.topic();
       const profiles = this.userCharacterProfiles();
@@ -102,35 +106,29 @@ export class ViewtopicComponent implements OnInit {
         this.showPostForm.set(true);
       }
     });
+
+    // Effect to reload posts when page or topic ID changes
+    effect(() => {
+      const topicId = this.id;
+      const currentPage = this.pageNumber;
+      if (topicId) {
+        this.topicService.loadPosts(topicId, currentPage);
+      }
+    });
   }
 
-  isEpisode() {
-    return this.topic().type === TopicType.episode;
-  }
-
-  isGeneral() {
-    return this.topic().type === TopicType.general;
-  }
-
-  isCharacter() {
-    return this.topic().type === TopicType.character;
-  }
+  isEpisode() { return this.topic().type === TopicType.episode; }
+  isGeneral() { return this.topic().type === TopicType.general; }
+  isCharacter() { return this.topic().type === TopicType.character; }
 
   ngOnInit() {
     if (this.id) {
       this.topicService.loadTopic(this.id);
-      this.topicService.loadPosts(this.id, this.page);
     }
   }
 
   onCharacterSelected(characterId: number | null) {
     this.selectedCharacterId = characterId;
-  }
-
-  goToPage(pageNumber: number) {
-    if (pageNumber >= 1 && pageNumber <= this.totalPages()) {
-      this.router.navigate(['/viewtopic', this.id], { queryParams: { page: pageNumber } });
-    }
   }
 
   onSubmit(event: Event) {
@@ -149,6 +147,11 @@ export class ViewtopicComponent implements OnInit {
     this.topicService.createPost(payload).subscribe({
       next: () => {
         this.postForm.messageField.nativeElement.value = '';
+        // After posting, we might want to navigate to the last page
+        // For now, just re-fetch posts for the current page
+        if (this.id) {
+          this.topicService.loadPosts(this.id, this.pageNumber);
+        }
       },
       error: (err) => console.error('Failed to create post', err)
     });

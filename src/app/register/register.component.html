@@ -23,6 +23,20 @@
       </div>
 
       <div class="form-group">
+        <label for="email">Email Address</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          [class.input-error]="isInvalid('email')"
+          placeholder="name@example.com"
+        />
+        @if (isInvalid('email')) {
+          <span class="error-msg">Please enter a valid email address</span>
+        }
+      </div>
+
+      <div class="form-group">
         <label for="password">Password</label>
         <input id="password" type="password" formControlName="password" />
         @if (isInvalid('password')) {

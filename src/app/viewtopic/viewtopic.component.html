@@ -10,7 +10,7 @@
       <p class="pagelink conl">
         <span><ng-container i18n="@@viewtopic.pages">Pages</ng-container>:
           @for (p of [].constructor(totalPages()); track p; let i = $index) {
-            @if (i + 1 === page) {
+            @if (i + 1 === pageNumber) {
               <strong>{{ i + 1 }}</strong>
             } @else {
               <a [routerLink]="['/viewtopic', id]" [queryParams]="{ page: i + 1 }">{{ i + 1 }}</a>
@@ -36,7 +36,7 @@
         <a class="sharelink" rel="nofollow" href="#p{{ post.id }}" onclick="return false;" title="" i18n="@@viewtopic.share">Share</a>
         <a class="permalink" rel="nofollow">{{ post.date_created }}</a>
       </span>
-      <strong class="post-number">{{ (page - 1) * postsPerPage + i + 1 }}</strong>
+      <strong class="post-number">{{ (pageNumber - 1) * postsPerPage + i + 1 }}</strong>
     </h3>
     <div class="container">
       <div class="post-main">
@@ -69,7 +69,7 @@
       <p class="pagelink conl">
         <span><ng-container i18n="@@viewtopic.pages">Pages</ng-container>:
           @for (p of [].constructor(totalPages()); track p; let i = $index) {
-            @if (i + 1 === page) {
+            @if (i + 1 === pageNumber) {
               <strong>{{ i + 1 }}</strong>
             } @else {
               <a [routerLink]="['/viewtopic', id]" [queryParams]="{ page: i + 1 }">{{ i + 1 }}</a>
