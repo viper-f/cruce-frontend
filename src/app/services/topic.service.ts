@@ -3,11 +3,15 @@ import {Topic, TopicStatus, TopicType, CreateTopicRequest} from '../models/Topic
 import {ApiService} from './api.service';
 import {Post} from '../models/Post';
 import {NotificationService} from './notification.service';
+import {AuthService} from './auth.service';
+import {Router} from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
 export class TopicService {
   private apiService = inject(ApiService);
   private notificationService = inject(NotificationService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
   private topicSignal = signal<Topic>({
     id: 0,
@@ -29,6 +33,8 @@ export class TopicService {
 
   private postsSignal = signal<Post[]>([]);
   readonly posts = this.postsSignal.asReadonly();
+
+  private readonly postsPerPage = 15;
 
   constructor() {
     this.notificationService.postCreated$.subscribe(event => {
@@ -70,5 +76,13 @@ export class TopicService {
       }
       return topic;
     });
+
+    // Check if the current user is the author and redirect if so
+    const currentUser = this.authService.currentUser();
+    if (currentUser && currentUser.id === post.author_user_id) {
+      const totalPosts = this.topic().post_number;
+      const lastPage = Math.ceil(totalPosts / this.postsPerPage);
+      this.router.navigate(['/viewtopic', this.topic().id], { queryParams: { page: lastPage } });
+    }
   }
 }
