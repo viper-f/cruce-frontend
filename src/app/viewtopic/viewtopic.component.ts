@@ -15,6 +15,11 @@ import { SafeHtmlPipe } from '../pipes/safe-html.pipe'
 import { CharacterService } from '../services/character.service';
 import { AuthService } from '../services/auth.service';
 
+function coerceToPage(value: unknown): number {
+  const num = numberAttribute(value, 1);
+  return num < 1 ? 1 : num;
+}
+
 @Component({
   selector: 'app-viewtopic',
   imports: [
@@ -40,7 +45,7 @@ export class ViewtopicComponent implements OnInit {
   router = inject(Router);
 
   @Input({ transform: numberAttribute }) id?: number;
-  @Input({ transform: numberAttribute, alias: 'page' }) pageNumber: number = 1;
+  @Input({ transform: coerceToPage, alias: 'page' }) pageNumber: number = 1;
 
   topic = this.topicService.topic;
   posts = this.topicService.posts;
