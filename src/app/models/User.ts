@@ -33,3 +33,10 @@ export interface CharacterProfileListItem {
   last_post_date: string | null;
   factions: Faction[];
 }
+
+export interface UpdateSettingsRequest {
+  avatar?: string;
+  interface_timezone?: string;
+  interface_language?: string;
+  password?: string;
+}

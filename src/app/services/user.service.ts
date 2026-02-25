@@ -1,7 +1,7 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { ApiService } from './api.service';
 import { UserShort } from '../models/UserShort';
-import { UserProfileResponse } from '../models/User';
+import { UserProfileResponse, UpdateSettingsRequest } from '../models/User';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
@@ -35,5 +35,9 @@ export class UserService {
         this.userProfileSignal.set(null);
       }
     });
+  }
+
+  updateUserSettings(settings: UpdateSettingsRequest) {
+    return this.apiService.post('user/settings/update', settings);
   }
 }

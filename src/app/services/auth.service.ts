@@ -1,9 +1,9 @@
 import { Injectable, signal, inject, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { tap } from 'rxjs/operators';
+import { tap, switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { User } from '../models/User';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, from } from 'rxjs';
 
 interface AuthResponse {
   access_token: string;
@@ -37,6 +37,14 @@ export class AuthService {
     }
   }
 
+  public async hashPassword(password: string): Promise<string> {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
   refreshToken(): Observable<AuthResponse> {
     const refreshToken = localStorage.getItem('refresh_token');
     return this.http.post<AuthResponse>(`${this.apiUrl}/refresh`, { refresh_token: refreshToken }).pipe(
@@ -46,15 +54,25 @@ export class AuthService {
     );
   }
 
-  register(data: any) {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, data).pipe(
-      tap(res => this.handleAuth(res))
+  register(data: any): Observable<AuthResponse> {
+    return from(this.hashPassword(data.password)).pipe(
+      switchMap(hashedPassword => {
+        const registerData = { ...data, password: hashedPassword };
+        return this.http.post<AuthResponse>(`${this.apiUrl}/register`, registerData).pipe(
+          tap(res => this.handleAuth(res))
+        );
+      })
     );
   }
 
-  login(credentials: { username: string; password: string }) {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credentials).pipe(
-      tap(res => this.handleAuth(res))
+  login(credentials: { username: string; password: string }): Observable<AuthResponse> {
+    return from(this.hashPassword(credentials.password)).pipe(
+      switchMap(hashedPassword => {
+        const loginData = { ...credentials, password: hashedPassword };
+        return this.http.post<AuthResponse>(`${this.apiUrl}/login`, loginData).pipe(
+          tap(res => this.handleAuth(res))
+        );
+      })
     );
   }
 
@@ -93,8 +111,9 @@ export class AuthService {
     this.currentUser.set({
       id: 0,
       username: 'Гость',
-      email: "",
       avatar: "",
+      interface_timezone: "UTC",
+      interface_language: "en-US",
       roles: [{
         id: 1,
         name: 'guest'

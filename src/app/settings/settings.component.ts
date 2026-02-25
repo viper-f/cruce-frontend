@@ -2,6 +2,8 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
+import { UserService } from '../services/user.service';
+import { UpdateSettingsRequest } from '../models/User';
 
 @Component({
   selector: 'app-settings',
@@ -12,6 +14,7 @@ import { AuthService } from '../services/auth.service';
 })
 export class SettingsComponent implements OnInit {
   private authService = inject(AuthService);
+  private userService = inject(UserService);
 
   language: string = 'en-US';
   timezone: string = 'UTC';
@@ -32,16 +35,25 @@ export class SettingsComponent implements OnInit {
     this.avatarUrl = this.authService.currentUser()?.avatar || '';
   }
 
-  onSubmit(event: Event) {
+  async onSubmit(event: Event) {
     event.preventDefault();
-    console.log('Settings saved:', {
-      language: this.language,
-      timezone: this.timezone,
-      avatarUrl: this.avatarUrl,
-      passwords: {
-        old: this.oldPassword,
-        new: this.newPassword
-      }
+
+    const payload: UpdateSettingsRequest = {
+      avatar: this.avatarUrl,
+      interface_timezone: this.timezone,
+      interface_language: this.language
+    };
+
+    if (this.newPassword && this.newPassword === this.confirmPassword) {
+      payload.password = await this.authService.hashPassword(this.newPassword);
+    }
+
+    this.userService.updateUserSettings(payload).subscribe({
+      next: () => {
+        console.log('Settings updated successfully');
+        // Optionally, update local user data?
+      },
+      error: (err) => console.error('Failed to update settings', err)
     });
   }
 }
