@@ -16,7 +16,7 @@
           @if (group[0].characters && group[0].characters.length > 0) {
             <ul class="character-group">
               @for (char of group[0].characters; track char.id) {
-                <li class="character-item">
+                <li class="character-list-item">
                   <a [routerLink]="['/character', char.id]" class="character-link">
                     {{ char.name }}
                   </a>
@@ -40,7 +40,7 @@
               @if (faction.characters && faction.characters.length > 0) {
                 <ul class="character-group">
                   @for (char of faction.characters; track char.id) {
-                    <li class="character-item">
+                    <li class="character-list-item">
                       <a [routerLink]="['/character', char.id]" class="character-link">
                         {{ char.name }}
                       </a>
