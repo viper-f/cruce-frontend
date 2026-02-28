@@ -50,14 +50,30 @@ export class RegisterComponent {
       // Destructure to remove confirmPassword before sending to API
       const { confirmPassword, ...registerData } = this.registerForm.value;
 
+      const username = registerData.username || '';
+      const password = registerData.password || '';
+
       this.authService.register(registerData).subscribe({
         next: () => {
-          this.isLoading.set(false);
-          this.router.navigate(['/']);
+          // Automatically login after successful registration
+          this.authService.login({ username, password }).subscribe({
+            next: () => {
+              this.isLoading.set(false);
+              this.router.navigate(['/']);
+            },
+            error: (err) => {
+              this.isLoading.set(false);
+              // If login fails after register, show error but don't redirect
+              console.error('Auto-login failed', err);
+              this.errorMessage.set('Registration successful, but auto-login failed. Please try logging in manually.');
+            }
+          });
         },
         error: (err) => {
           this.isLoading.set(false);
-          this.errorMessage.set(err.error?.message || 'Registration failed.');
+          // Handle backend error response: {"error": "message"}
+          const backendError = err.error?.error || err.error?.message || 'Registration failed.';
+          this.errorMessage.set(backendError);
         }
       });
     }

@@ -56,13 +56,11 @@ export class AuthService {
     );
   }
 
-  register(data: any): Observable<AuthResponse> {
+  register(data: any): Observable<any> {
     return from(this.hashPassword(data.password)).pipe(
       switchMap(hashedPassword => {
         const registerData = { ...data, password: hashedPassword };
-        return this.http.post<AuthResponse>(`${this.apiUrl}/register`, registerData).pipe(
-          tap(res => this.handleAuth(res))
-        );
+        return this.http.post(`${this.apiUrl}/register`, registerData);
       })
     );
   }
