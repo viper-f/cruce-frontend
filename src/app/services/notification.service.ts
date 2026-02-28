@@ -139,6 +139,10 @@ export class NotificationService {
       }
     };
 
+    this.ws.onerror = (event) => {
+      console.error('WebSocket error:', event);
+    };
+
     this.ws.onclose = (event) => {
       this.ws = null;
       if (!this.explicitlyClosed) {
