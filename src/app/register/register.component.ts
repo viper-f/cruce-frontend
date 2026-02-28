@@ -17,6 +17,7 @@ export class RegisterComponent {
 
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
+  showPassword = signal(false);
 
   private passwordMatchValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
     const password = control.get('password');
@@ -33,12 +34,15 @@ export class RegisterComponent {
 
   registerForm = this.fb.group({
     username: ['', [Validators.required, Validators.minLength(3)]],
-    email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(8)]],
     confirmPassword: ['', [Validators.required]]
   }, {
     validators: this.passwordMatchValidator // Apply validator to the group
   });
+
+  togglePasswordVisibility() {
+    this.showPassword.update(value => !value);
+  }
 
   onSubmit() {
     if (this.registerForm.valid) {
