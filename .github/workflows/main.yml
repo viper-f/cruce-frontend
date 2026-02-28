@@ -1,0 +1,47 @@
+name: Deploy Cuento Frontend
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Angular app
+        # This creates the static files in the /dist folder
+        run: npm run build -- --configuration production
+
+      - name: Deploy to Droplet via SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DROPLET_IP }}
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          # Verify your 'outputPath' in angular.json. Usually it's dist/<project-name>/browser
+          source: "dist/cuento-frontend/browser/*"
+          target: "/var/www/frontend"
+          strip_components: 3 # Adjust this to match the number of folders in 'source'
+          overwrite: true
+
+      - name: Fix Permissions
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DROPLET_IP }}
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            chown -R www-data:www-data /var/www/frontend
+            chmod -R 755 /var/www/frontend
