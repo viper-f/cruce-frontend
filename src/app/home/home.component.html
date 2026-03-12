@@ -35,12 +35,12 @@
                 @if (subforum.last_post_topic_id == null) {
                   <span i18n="@@home.noPosts">No posts</span>
                 } @else {
-                <a class="lastpost-link" routerLink="/viewtopic/{{subforum.last_post_topic_id}}">{{subforum.last_post_topic_name}}</a>
+                <a class="lastpost-link" [routerLink]="['/viewtopic', subforum.last_post_topic_id]" [queryParams]="{ post_id: subforum.last_post_id }">{{subforum.last_post_topic_name}}</a>
                 <br>
                 <span class="lastpost">
-                  <span class="datetime">{{subforum.date_last_post_id}}</span>
+                  <span class="datetime">{{subforum.date_last_post}}</span>
                   -
-                  <span class="byuser">{{subforum.last_post_author_user_name}}</span>
+                  <span class="byuser">{{subforum.last_post_author_name}}</span>
                 </span>
                 }
               </td>

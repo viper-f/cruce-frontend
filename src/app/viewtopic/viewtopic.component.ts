@@ -14,6 +14,7 @@ import { CharacterSheetHeaderComponent } from '../components/character-sheet-hea
 import { SafeHtmlPipe } from '../pipes/safe-html.pipe'
 import { CharacterService } from '../services/character.service';
 import { AuthService } from '../services/auth.service';
+import { BoardService } from '../services/board.service';
 import { Subject, takeUntil, combineLatest } from 'rxjs';
 import { EpisodeCreateComponent } from '../episode-create/episode-create.component';
 import { CharacterCreateComponent } from '../character-create/character-create.component';
@@ -47,6 +48,7 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
   forumService = inject(ForumService);
   characterService = inject(CharacterService);
   authService = inject(AuthService);
+  boardService = inject(BoardService);
   router = inject(Router);
   route = inject(ActivatedRoute);
 
@@ -55,6 +57,7 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
 
   topic = this.topicService.topic;
   posts = this.topicService.posts;
+  currentPage = this.topicService.currentPage;
   subforum = this.forumService.subforum;
   userCharacterProfiles = this.characterService.userCharacterProfiles;
 
@@ -66,10 +69,11 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
   loadProfiles = true;
   showAccount = true;
 
-  postsPerPage = 15;
+  postsPerPage = computed(() => this.boardService.board().posts_per_page || 15);
+
   totalPages = computed(() => {
     const totalPosts = this.topic()?.post_number || 0;
-    return Math.ceil(totalPosts / this.postsPerPage);
+    return Math.ceil(totalPosts / this.postsPerPage());
   });
 
   editingPostId = signal<number | null>(null);
@@ -124,12 +128,22 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
       }
     });
 
-    // Effect to reload posts when page or topic ID changes
+    // Sync page number with URL when it changes in service (e.g. from post_id redirect)
     effect(() => {
-      const topicId = this.id;
-      const currentPage = this.pageNumber;
-      if (topicId) {
-        this.topicService.loadPosts(topicId, currentPage);
+      const servicePage = this.currentPage();
+      // We only update if the service page differs from our current input page
+      // But pageNumber is an Input, so we check if we should navigate
+      if (servicePage && servicePage !== this.pageNumber) {
+        // We use router navigate to update the URL without reloading everything if possible,
+        // or just to reflect state.
+        // Important: avoid infinite loops.
+        // We update query params.
+        this.router.navigate([], {
+          relativeTo: this.route,
+          queryParams: { page: servicePage },
+          queryParamsHandling: 'merge',
+          replaceUrl: true // Replace history to avoid back button loops
+        });
       }
     });
   }
@@ -144,14 +158,15 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
       .subscribe(([paramMap, queryParamMap]) => {
         const topicId = Number(paramMap.get('id'));
         const page = coerceToPage(queryParamMap.get('page'));
+        const postId = Number(queryParamMap.get('post_id'));
 
         if (topicId) {
           // Only reload the main topic data if the ID has actually changed
           if (this.topic().id !== topicId) {
             this.topicService.loadTopic(topicId);
           }
-          // Always reload posts for the current page
-          this.topicService.loadPosts(topicId, page);
+          // Always reload posts for the current page or post_id
+          this.topicService.loadPosts(topicId, page, postId || undefined);
         }
       });
   }

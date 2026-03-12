@@ -67,7 +67,7 @@
         <a class="sharelink" rel="nofollow" href="#p{{ post.id }}" onclick="return false;" title="" i18n="@@viewtopic.share">Share</a>
         <a class="permalink" rel="nofollow">{{ post.date_created }}</a>
       </span>
-      <strong class="post-number">{{ (pageNumber - 1) * postsPerPage + i + 1 }}</strong>
+      <strong class="post-number">{{ (pageNumber - 1) * postsPerPage() + i + 1 }}</strong>
     </h3>
     <div class="container">
       <div class="post-main">

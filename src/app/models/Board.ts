@@ -9,4 +9,5 @@ export interface Board {
   total_episode_number: number;
   total_episode_post_number: number;
   last_registered_user: UserShort | null;
+  posts_per_page: number;
 }

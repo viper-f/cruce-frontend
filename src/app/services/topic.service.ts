@@ -6,6 +6,11 @@ import {NotificationService} from './notification.service';
 import {AuthService} from './auth.service';
 import {Router} from '@angular/router';
 
+interface PostsResponse {
+  page: number;
+  posts: Post[];
+}
+
 @Injectable({ providedIn: 'root' })
 export class TopicService {
   private apiService = inject(ApiService);
@@ -34,6 +39,9 @@ export class TopicService {
   private postsSignal = signal<Post[]>([]);
   readonly posts = this.postsSignal.asReadonly();
 
+  private currentPageSignal = signal<number>(1);
+  readonly currentPage = this.currentPageSignal.asReadonly();
+
   private readonly postsPerPage = 15;
 
   constructor() {
@@ -59,10 +67,16 @@ export class TopicService {
     });
   }
 
-  loadPosts(topicId: number, page: number) {
-    this.apiService.get<Post[]>(`topic-posts/${topicId}/${page}`).subscribe(data => {
-      const enrichedPosts = data.map(post => this.enrichPostWithPermissions(post));
+  loadPosts(topicId: number, page: number, postId?: number) {
+    let url = `topic-posts/${topicId}?page=${page}`;
+    if (postId) {
+      url = `topic-posts/${topicId}?post_id=${postId}`;
+    }
+
+    this.apiService.get<PostsResponse>(url).subscribe(data => {
+      const enrichedPosts = data.posts.map(post => this.enrichPostWithPermissions(post));
       this.postsSignal.set(enrichedPosts);
+      this.currentPageSignal.set(data.page);
     });
   }
 
