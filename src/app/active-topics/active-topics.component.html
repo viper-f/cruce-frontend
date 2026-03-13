@@ -8,7 +8,19 @@
   <div id="vf" class="category">
     <div class="maintitle">
       <div class="conr">
-        <!-- Pagination placeholder if needed -->
+        <p class="pagelink">
+          @if (totalPages() > 1) {
+            <span><ng-container i18n="@@viewforum.pages">Pages</ng-container>:
+              @for (p of [].constructor(totalPages()); track $index; let i = $index) {
+                @if (i + 1 === pageNumber) {
+                  <strong>{{ i + 1 }}</strong>
+                } @else {
+                  <a [routerLink]="['/active-topics']" [queryParams]="{ page: i + 1 }">{{ i + 1 }}</a>
+                }
+              }
+            </span>
+          }
+        </p>
       </div>
       <div class="clearer"></div>
     </div>
@@ -41,6 +53,9 @@
                 <div class="tclcon">
                   <h3>
                     <a routerLink="/viewtopic/{{topic.id}}">{{topic.name}}</a>
+                    @if (topic.not_viewed && topic.last_viewed_id) {
+                      <a [routerLink]="['/viewtopic', topic.id]" [queryParams]="{ post_id: topic.last_viewed_id }" class="new-posts-link">[new posts]</a>
+                    }
                   </h3>
                   <span class="byuser">by <a routerLink="/profile/{{topic.author_user_id}}">{{topic.author_username}}</a></span>
                 </div>

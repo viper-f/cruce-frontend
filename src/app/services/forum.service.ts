@@ -11,6 +11,9 @@ export class ForumService {
   private activeTopicsSignal = signal<Topic[]>([]);
   readonly activeTopics = this.activeTopicsSignal.asReadonly();
 
+  private activeTopicsCountSignal = signal<number>(0);
+  readonly activeTopicsCount = this.activeTopicsCountSignal.asReadonly();
+
   private subforumSignal = signal<Subforum>({
     id: 0,
     name: '',
@@ -68,6 +71,17 @@ export class ForumService {
       },
       error: (err) => {
         console.error('Failed to load active topics', err);
+      }
+    });
+  }
+
+  loadActiveTopicsCount() {
+    this.apiService.get<{total: number}>('active-topic-count').subscribe({
+      next: (data) => {
+        this.activeTopicsCountSignal.set(data.total);
+      },
+      error: (err) => {
+        console.error('Failed to load active topics count', err);
       }
     });
   }

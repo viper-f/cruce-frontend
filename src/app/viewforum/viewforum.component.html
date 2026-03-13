@@ -67,6 +67,9 @@
                 <div class="tclcon">
                   <h3>
                     <a routerLink="/viewtopic/{{topic.id}}">{{topic.name}}</a>
+                    @if (topic.not_viewed && topic.last_viewed_id) {
+                      <a [routerLink]="['/viewtopic', topic.id]" [queryParams]="{ post_id: topic.last_viewed_id }" class="new-posts-link">[new posts]</a>
+                    }
                   </h3>
                   <span class="byuser"><ng-container i18n="@@viewforum.by">by</ng-container> <a routerLink="/profile/{{topic.author_user_id}}">{{topic.author_username}}</a></span>
                 </div>

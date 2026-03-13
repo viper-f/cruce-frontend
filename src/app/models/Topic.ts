@@ -14,6 +14,7 @@ export interface Topic {
   last_post_author_user_id: number|null;
   last_post_author_username: string|null;
   last_post_id?: number | null;
+  last_viewed_id?: number | null;
   type: TopicType;
   status: TopicStatus;
   episode: Episode|null;
