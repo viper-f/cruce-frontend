@@ -6,15 +6,11 @@ import {NotificationService} from './notification.service';
 import {AuthService} from './auth.service';
 import {Router} from '@angular/router';
 import {BoardService} from './board.service';
+import { Subject } from 'rxjs';
 
 interface PostsResponse {
   page: number;
   posts: Post[];
-}
-
-interface PageState {
-  page: number;
-  topicId: number;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -46,8 +42,8 @@ export class TopicService {
   private postsSignal = signal<Post[]>([]);
   readonly posts = this.postsSignal.asReadonly();
 
-  private currentPageSignal = signal<PageState>({ page: 1, topicId: 0 });
-  readonly currentPage = this.currentPageSignal.asReadonly();
+  private pageLoadedSubject = new Subject<{page: number, topicId: number}>();
+  public pageLoaded$ = this.pageLoadedSubject.asObservable();
 
   constructor() {
     this.notificationService.postCreated$.subscribe(event => {
@@ -66,9 +62,6 @@ export class TopicService {
   }
 
   loadTopic(id: number) {
-    // Reset page state when loading a new topic
-    this.currentPageSignal.set({ page: 1, topicId: 0 });
-
     this.apiService.get<Topic>('topic/get/' + id.toString()).subscribe(data => {
       const enrichedTopic = this.enrichTopicWithPermissions(data);
       this.topicSignal.set(enrichedTopic);
@@ -86,7 +79,8 @@ export class TopicService {
         if (data && data.posts) {
           const enrichedPosts = data.posts.map(post => this.enrichPostWithPermissions(post));
           this.postsSignal.set(enrichedPosts);
-          this.currentPageSignal.set({ page: data.page, topicId: topicId });
+
+          this.pageLoadedSubject.next({ page: data.page, topicId: topicId });
 
           if (data.posts.length > 0) {
             const maxPostId = Math.max(...data.posts.map(p => p.id));
@@ -159,10 +153,8 @@ export class TopicService {
       const postsPerPage = this.boardService.board().posts_per_page || 15;
       const lastPage = Math.ceil(totalPosts / postsPerPage);
 
-      // Only navigate if we are not already on the last page
-      if (this.currentPageSignal().page !== lastPage || this.currentPageSignal().topicId !== this.topic().id) {
-        this.router.navigate(['/viewtopic', this.topic().id], { queryParams: { page: lastPage } });
-      }
+      // Simply navigate to the last page. If we are already there, router should handle it gracefully or reload.
+      this.router.navigate(['/viewtopic', this.topic().id], { queryParams: { page: lastPage } });
     }
   }
 

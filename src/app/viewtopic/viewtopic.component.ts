@@ -15,7 +15,7 @@ import { SafeHtmlPipe } from '../pipes/safe-html.pipe'
 import { CharacterService } from '../services/character.service';
 import { AuthService } from '../services/auth.service';
 import { BoardService } from '../services/board.service';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { EpisodeCreateComponent } from '../episode-create/episode-create.component';
 import { CharacterCreateComponent } from '../character-create/character-create.component';
 
@@ -59,7 +59,6 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
 
   topic = this.topicService.topic;
   posts = this.topicService.posts;
-  currentPage = this.topicService.currentPage;
   subforum = this.forumService.subforum;
   userCharacterProfiles = this.characterService.userCharacterProfiles;
 
@@ -83,6 +82,7 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
   private lastLoadedProfilesForTopicId: number | null = null;
+  private pageLoadedSubscription: Subscription | null = null;
 
   @ViewChild('mainPostForm') postForm!: PostFormComponent;
   @ViewChildren('editPostForm') editPostForms!: QueryList<PostFormComponent>;
@@ -150,18 +150,20 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
         this.topicService.loadPosts(topicId, page, postId);
       }
     });
+  }
 
-    // Sync page number with URL when it changes in service (e.g. from post_id redirect)
-    effect(() => {
-      const pageState = this.currentPage();
+  isEpisode() { return this.topic().type === TopicType.episode; }
+  isGeneral() { return this.topic().type === TopicType.general; }
+  isCharacter() { return this.topic().type === TopicType.character; }
+
+  ngOnInit() {
+    this.pageLoadedSubscription = this.topicService.pageLoaded$.subscribe(pageState => {
       const topicId = this.id();
-
       // Only sync if the page state is for the current topic
       if (pageState.topicId !== topicId) return;
 
-      // Use untracked to access pageNumber so this effect doesn't run when pageNumber changes via router
-      const currentInputPage = untracked(() => this.pageNumber());
-      const currentPostId = untracked(() => this.postId());
+      const currentInputPage = this.pageNumber();
+      const currentPostId = this.postId();
 
       if ((pageState.page && pageState.page !== currentInputPage) || currentPostId) {
         this.router.navigate([], {
@@ -174,16 +176,12 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
     });
   }
 
-  isEpisode() { return this.topic().type === TopicType.episode; }
-  isGeneral() { return this.topic().type === TopicType.general; }
-  isCharacter() { return this.topic().type === TopicType.character; }
-
-  ngOnInit() {
-  }
-
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
+    if (this.pageLoadedSubscription) {
+      this.pageLoadedSubscription.unsubscribe();
+    }
   }
 
   onCharacterSelected(characterId: number | null) {
