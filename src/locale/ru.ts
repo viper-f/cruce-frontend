@@ -63,6 +63,7 @@ export const TRANSLATIONS_RU = {
   "app.hello": "Привет",
   "app.date": "Дата",
   "nav.forum": "Форум",
+  "nav.activeTopics": "Активные темы",
   "nav.characterList": "Список персонажей",
   "nav.profile": "Профиль",
   "nav.characters": "Мои персонажи",

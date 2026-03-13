@@ -1,1 +1,76 @@
-<p>active-topics works!</p>
+<app-breadcrumbs [items]="breadcrumbs"></app-breadcrumbs>
+
+<div id="pun-main" class="main">
+  <div class="main-header">
+    <h1><span>Active Topics</span></h1>
+  </div>
+
+  <div id="vf" class="category">
+    <div class="maintitle">
+      <div class="conr">
+        <!-- Pagination placeholder if needed -->
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="main-content">
+      <div class="main-item">
+        <table cellspacing="0">
+          <thead>
+          <tr>
+            <th class="tcl" scope="col">Topic</th>
+            <th class="tc2" scope="col">Subforum</th>
+            <th class="tc2" scope="col">Type</th>
+            <th class="tc2" scope="col">Replies</th>
+            <th class="tc3" scope="col">Views</th>
+            <th class="tcr" scope="col">Last post</th>
+          </tr>
+          </thead>
+          <tbody>
+         @for(topic of topics(); track topic.id; let isEven = $even) {
+           <tr [class.altstyle]="isEven" [class.new-posts]="topic.not_viewed">
+            <td class="tcl">
+              <div class="intd">
+                <div class="icon">
+                  @if (topic.not_viewed) {
+                    <div class="nosize new-icon" title="New posts">New</div>
+                  } @else {
+                    <div class="nosize">1</div>
+                  }
+                </div>
+                <div class="tclcon">
+                  <h3>
+                    <a routerLink="/viewtopic/{{topic.id}}">{{topic.name}}</a>
+                  </h3>
+                  <span class="byuser">by <a routerLink="/profile/{{topic.author_user_id}}">{{topic.author_username}}</a></span>
+                </div>
+              </div>
+            </td>
+            <td class="tc2"><a routerLink="/viewforum/{{topic.subforum_id}}">{{topic.subforum_name}}</a></td>
+            <td class="tc2">
+              @switch (topic.type) {
+                @case (TopicType.general) { <span>General</span> }
+                @case (TopicType.episode) { <span>Episode</span> }
+                @case (TopicType.character) { <span>Character</span> }
+              }
+            </td>
+            <td class="tc2">{{topic.post_number}}</td>
+            <td class="tc3"></td> <!-- Views not in model yet -->
+            <td class="tcr">
+              @if (topic.last_post_id) {
+                <a [routerLink]="['/viewtopic', topic.id]" [queryParams]="{ post_id: topic.last_post_id }">{{topic.date_last_post}}</a>
+              } @else {
+                <a routerLink="/viewtopic/{{topic.id}}">{{topic.date_last_post}}</a>
+              }
+              <span class="byuser">by {{topic.last_post_author_username}}</span>
+            </td>
+          </tr>
+         }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-footer"></div>
+</div>

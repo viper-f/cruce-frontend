@@ -5,6 +5,7 @@ export interface Topic {
   id: number;
   name: string;
   subforum_id: number;
+  subforum_name?: string;
   date_created: string;
   date_last_post: string;
   author_user_id: number;

@@ -7,6 +7,10 @@ import {Subforum} from '../models/Subforum';
 export class ForumService {
   private subforumTopicsSignal = signal<Topic[]>([]);
   readonly subforumTopics = this.subforumTopicsSignal.asReadonly();
+
+  private activeTopicsSignal = signal<Topic[]>([]);
+  readonly activeTopics = this.activeTopicsSignal.asReadonly();
+
   private subforumSignal = signal<Subforum>({
     id: 0,
     name: '',
@@ -36,7 +40,7 @@ export class ForumService {
   private apiService = inject(ApiService);
 
   loadSubforumPage(subforum: number, page: number = 1) {
-    this.apiService.get<Topic[]>('viewforum/' + subforum + '/' + page).subscribe({
+    this.apiService.get<Topic[]>(`viewforum/${subforum}/${page}`).subscribe({
       next: (data) => {
         this.subforumTopicsSignal.set(data);
       },
@@ -55,5 +59,16 @@ export class ForumService {
         console.error('Failed to load categories', err);
       }
     })
+  }
+
+  loadActiveTopics(page: number = 1) {
+    this.apiService.get<Topic[]>(`active-topics?page=${page}`).subscribe({
+      next: (data) => {
+        this.activeTopicsSignal.set(data);
+      },
+      error: (err) => {
+        console.error('Failed to load active topics', err);
+      }
+    });
   }
 }

@@ -21,6 +21,7 @@ import {PermissionMatrixComponent} from './admin/permission-matrix/permission-ma
 import {CharacterProfileEditComponent} from './character-profile-edit/character-profile-edit.component';
 import { UserListComponent } from './user-list/user-list.component';
 import { SettingsComponent } from './settings/settings.component';
+import { ActiveTopicsComponent } from './active-topics/active-topics.component';
 
 
 export const routes: Routes = [
@@ -110,6 +111,12 @@ export const routes: Routes = [
     component: EpisodeListComponent,
     title: 'Episode List',
     data: { pageId: 'pun-episode-list' }
+  },
+  {
+    path: 'active-topics',
+    component: ActiveTopicsComponent,
+    title: 'Active Topics',
+    data: { pageId: 'pun-active-topics' }
   },
   {
     path: 'character-profile-update/:id',
