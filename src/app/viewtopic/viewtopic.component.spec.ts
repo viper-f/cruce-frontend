@@ -44,6 +44,7 @@ describe('ViewtopicComponent', () => {
 
   let topicSignal: WritableSignal<Topic>;
   let postsSignal: WritableSignal<Post[]>;
+  let currentPageSignal: WritableSignal<{page: number, topicId: number}>;
 
   // Initial topic has ID 0 to trigger loadTopic when route param is 1
   const mockTopic: Topic = {
@@ -72,10 +73,12 @@ describe('ViewtopicComponent', () => {
   beforeEach(async () => {
     topicSignal = signal(mockTopic);
     postsSignal = signal(mockPosts);
+    currentPageSignal = signal({ page: 1, topicId: 1 });
 
     topicServiceSpy = jasmine.createSpyObj('TopicService', ['loadTopic', 'loadPosts', 'createPost', 'updatePost', 'updateLocalPost', 'updateTopic', 'updateLocalTopic'], {
       topic: topicSignal,
-      posts: postsSignal
+      posts: postsSignal,
+      currentPage: currentPageSignal
     });
     forumServiceSpy = jasmine.createSpyObj('ForumService', ['loadSubforum'], {
       subforum: signal(null)
@@ -99,7 +102,8 @@ describe('ViewtopicComponent', () => {
           provide: ActivatedRoute,
           useValue: {
             paramMap: of({ get: (key: string) => (key === 'id' ? '1' : null) }),
-            queryParamMap: of({ get: (key: string) => (key === 'page' ? '1' : null) })
+            queryParamMap: of({ get: (key: string) => (key === 'page' ? '1' : null) }),
+            snapshot: { queryParamMap: { get: () => null } } // Mock snapshot
           }
         }
       ]
@@ -112,6 +116,11 @@ describe('ViewtopicComponent', () => {
 
     fixture = TestBed.createComponent(ViewtopicComponent);
     component = fixture.componentInstance;
+
+    // Set inputs manually since we are not running a real router navigation
+    fixture.componentRef.setInput('id', 1);
+    fixture.componentRef.setInput('pageNumber', 1);
+
     fixture.detectChanges();
   });
 
@@ -121,7 +130,7 @@ describe('ViewtopicComponent', () => {
 
   it('should load topic and posts on init', () => {
     expect(topicServiceSpy.loadTopic).toHaveBeenCalledWith(1);
-    expect(topicServiceSpy.loadPosts).toHaveBeenCalledWith(1, 1);
+    expect(topicServiceSpy.loadPosts).toHaveBeenCalledWith(1, 1, undefined);
   });
 
   it('should display topic title', () => {
