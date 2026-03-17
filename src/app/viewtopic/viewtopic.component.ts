@@ -277,7 +277,7 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
 
     let characterProfileId: number | null = null;
     if (this.selectedCharacterId !== null && this.selectedCharacterId !== 'account' as any) {
-      const profile = this.userCharacterProfiles().find(p => p.character_id === this.selectedCharacterId);
+      const profile = this.userCharacterProfiles().find(p => p.id === this.selectedCharacterId);
       if (profile) {
         characterProfileId = profile.id;
       }
