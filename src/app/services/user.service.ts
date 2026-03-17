@@ -1,5 +1,6 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { ApiService } from './api.service';
+import { AuthService } from './auth.service';
 import { UserShort } from '../models/UserShort';
 import { UserProfileResponse, UpdateSettingsRequest, User, UpdateSettingsResponse, UserListItem } from '../models/User';
 import { Observable, from } from 'rxjs';
@@ -8,6 +9,7 @@ import { map, switchMap } from 'rxjs/operators';
 @Injectable({ providedIn: 'root' })
 export class UserService {
   private apiService = inject(ApiService);
+  private authService = inject(AuthService);
 
   private privateKeySignal = signal<CryptoKey | null>(null);
   readonly privateKey = this.privateKeySignal.asReadonly();
@@ -68,20 +70,18 @@ export class UserService {
   }
 
   loadAndDecryptPrivateKey(hashedPassword: string): Observable<void> {
-    return this.apiService.get<{ encrypted_key: string; salt: string; iv: string }>('user/private-key').pipe(
-      switchMap(data => from(this.decryptPrivateKey(data, hashedPassword))),
+    return this.apiService.get<{ private_key: string; salt: string }>('user/private-key').pipe(
+      switchMap(data => from(this.decryptPrivateKey(data.private_key, data.salt, hashedPassword))),
       map(key => {
         this.privateKeySignal.set(key);
       })
     );
   }
 
-  private async decryptPrivateKey(
-    data: { encrypted_key: string; salt: string; iv: string },
-    passphrase: string
-  ): Promise<CryptoKey> {
+  private async decryptPrivateKey(privateKeyJson: string, saltBase64: string, passphrase: string): Promise<CryptoKey> {
+    const data: { encrypted_key: string; iv: string } = JSON.parse(privateKeyJson);
     const encryptedBytes = this.base64ToBuffer(data.encrypted_key);
-    const salt = this.base64ToBuffer(data.salt);
+    const salt = this.base64ToBuffer(saltBase64);
     const iv = this.base64ToBuffer(data.iv);
 
     const keyMaterial = await crypto.subtle.importKey(
@@ -109,13 +109,15 @@ export class UserService {
     return Uint8Array.from(atob(base64), c => c.charCodeAt(0));
   }
 
-  generateAndSaveKeys(hashedPassword: string, recoveryCodes: string[]): Observable<any> {
+  generateAndSaveKeys(hashedPassword: string, recoveryCodes: { id: number; code: string }[]): Observable<any> {
     return from(this.buildKeysPayload(hashedPassword, recoveryCodes)).pipe(
       switchMap(payload => this.apiService.post('user/save-keys', payload))
     );
   }
 
-  private async buildKeysPayload(hashedPassword: string, recoveryCodes: string[]): Promise<any> {
+  private async buildKeysPayload(hashedPassword: string, recoveryCodes: { id: number; code: string }[]): Promise<any> {
+    const userId = this.authService.currentUser()!.id;
+
     const keyPair = await crypto.subtle.generateKey(
       { name: 'RSA-OAEP', modulusLength: 2048, publicExponent: new Uint8Array([1, 0, 1]), hash: 'SHA-256' },
       true,
@@ -124,16 +126,21 @@ export class UserService {
 
     const publicKeyBuffer = await crypto.subtle.exportKey('spki', keyPair.publicKey);
 
-    const passphrases = [hashedPassword, ...recoveryCodes];
-    const encryptedKeys = await Promise.all(passphrases.map(p => this.encryptPrivateKey(keyPair.privateKey, p)));
+    const passwordKey = await this.encryptPrivateKey(keyPair.privateKey, hashedPassword);
+    const recoveryKeys = await Promise.all(recoveryCodes.map(rc => this.encryptPrivateKey(keyPair.privateKey, rc.code)));
+
+    const privateKeys = [
+      { user_id: userId, private_key: passwordKey.private_key, salt: passwordKey.salt, recover_key_id: null },
+      ...recoveryKeys.map((k, i) => ({ user_id: userId, private_key: k.private_key, salt: k.salt, recover_key_id: recoveryCodes[i].id }))
+    ];
 
     return {
-      private_keys: encryptedKeys,
-      public_key: { key: this.bufferToBase64(publicKeyBuffer) }
+      private_keys: privateKeys,
+      public_key: { user_id: userId, public_key: this.bufferToBase64(publicKeyBuffer) }
     };
   }
 
-  private async encryptPrivateKey(privateKey: CryptoKey, passphrase: string): Promise<{ encrypted_key: string; salt: string; iv: string }> {
+  private async encryptPrivateKey(privateKey: CryptoKey, passphrase: string): Promise<{ private_key: string; salt: string }> {
     const privateKeyBuffer = await crypto.subtle.exportKey('pkcs8', privateKey);
 
     const salt = crypto.getRandomValues(new Uint8Array(16));
@@ -158,9 +165,11 @@ export class UserService {
     const encryptedBuffer = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, aesKey, privateKeyBuffer);
 
     return {
-      encrypted_key: this.bufferToBase64(encryptedBuffer),
-      salt: this.bufferToBase64(salt),
-      iv: this.bufferToBase64(iv)
+      private_key: JSON.stringify({
+        encrypted_key: this.bufferToBase64(encryptedBuffer),
+        iv: this.bufferToBase64(iv)
+      }),
+      salt: this.bufferToBase64(salt)
     };
   }
 

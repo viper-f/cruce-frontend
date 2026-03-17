@@ -3,6 +3,8 @@ import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, Validati
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
+import { from } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-register',
@@ -55,37 +57,22 @@ export class RegisterComponent {
       const username = registerData.username || '';
       const password = registerData.password || '';
 
-      this.authService.register(registerData).subscribe({
-        next: (response: any) => {
-          const recoveryCodes: string[] = response?.recovery_codes ?? [];
-          // Automatically login after successful registration
-          this.authService.login({ username, password }).subscribe({
-            next: () => {
-              this.authService.hashPassword(password).then(hashedPassword => {
-                this.userService.generateAndSaveKeys(hashedPassword, recoveryCodes).subscribe({
-                  next: () => {
-                    this.isLoading.set(false);
-                    this.router.navigate(['/recovery-codes'], { state: { codes: recoveryCodes } });
-                  },
-                  error: (err) => {
-                    this.isLoading.set(false);
-                    console.error('Failed to save keys', err);
-                    this.router.navigate(['/recovery-codes'], { state: { codes: recoveryCodes } });
-                  }
-                });
-              });
-            },
-            error: (err) => {
-              this.isLoading.set(false);
-              // If login fails after register, show error but don't redirect
-              console.error('Auto-login failed', err);
-              this.errorMessage.set('Registration successful, but auto-login failed. Please try logging in manually.');
-            }
-          });
+      let recoveryCodes: { id: number; code: string }[] = [];
+
+      this.authService.register(registerData).pipe(
+        switchMap((response: any) => {
+          recoveryCodes = response?.recovery_codes ?? [];
+          return this.authService.loginSilently({ username, password });
+        }),
+        switchMap(() => from(this.authService.hashPassword(password))),
+        switchMap(hashedPassword => this.userService.generateAndSaveKeys(hashedPassword, recoveryCodes))
+      ).subscribe({
+        next: () => {
+          this.isLoading.set(false);
+          this.router.navigate(['/recovery-codes'], { state: { codes: recoveryCodes.map(rc => rc.code) } });
         },
         error: (err) => {
           this.isLoading.set(false);
-          // Handle backend error response: {"error": "message"}
           const backendError = err.error?.error || err.error?.message || 'Registration failed.';
           this.errorMessage.set(backendError);
         }

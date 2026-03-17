@@ -7,6 +7,10 @@
 .pm-sidebar {
   width: 280px;
   border-right: 1px solid #3e5c3e;
+  overflow: visible;
+}
+
+.pm-sidebar .main-item {
   overflow-y: auto;
 }
 
@@ -27,7 +31,7 @@
   border-bottom: 1px solid #3e5c3e;
   display: flex;
   gap: 6px;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .new-chat-autocomplete {

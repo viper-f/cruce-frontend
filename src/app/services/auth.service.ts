@@ -78,6 +78,24 @@ export class AuthService {
     );
   }
 
+  loginSilently(credentials: { username: string; password: string }): Observable<AuthResponse> {
+    return from(this.hashPassword(credentials.password)).pipe(
+      switchMap(hashedPassword => {
+        const loginData = { ...credentials, password: hashedPassword };
+        return this.http.post<AuthResponse>(`${this.apiUrl}/login`, loginData).pipe(
+          tap(res => {
+            localStorage.setItem('access_token', res.access_token);
+            localStorage.setItem('refresh_token', res.refresh_token);
+            localStorage.setItem('locale', res.user.interface_language);
+            localStorage.setItem('user', JSON.stringify(res.user));
+            this.currentUser.set(res.user);
+            this.authToken.set(res.access_token);
+          })
+        );
+      })
+    );
+  }
+
   logout() {
     this.http.post(`${this.apiUrl}/logout`, {}).subscribe({
       next: () => this.clearLocalAuth(true),
@@ -100,11 +118,14 @@ export class AuthService {
 
   public updateUser(user: User) {
     localStorage.setItem('user', JSON.stringify(user));
+    const wasGuest = this.currentUser()?.id === 0;
     this.currentUser.set(user);
-    // Also update locale if it has changed
+    // Update locale — only reload if switching between languages on an already-authenticated session
     if (localStorage.getItem('locale') !== user.interface_language) {
       localStorage.setItem('locale', user.interface_language);
-      window.location.reload();
+      if (!wasGuest) {
+        window.location.reload();
+      }
     }
   }
 

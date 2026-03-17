@@ -69,10 +69,21 @@ export class DirectChatComponent implements OnInit {
 
   addChat() {
     if (!this.selectedNewChatUser) return;
-    // TODO: create chat
-    this.newChatTerm = '';
-    this.selectedNewChatUser = null;
-    this.autocompleteResults = [];
+    const user = this.selectedNewChatUser;
+    this.directChatService.createChat(user.id).subscribe({
+      next: (response) => {
+        this.directChatService.prependChat({
+          chat_id: response.chat_id,
+          user_id: user.id,
+          username: user.username,
+          unread_count: 0
+        });
+        this.newChatTerm = '';
+        this.selectedNewChatUser = null;
+        this.autocompleteResults = [];
+      },
+      error: (err) => console.error('Failed to create chat', err)
+    });
   }
 
   insertTag(tag: string) {

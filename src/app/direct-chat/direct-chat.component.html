@@ -4,16 +4,6 @@
   </div>
 
   <div id="pm" class="category">
-    <div class="maintitle">
-      <div class="conl">
-        <p>Собеседник: <strong>{{ activeUser?.username }}</strong></p>
-      </div>
-      <div class="conr">
-        <input type="text" (input)="onSearch($event)" placeholder="Поиск в сообщениях..." class="pm-search">
-      </div>
-      <div class="clearer"></div>
-    </div>
-
     <div class="main-content pm-container">
       <div class="pm-sidebar">
         <div class="new-chat-block">
@@ -33,7 +23,7 @@
               </ul>
             }
           </div>
-          <button class="button" [disabled]="!selectedNewChatUser" (click)="addChat()">Add Chat</button>
+          <button class="button" [disabled]="!selectedNewChatUser" (click)="addChat()" i18n="@@directchat.addChat">Add Chat</button>
         </div>
 
         <div class="main-item">
