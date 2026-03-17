@@ -59,7 +59,11 @@ export const TRANSLATIONS_RU = {
   "topiccreate.episode": "Эпизод",
   "topiccreate.character": "Анкета персонажа",
   "episodecreate.characters": "Персонажи",
+  "episodecreate.searchCharacters": "Поиск персонажей...",
   "episodecreate.addCharacter": "Добавить персонажа",
+  "episodecreate.masks": "Маски",
+  "episodecreate.searchMasks": "Поиск масок...",
+  "episodecreate.addMask": "Добавить маску",
   "app.hello": "Привет",
   "app.date": "Дата",
   "nav.forum": "Форум",
@@ -149,5 +153,13 @@ export const TRANSLATIONS_RU = {
   "userlist.title": "Список пользователей",
   "userlist.username": "Имя пользователя",
   "userlist.characters": "Персонажи",
-  "userlist.noUsers": "Пользователи не найдены."
+  "userlist.noUsers": "Пользователи не найдены.",
+  "masklist.title": "Маски пользователя",
+  "masklist.addMask": "Добавить новую маску",
+  "masklist.loading": "Загрузка масок...",
+  "masklist.noMasks": "У этого пользователя нет масок.",
+  "masklist.avatar": "Аватар",
+  "masklist.maskName": "Имя маски",
+  "masklist.noAvatar": "Нет аватара",
+  "masklist.unnamedMask": "Безымянная маска"
 };

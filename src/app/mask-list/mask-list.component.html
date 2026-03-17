@@ -1,21 +1,21 @@
 <div class="mask-list-container">
   <div class="header-container" style="display: flex; justify-content: space-between; align-items: center;">
-    <h3>User Masks</h3>
-    <a [routerLink]="['/character-profile-update', 0]" [queryParams]="{is_mask: true}" class="button add-mask-btn">Add New Mask</a>
+    <h3 i18n="@@masklist.title">User Masks</h3>
+    <a [routerLink]="['/character-profile-update', 0]" [queryParams]="{is_mask: true}" class="button add-mask-btn" i18n="@@masklist.addMask">Add New Mask</a>
   </div>
 
   @if (isLoading()) {
-    <p>Loading masks...</p>
+    <p i18n="@@masklist.loading">Loading masks...</p>
   } @else if (error()) {
     <p class="error-message">{{ error() }}</p>
   } @else if (masks().length === 0) {
-    <p>This user has no masks.</p>
+    <p i18n="@@masklist.noMasks">This user has no masks.</p>
   } @else {
     <table class="mask-table">
       <thead>
         <tr>
-          <th>Avatar</th>
-          <th>Mask Name</th>
+          <th i18n="@@masklist.avatar">Avatar</th>
+          <th i18n="@@masklist.maskName">Mask Name</th>
         </tr>
       </thead>
       <tbody>
@@ -25,11 +25,19 @@
               @if (mask.avatar) {
                 <img [src]="mask.avatar" alt="{{ mask.mask_name }} avatar" class="mask-avatar" />
               } @else {
-                <div class="no-avatar">No Avatar</div>
+                <div class="no-avatar" i18n="@@masklist.noAvatar">No Avatar</div>
               }
             </td>
             <!-- We rely on mask_name since character_id is null for masks -->
-            <td><a [routerLink]="['/character-profile-update', mask.id]" [queryParams]="{is_mask: true}">{{ mask.mask_name || 'Unnamed Mask' }}</a></td>
+            <td>
+              <a [routerLink]="['/character-profile-update', mask.id]" [queryParams]="{is_mask: true}">
+                @if (mask.mask_name) {
+                  {{ mask.mask_name }}
+                } @else {
+                  <ng-container i18n="@@masklist.unnamedMask">Unnamed Mask</ng-container>
+                }
+              </a>
+            </td>
           </tr>
         }
       </tbody>

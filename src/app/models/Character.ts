@@ -58,3 +58,10 @@ export interface CreateCharacterRequest {
   custom_fields: { [key: string]: any };
   factions: Faction[];
 }
+
+export interface ShortMask {
+  id: number;
+  mask_name: string;
+  user_id: number;
+  user_name: string;
+}

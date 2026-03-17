@@ -14,7 +14,7 @@
           @for (control of characterControls.controls; track control; let i = $index) {
           <div class="character-input-group">
             <span class="input">
-              <input type="text" [formControl]="control" placeholder="Search characters..." />
+              <input type="text" [formControl]="control" placeholder="Search characters..." i18n-placeholder="@@episodecreate.searchCharacters" />
             </span>
             @if (i > 0) {
               <span class="remove-char" (click)="removeCharacterField(i)">x</span>
@@ -29,6 +29,28 @@
           </div>
           }
           <button type="button" class="button" (click)="addCharacterField()" i18n="@@episodecreate.addCharacter">Add character</button>
+        </div>
+
+        <div class="inputfield required longinput">
+          <label><ng-container i18n="@@episodecreate.masks">Masks</ng-container></label><br />
+          @for (control of maskControls.controls; track control; let i = $index) {
+          <div class="character-input-group">
+            <span class="input">
+              <input type="text" [formControl]="control" placeholder="Search masks..." i18n-placeholder="@@episodecreate.searchMasks" />
+            </span>
+            @if (i > 0) {
+              <span class="remove-char" (click)="removeMaskField(i)">x</span>
+            }
+            @if (activeMaskInputIndex === i && maskSuggestions().length > 0) {
+            <ul class="autocomplete-list">
+              @for (mask of maskSuggestions(); track mask.id) {
+              <li (click)="selectMask(i, mask.mask_name, mask.id)">{{ mask.mask_name + ' (' + mask.user_name + ')' }}</li>
+              }
+            </ul>
+            }
+          </div>
+          }
+          <button type="button" class="button" (click)="addMaskField()" i18n="@@episodecreate.addMask">Add mask</button>
         </div>
 
       </div>

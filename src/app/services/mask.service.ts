@@ -1,7 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { CharacterProfile } from '../models/Character';
+import { CharacterProfile, ShortMask } from '../models/Character';
 import {ApiService} from './api.service';
 
 @Injectable({
@@ -24,5 +23,9 @@ export class MaskService {
 
   updateMask(id: number, data: any): Observable<any> {
     return this.apiService.post(`mask/update/${id}`, data);
+  }
+
+  searchMasks(term: string): Observable<ShortMask[]> {
+    return this.apiService.get<ShortMask[]>(`mask-autocomplete/${term}`);
   }
 }

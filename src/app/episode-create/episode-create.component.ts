@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, inject, OnInit, Input, Output, EventEmitter, signal } from '@angular/core';
 import { FormArray, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { EpisodeService } from '../services/episode.service';
@@ -9,6 +9,8 @@ import { ImageFieldComponent } from '../components/image-field/image-field.compo
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CreateEpisodeRequest, Episode } from '../models/Episode';
+import { MaskService } from '../services/mask.service';
+import { ShortMask } from '../models/Character';
 
 @Component({
   selector: 'app-episode-create',
@@ -19,6 +21,7 @@ import { CreateEpisodeRequest, Episode } from '../models/Episode';
 export class EpisodeCreateComponent implements OnInit {
   episodeService = inject(EpisodeService);
   characterService = inject(CharacterService);
+  maskService = inject(MaskService);
   router = inject(Router);
   route = inject(ActivatedRoute);
   episodeTemplate = this.episodeService.episodeTemplate;
@@ -38,8 +41,15 @@ export class EpisodeCreateComponent implements OnInit {
   subforumId: number = 0;
   subject: string = '';
 
+  // Mask inputs
+  maskControls = new FormArray([new FormControl('')]);
+  selectedMaskIds: (number | null)[] = [null];
+  activeMaskInputIndex: number | null = null;
+  maskSuggestions = signal<ShortMask[]>([]);
+
   constructor() {
     this.setupAutocomplete(0);
+    this.setupMaskAutocomplete(0);
   }
 
   ngOnInit() {
@@ -62,6 +72,9 @@ export class EpisodeCreateComponent implements OnInit {
     this.characterControls.clear();
     this.selectedCharacterIds = [];
 
+    this.maskControls.clear();
+    this.selectedMaskIds = [];
+
     if (data.characters && data.characters.length > 0) {
       data.characters.forEach((char, index) => {
         this.characterControls.push(new FormControl(char.name));
@@ -72,6 +85,11 @@ export class EpisodeCreateComponent implements OnInit {
       this.characterControls.push(new FormControl(''));
       this.selectedCharacterIds.push(null);
       this.setupAutocomplete(0);
+
+      // Initialize masks logic (can be expanded if episodes return initial masks)
+      this.maskControls.push(new FormControl(''));
+      this.selectedMaskIds.push(null);
+      this.setupMaskAutocomplete(0);
     }
   }
 
@@ -119,6 +137,54 @@ export class EpisodeCreateComponent implements OnInit {
     }
   }
 
+  setupMaskAutocomplete(index: number) {
+    this.maskControls.at(index).valueChanges.pipe(
+      debounceTime(300),
+      distinctUntilChanged()
+    ).subscribe(value => {
+      if (value && value.length >= 2) {
+        this.activeMaskInputIndex = index;
+        this.maskService.searchMasks(value).subscribe({
+          next: (results) => this.maskSuggestions.set(results),
+          error: (err) => {
+            console.error('Failed to search masks', err);
+            this.maskSuggestions.set([]);
+          }
+        });
+      } else {
+        this.activeMaskInputIndex = null;
+        this.maskSuggestions.set([]);
+      }
+    });
+  }
+
+  selectMask(index: number, maskName: string | null, maskId: number) {
+    this.maskControls.at(index).setValue(maskName || 'Unnamed Mask', { emitEvent: false });
+    this.selectedMaskIds[index] = maskId;
+    this.activeMaskInputIndex = null;
+    this.maskSuggestions.set([]);
+  }
+
+  addMaskField() {
+    this.maskControls.push(new FormControl(''));
+    this.selectedMaskIds.push(null);
+    this.setupMaskAutocomplete(this.maskControls.length - 1);
+  }
+
+  removeMaskField(index: number) {
+    if (this.maskControls.length > 1) {
+      this.maskControls.removeAt(index);
+      this.selectedMaskIds.splice(index, 1);
+
+      if (this.activeMaskInputIndex === index) {
+        this.activeMaskInputIndex = null;
+        this.maskSuggestions.set([]);
+      } else if (this.activeMaskInputIndex !== null && this.activeMaskInputIndex > index) {
+        this.activeMaskInputIndex--;
+      }
+    }
+  }
+
   getFieldValue(machineName: string): any {
     if (this.initialData && this.initialData.custom_fields && this.initialData.custom_fields.custom_fields) {
       const field = this.initialData.custom_fields.custom_fields[machineName];
@@ -146,6 +212,7 @@ export class EpisodeCreateComponent implements OnInit {
       subforum_id: this.subforumId,
       name: formData.get('req_subject') as string,
       character_ids: this.selectedCharacterIds.filter((id): id is number => id !== null),
+      mask_ids: this.selectedMaskIds.filter((id): id is number => id !== null),
       custom_fields: customFields
     };
 
