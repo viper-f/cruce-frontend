@@ -130,6 +130,19 @@
   color: #000;
 }
 
+/* BB code buttons */
+#pm-form-buttons td {
+  width: 23px;
+  height: 22px;
+  cursor: pointer;
+  display: table-cell;
+  text-align: center;
+}
+
+#pm-form-buttons td:hover {
+  background: #2a4a2a;
+}
+
 /* Compact input at the bottom of the main item */
 .pm-input {
   padding: 10px;

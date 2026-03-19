@@ -80,6 +80,17 @@
           </div>
 
           <div class="pm-input">
+            <div id="pm-form-buttons">
+              <table cellspacing="0" cellpadding="0">
+                <tbody>
+                <tr>
+                  <td title="Bold" (click)="insertTag('b')"><i class="bi bi-type-bold"></i></td>
+                  <td title="Italic" (click)="insertTag('i')"><i class="bi bi-type-italic"></i></td>
+                  <td title="Strikethrough" (click)="insertTag('s')"><i class="bi bi-type-strikethrough"></i></td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
             <div class="textarea-wrapper">
               <textarea #chatInput (keydown.enter)="handleSend()" placeholder="Ваше сообщение..."></textarea>
             </div>

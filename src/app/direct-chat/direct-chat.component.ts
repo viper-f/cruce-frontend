@@ -184,5 +184,15 @@ export class DirectChatComponent implements OnInit, OnDestroy {
   }
   toggleSearch() {}
   onSearch(event: Event) {}
-  highlightMatch(text: string) { return text; }
+  highlightMatch(text: string): string {
+    let result = text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/\[b\]([\s\S]*?)\[\/b\]/gi, '<strong>$1</strong>')
+      .replace(/\[i\]([\s\S]*?)\[\/i\]/gi, '<em>$1</em>')
+      .replace(/\[s\]([\s\S]*?)\[\/s\]/gi, '<s>$1</s>')
+      .replace(/\n/g, '<br>');
+    return result;
+  }
 }
