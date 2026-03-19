@@ -8,7 +8,7 @@
       @if(authService.isAdmin()) {
         <li id="navadmin"><a routerLink="admin/notifications"><span i18n="@@nav.admin">Admin</span></a></li>
       }
-      <li id="navsearch"><a href="/search"><span i18n="@@nav.search">Search</span></a></li>
+<!--      <li id="navsearch"><a href="/search"><span i18n="@@nav.search">Search</span></a></li>-->
       @if(isAuthenticated()) {
       <li id="navsettings"><a routerLink="settings"><span i18n="@@nav.settings">Settings</span></a></li>
       <li id="navlogout"><a href="#" (click)="logout($event)"><span i18n="@@nav.logout">Logout</span></a></li>
