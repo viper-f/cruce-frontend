@@ -6,7 +6,7 @@ import { UserService } from './user.service';
 import { NotificationService } from './notification.service';
 import { DirectChatListItem, DirectChatResponse, DirectMessageRaw } from '../models/DirectChat';
 import { Message } from '../models/Message';
-import { Observable, from } from 'rxjs';
+import { Observable, from, of } from 'rxjs';
 import { filter, take, switchMap } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
@@ -34,6 +34,15 @@ export class DirectChatService {
 
   private noMoreNewer = false;
 
+  private resolvePrivateKey(): Observable<CryptoKey> {
+    const key = this.userService.privateKey();
+    if (key) return of(key);
+    return this.privateKey$.pipe(
+      filter((k): k is CryptoKey => k !== null),
+      take(1)
+    );
+  }
+
   loadDirectChat(chatId: number): void {
     this.apiService.get<DirectChatResponse>(`direct-chat/${chatId}`).subscribe({
       next: (data) => {
@@ -48,9 +57,7 @@ export class DirectChatService {
     this.noMoreNewer = false;
     const currentUserId = this.authService.currentUser()!.id;
 
-    this.privateKey$.pipe(
-      filter((key): key is CryptoKey => key !== null),
-      take(1),
+    this.resolvePrivateKey().pipe(
       switchMap(privateKey =>
         this.apiService.get<DirectMessageRaw[]>(`direct-chat/${chatId}/messages`).pipe(
           switchMap(async data => Promise.all(data.map(msg => this.decryptMessage(msg, privateKey, currentUserId))))
@@ -101,9 +108,7 @@ export class DirectChatService {
     this.isLoadingOlderSignal.set(true);
     const currentUserId = this.authService.currentUser()!.id;
 
-    this.privateKey$.pipe(
-      filter((key): key is CryptoKey => key !== null),
-      take(1),
+    this.resolvePrivateKey().pipe(
       switchMap(privateKey =>
         this.apiService.get<DirectMessageRaw[]>(`direct-chat/${chatId}/messages/${beforeMessageId}/before`).pipe(
           switchMap(async data => Promise.all(data.map(msg => this.decryptMessage(msg, privateKey, currentUserId))))
@@ -126,9 +131,7 @@ export class DirectChatService {
     this.isLoadingNewerSignal.set(true);
     const currentUserId = this.authService.currentUser()!.id;
 
-    this.privateKey$.pipe(
-      filter((key): key is CryptoKey => key !== null),
-      take(1),
+    this.resolvePrivateKey().pipe(
       switchMap(privateKey =>
         this.apiService.get<DirectMessageRaw[]>(`direct-chat/${chatId}/messages/${afterMessageId}/after`).pipe(
           switchMap(async data => Promise.all(data.map(msg => this.decryptMessage(msg, privateKey, currentUserId))))
@@ -179,9 +182,7 @@ export class DirectChatService {
 
   appendNewMessage(raw: DirectMessageRaw): void {
     const currentUserId = this.authService.currentUser()!.id;
-    this.privateKey$.pipe(
-      filter((key): key is CryptoKey => key !== null),
-      take(1),
+    this.resolvePrivateKey().pipe(
       switchMap(privateKey => from(this.decryptMessage(raw, privateKey, currentUserId)))
     ).subscribe({
       next: (message) => {
