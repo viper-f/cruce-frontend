@@ -123,8 +123,11 @@ export class AppComponent implements OnInit {
         // When another tab logs out, update this tab's state without notifying back
         this.authService.clearLocalAuth(false);
       } else if (event.data === 'login') {
-        // When another tab logs in, reload the page to get the new state
-        window.location.reload();
+        // When another tab logs in, reload the page to get the new state.
+        // Guard: if this tab is already authenticated, the message came from ourselves — skip reload.
+        if (!this.authService.isAuthenticated()) {
+          window.location.reload();
+        }
       }
     };
   }
