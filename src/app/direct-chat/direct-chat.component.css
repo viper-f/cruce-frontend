@@ -88,6 +88,15 @@
   flex-direction: column;
 }
 
+.pm-no-chat {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted, #888);
+  font-style: italic;
+}
+
 .history-scroll {
   height: 500px; /* Fixed height for scroll */
   overflow-y: auto;
