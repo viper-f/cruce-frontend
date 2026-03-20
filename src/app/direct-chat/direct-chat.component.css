@@ -6,7 +6,7 @@
 /* LEFT SIDE: Conversations List */
 .pm-sidebar {
   width: 280px;
-  border-right: 1px solid #3e5c3e;
+  border-right: 1px solid #d1bc9b;
   overflow: visible;
 }
 
@@ -23,12 +23,12 @@
 }
 
 .pm-contact.active {
-  background: #1a2e1a;
+  background: #e9e3d5;
 }
 
 .new-chat-block {
   padding: 8px;
-  border-bottom: 1px solid #3e5c3e;
+  border-bottom: 1px solid #d1bc9b;
   display: flex;
   gap: 6px;
   align-items: center;
@@ -52,8 +52,8 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  border: 1px solid #3e5c3e;
-  background: #1a2e1a;
+  border: 1px solid #d1bc9b;
+  background: #fffdf7;
   z-index: 10;
 }
 
@@ -63,13 +63,13 @@
 }
 
 .autocomplete-dropdown li:hover {
-  background: #2a4a2a;
+  background: #e9e3d5;
 }
 
 .unread-badge {
   margin-left: auto;
-  background: #4ade80;
-  color: #000;
+  background: #9c7d58;
+  color: #fcfaf2;
   font-size: 0.75em;
   font-weight: bold;
   min-width: 20px;
@@ -103,8 +103,8 @@
 .loader-spinner {
   width: 20px;
   height: 20px;
-  border: 2px solid #3e5c3e;
-  border-top-color: #4ade80;
+  border: 2px solid #d1bc9b;
+  border-top-color: #9c7d58;
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
   display: inline-block;
@@ -126,7 +126,7 @@
 
 /* Highlighted search match */
 ::ng-deep .search-highlight {
-  background: #4ade80;
+  background: #c2a67a;
   color: #000;
 }
 
@@ -140,18 +140,18 @@
 }
 
 #pm-form-buttons td:hover {
-  background: #2a4a2a;
+  background: #e9e3d5;
 }
 
 /* Compact input at the bottom of the main item */
 .pm-input {
   padding: 10px;
-  border-top: 1px solid #3e5c3e;
+  border-top: 1px solid #d1bc9b;
 }
 
 .pm-input textarea {
   width: 100%;
-  border: 1px solid #3e5c3e;
+  border: 1px solid #d1bc9b;
   padding: 5px;
   resize: none;
 }
