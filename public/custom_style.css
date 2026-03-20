@@ -611,3 +611,27 @@ body::before {
 .message.altstyle .message-metadata {
   text-align: right;
 }
+
+/* ── Quote Block ──────────────────────────────────────────────── */
+
+.punbb .post-content .quote-box {
+  background: #f5f0e8;
+  border-left: 3px solid #9c7d58;
+  border-radius: 0 4px 4px 0;
+  padding: 8px 14px 8px 14px;
+  margin: 0.6em 0 0.6em 0;
+  color: #4a3b2a;
+}
+
+.punbb .quote-box cite {
+  font-weight: bold;
+  font-style: normal;
+  color: #7a5d3b;
+  font-size: 0.85em;
+  margin-bottom: 4px;
+}
+
+.punbb .quote-box cite::before {
+  content: "✦ ";
+  color: #9c7d58;
+}
