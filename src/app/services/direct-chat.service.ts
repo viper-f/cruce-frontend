@@ -57,10 +57,10 @@ export class DirectChatService {
     this.noMoreNewer = false;
     const currentUserId = this.authService.currentUser()!.id;
 
-    this.resolvePrivateKey().pipe(
-      switchMap(privateKey =>
-        this.apiService.get<DirectMessageRaw[]>(`direct-chat/${chatId}/messages`).pipe(
-          switchMap(async data => Promise.all(data.map(msg => this.decryptMessage(msg, privateKey, currentUserId))))
+    this.apiService.get<DirectMessageRaw[]>(`direct-chat/${chatId}/messages`).pipe(
+      switchMap(data =>
+        this.resolvePrivateKey().pipe(
+          switchMap(privateKey => from(Promise.all(data.map(msg => this.decryptMessage(msg, privateKey, currentUserId)))))
         )
       )
     ).subscribe({
@@ -108,10 +108,10 @@ export class DirectChatService {
     this.isLoadingOlderSignal.set(true);
     const currentUserId = this.authService.currentUser()!.id;
 
-    this.resolvePrivateKey().pipe(
-      switchMap(privateKey =>
-        this.apiService.get<DirectMessageRaw[]>(`direct-chat/${chatId}/messages/${beforeMessageId}/before`).pipe(
-          switchMap(async data => Promise.all(data.map(msg => this.decryptMessage(msg, privateKey, currentUserId))))
+    this.apiService.get<DirectMessageRaw[]>(`direct-chat/${chatId}/messages/${beforeMessageId}/before`).pipe(
+      switchMap(data =>
+        this.resolvePrivateKey().pipe(
+          switchMap(privateKey => from(Promise.all(data.map(msg => this.decryptMessage(msg, privateKey, currentUserId)))))
         )
       )
     ).subscribe({
@@ -131,10 +131,10 @@ export class DirectChatService {
     this.isLoadingNewerSignal.set(true);
     const currentUserId = this.authService.currentUser()!.id;
 
-    this.resolvePrivateKey().pipe(
-      switchMap(privateKey =>
-        this.apiService.get<DirectMessageRaw[]>(`direct-chat/${chatId}/messages/${afterMessageId}/after`).pipe(
-          switchMap(async data => Promise.all(data.map(msg => this.decryptMessage(msg, privateKey, currentUserId))))
+    this.apiService.get<DirectMessageRaw[]>(`direct-chat/${chatId}/messages/${afterMessageId}/after`).pipe(
+      switchMap(data =>
+        this.resolvePrivateKey().pipe(
+          switchMap(privateKey => from(Promise.all(data.map(msg => this.decryptMessage(msg, privateKey, currentUserId)))))
         )
       )
     ).subscribe({
