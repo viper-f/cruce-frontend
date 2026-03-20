@@ -38,14 +38,17 @@ export class LoginComponent {
 
       this.authService.login(credentials as any).subscribe({
         next: () => {
+          console.log('[Login] login succeeded, hashing password...');
           this.authService.hashPassword(password).then(hashedPassword => {
+            console.log('[Login] password hashed, calling loadAndDecryptPrivateKey...');
             this.userService.loadAndDecryptPrivateKey(hashedPassword).subscribe({
               next: () => {
+                console.log('[Login] private key loaded and cached successfully');
                 this.isLoading.set(false);
                 this.router.navigate(['/']);
               },
               error: (err) => {
-                console.error('Failed to load private key', err);
+                console.error('[Login] failed to load private key', err);
                 this.isLoading.set(false);
                 this.router.navigate(['/']);
               }
