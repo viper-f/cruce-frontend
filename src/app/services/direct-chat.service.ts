@@ -21,7 +21,12 @@ export class DirectChatService {
   constructor() {
     effect(() => {
       const key = this.userService.privateKey();
-      if (key) this.privateKeySubject.next(key);
+      if (key) {
+        console.log('[DirectChatService] privateKey signal fired with a key, emitting to subject');
+        this.privateKeySubject.next(key);
+      } else {
+        console.log('[DirectChatService] privateKey signal fired: key is null');
+      }
     });
   }
 
@@ -43,15 +48,23 @@ export class DirectChatService {
   private noMoreNewer = false;
 
   resolvePrivateKey(): Observable<CryptoKey> {
-    if (this.cachedPrivateKey) return of(this.cachedPrivateKey);
+    if (this.cachedPrivateKey) {
+      console.log('[DirectChatService] resolvePrivateKey: using cached key');
+      return of(this.cachedPrivateKey);
+    }
     const key = this.userService.privateKey();
     if (key) {
+      console.log('[DirectChatService] resolvePrivateKey: key available in signal, caching');
       this.cachedPrivateKey = key;
       return of(key);
     }
+    console.log('[DirectChatService] resolvePrivateKey: key not ready, waiting on subject...');
     return this.privateKeySubject.pipe(
       take(1),
-      tap(k => { this.cachedPrivateKey = k; })
+      tap(k => {
+        console.log('[DirectChatService] resolvePrivateKey: received key from subject, caching');
+        this.cachedPrivateKey = k;
+      })
     );
   }
 
