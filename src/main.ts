@@ -7,12 +7,16 @@ import { AppComponent } from './app/app.component';
 import { loadTranslations } from '@angular/localize';
 import { createCustomElement } from '@angular/elements';
 import { PostInsertComponent } from './app/components/post-insert/post-insert.component';
+import { SpoilerBoxComponent } from './app/components/spoiler-box/spoiler-box.component';
 
 const storedLocale = localStorage.getItem('locale');
 
 function registerCustomElements(appRef: ApplicationRef): void {
   const PostInsertElement = createCustomElement(PostInsertComponent, { injector: appRef.injector });
   customElements.define('post-insert', PostInsertElement);
+
+  const SpoilerBoxElement = createCustomElement(SpoilerBoxComponent, { injector: appRef.injector });
+  customElements.define('spoiler-box', SpoilerBoxElement);
 }
 
 if (storedLocale === 'ru-RU') {
