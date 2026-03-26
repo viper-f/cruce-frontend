@@ -1,19 +1,29 @@
 /// <reference types="@angular/localize" />
 
+import { ApplicationRef } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';
 import { AppComponent } from './app/app.component';
 import { loadTranslations } from '@angular/localize';
+import { createCustomElement } from '@angular/elements';
+import { PostInsertComponent } from './app/components/post-insert/post-insert.component';
 
 const storedLocale = localStorage.getItem('locale');
+
+function registerCustomElements(appRef: ApplicationRef): void {
+  const PostInsertElement = createCustomElement(PostInsertComponent, { injector: appRef.injector });
+  customElements.define('post-insert', PostInsertElement);
+}
 
 if (storedLocale === 'ru-RU') {
   import('./locale/ru').then(module => {
     loadTranslations(module.TRANSLATIONS_RU);
     bootstrapApplication(AppComponent, appConfig)
+      .then(registerCustomElements)
       .catch((err) => console.error(err));
   });
 } else {
   bootstrapApplication(AppComponent, appConfig)
+    .then(registerCustomElements)
     .catch((err) => console.error(err));
 }
