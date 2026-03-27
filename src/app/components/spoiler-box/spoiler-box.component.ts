@@ -25,7 +25,19 @@ export class SpoilerBoxComponent implements AfterViewInit {
 
     header.addEventListener('click', () => {
       header.classList.toggle('open');
-      content.classList.toggle('open');
+      if (content.style.height === '0px' || content.style.height === '') {
+        content.style.height = content.scrollHeight + 'px';
+        content.style.padding = '8px 10px';
+        content.addEventListener('transitionend', () => {
+          content.style.height = 'auto';
+        }, { once: true });
+      } else {
+        content.style.height = content.scrollHeight + 'px';
+        requestAnimationFrame(() => {
+          content.style.height = '0px';
+          content.style.padding = '0 10px';
+        });
+      }
     });
 
     host.appendChild(header);
