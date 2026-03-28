@@ -35,5 +35,29 @@
         </div>
       </div>
     }
+
+    @if (state()?.formType === 'post' && state()?.previewPost) {
+      <div class="preview-post-banner">
+        <span i18n="@@preview.postNotice">Preview — this post has not been saved yet.</span>
+        <button class="button" (click)="returnToEdit()" i18n="@@preview.returnToEdit">Return to edit</button>
+      </div>
+      <div class="post preview-post">
+        <h3>
+          <span class="post-meta">{{ state()!.previewPost!.date_created_localized }}</span>
+          <strong>#{{ (state()?.posts ?? []).length + 1 }}</strong>
+        </h3>
+        <div class="container">
+          <div class="post-main">
+            <app-character-profile [post]="state()!.previewPost!"></app-character-profile>
+            <div class="post-body">
+              <div class="post-box">
+                <div class="post-content" [innerHTML]="state()!.previewPost!.content_html | safeHtml"></div>
+              </div>
+            </div>
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+    }
   </div>
 }

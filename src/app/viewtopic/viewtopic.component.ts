@@ -19,6 +19,7 @@ import { Subject, Subscription } from 'rxjs';
 import { EpisodeCreateComponent } from '../episode-create/episode-create.component';
 import { CharacterCreateComponent } from '../character-create/character-create.component';
 import { EpisodeService } from '../services/episode.service';
+import { PreviewService } from '../services/preview.service';
 
 function coerceToPage(value: unknown): number {
   const num = numberAttribute(value, 1);
@@ -51,6 +52,7 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
   episodeService = inject(EpisodeService);
   authService = inject(AuthService);
   boardService = inject(BoardService);
+  previewService = inject(PreviewService);
   router = inject(Router);
   route = inject(ActivatedRoute);
 
@@ -145,6 +147,21 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
         this.showPostForm.set(profiles.length > 0);
       } else {
         this.showPostForm.set(true);
+      }
+    });
+
+    // Restore post form content when returning from post preview
+    effect(() => {
+      if (this.showPostForm()) {
+        const state = this.previewService.state();
+        if (state?.formType === 'post' && state.formPayload?.content) {
+          setTimeout(() => {
+            if (this.postForm?.messageField) {
+              this.postForm.messageField.nativeElement.value = state.formPayload.content;
+              this.previewService.clear();
+            }
+          });
+        }
       }
     });
 
@@ -320,6 +337,43 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
         }
       },
       error: (err: any) => console.error('Failed to create post', err)
+    });
+  }
+
+  onPreview(event: Event) {
+    event.preventDefault();
+    const message = this.postForm.messageField.nativeElement.value;
+
+    if (!message || !this.id()) return;
+
+    let characterProfileId: number | null = null;
+    if (this.selectedCharacterId !== null && this.selectedCharacterId !== 'account' as any) {
+      const profile = this.userCharacterProfiles().find(p => p.id === this.selectedCharacterId);
+      if (profile) {
+        characterProfileId = profile.id;
+      }
+    }
+
+    const payload: any = {
+      topic_id: +this.id()!,
+      content: message,
+      use_character_profile: this.selectedCharacterId !== null && this.selectedCharacterId !== 'account' as any,
+      character_profile_id: characterProfileId
+    };
+
+    this.topicService.previewTopic(payload).subscribe({
+      next: (previewPost: any) => {
+        this.previewService.set({
+          formType: 'post',
+          topic: this.topic(),
+          posts: this.posts(),
+          previewPost: previewPost,
+          returnUrl: this.router.url,
+          formPayload: { ...payload }
+        });
+        this.router.navigate(['/preview']);
+      },
+      error: (err: any) => console.error('Preview failed', err)
     });
   }
 

@@ -191,6 +191,7 @@ export const TRANSLATIONS_RU = {
   "faction.addChild": "Добавить дочернюю",
   "preview.notice": "Это предварительный просмотр. Содержимое не сохранено.",
   "preview.returnToEdit": "Вернуться к редактированию",
+  "preview.postNotice": "Предварительный просмотр — сообщение ещё не сохранено.",
   "common.add": "Добавить",
   "common.save": "Сохранить",
   "common.saved": "Сохранено",

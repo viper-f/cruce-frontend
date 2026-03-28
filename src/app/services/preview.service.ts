@@ -2,12 +2,13 @@ import { Injectable, signal } from '@angular/core';
 import { Topic } from '../models/Topic';
 import { Post } from '../models/Post';
 
-export type PreviewFormType = 'character' | 'episode' | 'topic';
+export type PreviewFormType = 'character' | 'episode' | 'topic' | 'post';
 
 export interface PreviewState {
   formType: PreviewFormType;
   topic: Topic;
   posts: Post[];
+  previewPost?: Post;
   returnUrl: string;
   formPayload: any;
 }

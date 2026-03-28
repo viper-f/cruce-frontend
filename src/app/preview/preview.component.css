@@ -9,3 +9,21 @@
   margin-bottom: 1rem;
   font-weight: 500;
 }
+
+.preview-post-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 4px 4px 0 0;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+}
+
+.preview-post {
+  border: 2px dashed #ffc107;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  opacity: 0.9;
+}
