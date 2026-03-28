@@ -59,8 +59,21 @@ export class FactionService {
     });
   }
 
+  pendingFactions = signal<Faction[]>([]);
+
+  loadPendingFactions(): void {
+    this.apiService.get<Faction[]>('factions/pending').subscribe({
+      next: (data) => this.pendingFactions.set(data),
+      error: (err) => console.error('Failed to load pending factions', err)
+    });
+  }
+
   updateFaction(id: number, payload: Faction): Observable<Faction> {
     return this.apiService.post<Faction>(`faction/update/${id}`, payload);
+  }
+
+  updateFactionStatus(id: number, faction_status: number): Observable<Faction> {
+    return this.apiService.post<Faction>(`faction/update/${id}`, { faction_status });
   }
 
   createFaction(faction: Faction): Observable<Faction> {

@@ -1,4 +1,30 @@
 <div class="factions-container">
+  @if (pendingFactions().length > 0) {
+    <div class="pending-block">
+      <h3 i18n="@@faction.pendingTitle">Pending actions</h3>
+      @for (faction of pendingFactions(); track faction.id) {
+        <div class="pending-row">
+          <div class="pending-info">
+            @if (faction.icon) {
+              <span class="pending-icon">{{ faction.icon }}</span>
+            }
+            <strong class="pending-name">{{ faction.name }}</strong>
+            @if (faction.description) {
+              <span class="pending-description">{{ faction.description }}</span>
+            }
+            @if (faction.parent_id != null) {
+              <span class="pending-parent" i18n="@@faction.parent_id">Parent ID</span>: <span>{{ faction.parent_id }}</span>
+            }
+          </div>
+          <div class="pending-actions">
+            <button type="button" class="btn-approve" (click)="approve(faction)" i18n="@@faction.approve">Approve</button>
+            <button type="button" class="btn-decline" (click)="decline(faction)" i18n="@@faction.decline">Decline</button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
   <h2 i18n="@@admin.factions">Factions</h2>
 
   @for (faction of factions(); track faction.id) {

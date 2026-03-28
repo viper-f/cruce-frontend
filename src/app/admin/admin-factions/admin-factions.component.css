@@ -33,3 +33,78 @@
 .field-row--checkbox label {
   width: auto;
 }
+
+.pending-block {
+  background-color: #fff8e1;
+  border: 1px solid #ffc107;
+  border-radius: 4px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.pending-block h3 {
+  margin: 0 0 0.75rem 0;
+}
+
+.pending-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  border-top: 1px solid #ffe082;
+}
+
+.pending-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.pending-icon {
+  font-size: 1.2em;
+}
+
+.pending-description {
+  color: #555;
+  font-size: 0.9em;
+}
+
+.pending-parent {
+  color: #777;
+  font-size: 0.85em;
+}
+
+.pending-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.btn-approve {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 0.3rem 0.75rem;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.btn-approve:hover {
+  background-color: #388e3c;
+}
+
+.btn-decline {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 0.3rem 0.75rem;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.btn-decline:hover {
+  background-color: #c62828;
+}
