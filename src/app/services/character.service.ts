@@ -137,6 +137,10 @@ export class CharacterService {
     return this.apiService.post('/character/create', data);
   }
 
+  previewCharacter(data: any) {
+    return this.apiService.post<any>('character/preview', data);
+  }
+
   loadCharacter(id: number) {
     return this.apiService.get<Character>(`character/get/${id}`);
   }

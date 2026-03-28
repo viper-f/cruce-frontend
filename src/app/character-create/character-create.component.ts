@@ -7,8 +7,10 @@ import { LongTextFieldComponent } from '../components/long-text-field/long-text-
 import { ImageFieldComponent } from '../components/image-field/image-field.component';
 import { FactionChooseComponent } from '../components/faction-choose/faction-choose.component';
 import { CreateCharacterRequest, Character } from '../models/Character';
+import { Topic, TopicType, TopicStatus } from '../models/Topic';
 import { Faction } from '../models/Faction';
 import { CommonModule } from '@angular/common';
+import { PreviewService } from '../services/preview.service';
 
 @Component({
   selector: 'app-character-create',
@@ -20,6 +22,7 @@ import { CommonModule } from '@angular/common';
 export class CharacterCreateComponent implements OnInit {
   characterService = inject(CharacterService);
   factionService = inject(FactionService);
+  previewService = inject(PreviewService);
   router = inject(Router);
   route = inject(ActivatedRoute);
   characterTemplate = this.characterService.characterTemplate;
@@ -35,6 +38,18 @@ export class CharacterCreateComponent implements OnInit {
   characterAvatar: string = '';
 
   ngOnInit() {
+    const previewState = this.previewService.state();
+    if (previewState?.formType === 'character') {
+      const p = previewState.formPayload;
+      this.initialData = {
+        name: p.name,
+        avatar: p.avatar,
+        factions: p.factions,
+        custom_fields: { custom_fields: p.custom_fields }
+      } as any;
+      this.previewService.clear();
+    }
+
     this.characterService.loadCharacterTemplate();
     this.route.queryParams.subscribe(params => {
       if (params['fid']) {
@@ -99,7 +114,8 @@ export class CharacterCreateComponent implements OnInit {
       let value: any = formData.get(field.machine_field_name);
       if (value !== null) {
         if (field.field_type === 'int') {
-          value = parseInt(value, 10);
+          const parsed = parseInt(value, 10);
+          value = isNaN(parsed) ? null : parsed;
         }
         customFields[field.machine_field_name] = {
           'content': value
@@ -132,6 +148,32 @@ export class CharacterCreateComponent implements OnInit {
       custom_fields: customFields,
       factions: factions
     };
+
+    const isPreview = ((event as SubmitEvent).submitter as HTMLInputElement | null)?.name === 'preview';
+
+    if (isPreview) {
+      this.characterService.previewCharacter(request).subscribe({
+        next: (character: Character) => {
+          this.previewService.set({
+            formType: 'character',
+            topic: {
+              id: 0, name: character.name, subforum_id: 0,
+              date_created: '', date_last_post: '', date_last_post_localized: null,
+              author_user_id: 0, author_username: '',
+              post_number: 0, last_post_author_user_id: null, last_post_author_username: null,
+              type: TopicType.character, status: TopicStatus.active,
+              episode: null, character
+            } as Topic,
+            posts: [],
+            returnUrl: this.router.url,
+            formPayload: request
+          });
+          this.router.navigate(['/preview']);
+        },
+        error: (err) => console.error('Preview failed', err)
+      });
+      return;
+    }
 
     if (this.formSubmit.observed) {
       this.formSubmit.emit(request);

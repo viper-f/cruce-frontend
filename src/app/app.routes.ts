@@ -20,6 +20,7 @@ import {CharacterProfileTemplateEditComponent} from './admin/character-profile-t
 import {PermissionMatrixComponent} from './admin/permission-matrix/permission-matrix.component';
 import {AdminFactionsComponent} from './admin/admin-factions/admin-factions.component';
 import {AdminSettingsComponent} from './admin/admin-settings/admin-settings.component';
+import {PreviewComponent} from './preview/preview.component';
 import {CharacterProfileEditComponent} from './character-profile-edit/character-profile-edit.component';
 import { UserListComponent } from './user-list/user-list.component';
 import { SettingsComponent } from './settings/settings.component';
@@ -84,6 +85,12 @@ export const routes: Routes = [
     component: EpisodeCreateComponent,
     title: 'Create Episode',
     data: { pageId: 'pun-create-episode' }
+  },
+  {
+    path: 'preview',
+    component: PreviewComponent,
+    title: 'Preview',
+    data: { pageId: 'pun-preview' }
   },
   {
     path: 'character-create',

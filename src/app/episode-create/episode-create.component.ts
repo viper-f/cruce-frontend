@@ -9,8 +9,10 @@ import { ImageFieldComponent } from '../components/image-field/image-field.compo
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CreateEpisodeRequest, Episode } from '../models/Episode';
+import { Topic, TopicType, TopicStatus } from '../models/Topic';
 import { MaskService } from '../services/mask.service';
 import { ShortMask } from '../models/Character';
+import { PreviewService } from '../services/preview.service';
 
 @Component({
   selector: 'app-episode-create',
@@ -22,6 +24,7 @@ export class EpisodeCreateComponent implements OnInit {
   episodeService = inject(EpisodeService);
   characterService = inject(CharacterService);
   maskService = inject(MaskService);
+  previewService = inject(PreviewService);
   router = inject(Router);
   route = inject(ActivatedRoute);
   episodeTemplate = this.episodeService.episodeTemplate;
@@ -53,6 +56,52 @@ export class EpisodeCreateComponent implements OnInit {
   }
 
   ngOnInit() {
+    const previewState = this.previewService.state();
+    if (previewState?.formType === 'episode') {
+      const p = previewState.formPayload;
+      this.subject = p.name;
+
+      this.characterControls.clear();
+      this.selectedCharacterIds = [];
+      const charEntries: {id: number, name: string}[] = p._characterEntries || [];
+      if (charEntries.length > 0) {
+        charEntries.forEach((entry, i) => {
+          this.characterControls.push(new FormControl(entry.name));
+          this.selectedCharacterIds.push(entry.id);
+          this.setupAutocomplete(i);
+        });
+      } else {
+        this.characterControls.push(new FormControl(''));
+        this.selectedCharacterIds.push(null);
+        this.setupAutocomplete(0);
+      }
+
+      this.maskControls.clear();
+      this.selectedMaskIds = [];
+      const maskEntries: {id: number, name: string}[] = p._maskEntries || [];
+      if (maskEntries.length > 0) {
+        maskEntries.forEach((entry, i) => {
+          this.maskControls.push(new FormControl(entry.name));
+          this.selectedMaskIds.push(entry.id);
+          this.setupMaskAutocomplete(i);
+        });
+      } else {
+        this.maskControls.push(new FormControl(''));
+        this.selectedMaskIds.push(null);
+        this.setupMaskAutocomplete(0);
+      }
+
+      if (p.custom_fields) {
+        const restored: any = {};
+        Object.keys(p.custom_fields).forEach(key => {
+          restored[key] = { content: p.custom_fields[key] };
+        });
+        this.initialData = { custom_fields: { custom_fields: restored } } as any;
+      }
+
+      this.previewService.clear();
+    }
+
     this.episodeService.loadEpisodeTemplate();
     this.route.queryParams.subscribe(params => {
       if (params['fid']) {
@@ -215,6 +264,39 @@ export class EpisodeCreateComponent implements OnInit {
       mask_ids: this.selectedMaskIds.filter((id): id is number => id !== null),
       custom_fields: customFields
     };
+
+    const isPreview = ((event as SubmitEvent).submitter as HTMLInputElement | null)?.name === 'preview';
+
+    if (isPreview) {
+      const characterEntries = this.selectedCharacterIds
+        .map((id, i) => ({ id, name: this.characterControls.at(i).value || '' }))
+        .filter(e => e.id !== null) as {id: number, name: string}[];
+      const maskEntries = this.selectedMaskIds
+        .map((id, i) => ({ id, name: this.maskControls.at(i).value || '' }))
+        .filter(e => e.id !== null) as {id: number, name: string}[];
+
+      this.episodeService.previewEpisode(request).subscribe({
+        next: (episode: Episode) => {
+          this.previewService.set({
+            formType: 'episode',
+            topic: {
+              id: 0, name: episode.name, subforum_id: 0,
+              date_created: '', date_last_post: '', date_last_post_localized: null,
+              author_user_id: 0, author_username: '',
+              post_number: 0, last_post_author_user_id: null, last_post_author_username: null,
+              type: TopicType.episode, status: TopicStatus.active,
+              episode, character: null
+            } as Topic,
+            posts: [],
+            returnUrl: this.router.url,
+            formPayload: { ...request, _characterEntries: characterEntries, _maskEntries: maskEntries }
+          });
+          this.router.navigate(['/preview']);
+        },
+        error: (err) => console.error('Preview failed', err)
+      });
+      return;
+    }
 
     if (this.formSubmit.observed) {
       this.formSubmit.emit(request);

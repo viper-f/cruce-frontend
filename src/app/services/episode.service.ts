@@ -79,6 +79,10 @@ export class EpisodeService {
     return this.apiService.post('episode/create', data);
   }
 
+  previewEpisode(data: any) {
+    return this.apiService.post<any>('episode/preview', data);
+  }
+
   updateEpisode(id: number, data: any) {
     return this.apiService.post(`episode/update/${id}`, data);
   }

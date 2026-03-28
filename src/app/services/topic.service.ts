@@ -121,6 +121,10 @@ export class TopicService {
     return this.apiService.post('topic/create', data);
   }
 
+  previewTopic(data: any) {
+    return this.apiService.post<any>('post/preview', data);
+  }
+
   updateTopic(id: number, data: any) {
     return this.apiService.post(`topic/update/${id}`, data);
   }

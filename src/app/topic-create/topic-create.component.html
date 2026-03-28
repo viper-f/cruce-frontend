@@ -20,7 +20,7 @@
 
           <p class="inputfield required longinput">
             <label for="fld3"><ng-container i18n="@@topiccreate.subject">Subject</ng-container> <em><ng-container i18n="@@topiccreate.required">(Required)</ng-container></em></label><br />
-            <span class="input"><input id="fld3" type="text" name="req_subject" value="" size="80" maxlength="70" /></span>
+            <span class="input"><input id="fld3" type="text" name="req_subject" [value]="restoredTitle" size="80" maxlength="70" /></span>
           </p>
 
           <div class="post-editor-container">
@@ -39,7 +39,8 @@
                     [fieldName]="'main-reply'"
                     [name]="'req_message'"
                     [showFieldName]="false"
-                    [rows]="20">
+                    [rows]="20"
+                    [fieldValue]="restoredContent">
                   </app-long-text-field>
                 </span>
               </p>

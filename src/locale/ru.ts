@@ -189,6 +189,8 @@ export const TRANSLATIONS_RU = {
   "faction.parent_id": "ID родителя",
   "faction.show_on_profile": "Показывать в профиле",
   "faction.addChild": "Добавить дочернюю",
+  "preview.notice": "Это предварительный просмотр. Содержимое не сохранено.",
+  "preview.returnToEdit": "Вернуться к редактированию",
   "common.add": "Добавить",
   "common.save": "Сохранить",
   "common.saved": "Сохранено",

@@ -50,7 +50,13 @@ export class CharacterSheetHeaderComponent implements OnInit, OnChanges {
       let fieldValue: any = '';
 
       if (customField) {
-        fieldValue = config.content_field_type === 'long_text' ? customField.content_html : customField.content;
+        let content = customField.content;
+        if (content !== null && content !== undefined && typeof content === 'object') {
+          content = 'content' in content ? (content as any).content : '';
+        }
+        fieldValue = config.content_field_type === 'long_text'
+          ? (customField.content_html || (content != null ? String(content) : ''))
+          : content;
       }
 
       return {

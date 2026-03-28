@@ -1,0 +1,39 @@
+@if (state()) {
+  <div class="preview-banner">
+    <span i18n="@@preview.notice">This is a preview. The content has not been saved.</span>
+    <button class="button" (click)="returnToEdit()" i18n="@@preview.returnToEdit">Return to edit</button>
+  </div>
+
+  <div id="pun-main" class="main">
+    <div class="main-header">
+      <h1><span>{{ state()?.topic?.name }}</span></h1>
+    </div>
+
+    @if (state()?.topic?.type === TopicType.episode && state()?.topic?.episode) {
+      <app-episode-header [episode]="state()!.topic!.episode!"></app-episode-header>
+    }
+    @if (state()?.topic?.type === TopicType.character && state()?.topic?.character) {
+      <app-character-sheet-header [character]="state()!.topic!.character!" [context]="'topic'"></app-character-sheet-header>
+    }
+
+    @for (post of (state()?.posts ?? []); track $index; let i = $index; let isEven = $even) {
+      <div class="post" [class.altstyle]="isEven">
+        <h3>
+          <span class="post-meta">{{ post.date_created_localized }}</span>
+          <strong>#{{ i + 1 }}</strong>
+        </h3>
+        <div class="container">
+          <div class="post-main">
+            <app-character-profile [post]="post"></app-character-profile>
+            <div class="post-body">
+              <div class="post-box">
+                <div class="post-content" [innerHTML]="post.content_html | safeHtml"></div>
+              </div>
+            </div>
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+}
