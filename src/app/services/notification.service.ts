@@ -19,6 +19,7 @@ export class NotificationService {
   private reconnectInterval = 1000;
   private maxReconnectInterval = 30000;
   private reconnectTimer: number | null = null;
+  private connectionTimeout: number | null = null;
 
   private postCreatedSubject = new Subject<PostCreatedEvent>();
   public postCreated$ = this.postCreatedSubject.asObservable();
@@ -134,7 +135,14 @@ export class NotificationService {
     const urlWithAuth = `${this.url}?token=${this.token}`;
     this.ws = new WebSocket(urlWithAuth);
 
+    this.connectionTimeout = window.setTimeout(() => {
+      if (this.ws && this.ws.readyState === WebSocket.CONNECTING) {
+        this.ws.close();
+      }
+    }, 10000);
+
     this.ws.onopen = () => {
+      if (this.connectionTimeout) clearTimeout(this.connectionTimeout);
       this.reconnectAttempts = 0;
       this.processMessageQueue();
     };
@@ -152,6 +160,7 @@ export class NotificationService {
     };
 
     this.ws.onclose = (event) => {
+      if (this.connectionTimeout) clearTimeout(this.connectionTimeout);
       this.ws = null;
       if (!this.explicitlyClosed) {
         this.handleConnectionFailure();
