@@ -141,10 +141,17 @@ export class AuthService {
     }
   }
 
+  private isRussianLocale(): boolean {
+    const stored = localStorage.getItem('locale');
+    if (stored) return stored === 'ru-RU';
+    const languages: readonly string[] = navigator.languages?.length ? navigator.languages : [navigator.language];
+    return languages.some(l => l.startsWith('ru'));
+  }
+
   private setGuestUser() {
     this.currentUser.set({
       id: 0,
-      username: 'Гость',
+      username: this.isRussianLocale() ? 'Гость' : 'Guest',
       avatar: "",
       interface_timezone: "UTC",
       interface_language: "en-US",

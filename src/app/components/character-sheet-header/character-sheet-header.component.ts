@@ -70,6 +70,10 @@ export class CharacterSheetHeaderComponent implements OnInit, OnChanges {
     }).sort((a, b) => a.order - b.order);
   }
 
+  get hasPendingFactions(): boolean {
+    return (this.character?.factions ?? []).some(f => f.faction_status === 2);
+  }
+
   acceptCharacter() {
     if (this.character) {
       this.characterService.acceptCharacter(this.character.id).subscribe({

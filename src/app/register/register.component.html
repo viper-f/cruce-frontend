@@ -11,10 +11,10 @@
 
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="container">
         <fieldset>
-          <legend><span>Enter your details</span></legend>
+          <legend><span i18n="@@register.enterDetails">Enter your details</span></legend>
           <div class="fs-box">
             <p class="inputfield required">
-              <label for="username">Username <em>(Required)</em></label><br />
+              <label for="username"><ng-container i18n="@@register.username">Username</ng-container> <em i18n="@@topiccreate.required">(Required)</em></label><br />
               <span class="input">
                 <input
                   id="username"
@@ -26,12 +26,12 @@
                 />
               </span>
               @if (isInvalid('username')) {
-                <span class="error-msg">Username must be at least 3 characters</span>
+                <span class="error-msg" i18n="@@register.usernameMin">Username must be at least 3 characters</span>
               }
             </p>
 
             <p class="inputfield required">
-              <label for="password">Password <em>(Required)</em></label><br />
+              <label for="password"><ng-container i18n="@@register.password">Password</ng-container> <em i18n="@@topiccreate.required">(Required)</em></label><br />
               <span class="input password-group">
                 <input
                   id="password"
@@ -40,16 +40,20 @@
                   size="25"
                 />
                 <button type="button" class="toggle-password" (click)="togglePasswordVisibility()">
-                  {{ showPassword() ? 'Hide' : 'Show' }}
+                  @if (showPassword()) {
+                    <span i18n="@@register.hidePassword">Hide</span>
+                  } @else {
+                    <span i18n="@@register.showPassword">Show</span>
+                  }
                 </button>
               </span>
               @if (isInvalid('password')) {
-                <span class="error-msg">Min 8 characters required</span>
+                <span class="error-msg" i18n="@@register.passwordMin">Min 8 characters required</span>
               }
             </p>
 
             <p class="inputfield required">
-              <label for="confirmPassword">Confirm Password <em>(Required)</em></label><br />
+              <label for="confirmPassword"><ng-container i18n="@@register.confirmPassword">Confirm Password</ng-container> <em i18n="@@topiccreate.required">(Required)</em></label><br />
               <span class="input password-group">
                 <input
                   id="confirmPassword"
@@ -60,18 +64,19 @@
                 />
               </span>
               @if (registerForm.get('confirmPassword')?.hasError('passwordMismatch') && registerForm.get('confirmPassword')?.touched) {
-                <span class="error-msg">Passwords do not match</span>
+                <span class="error-msg" i18n="@@register.passwordMismatch">Passwords do not match</span>
               }
             </p>
           </div>
         </fieldset>
 
         <p class="formsubmit">
-          <input type="submit" class="button submit" value="Register" [disabled]="registerForm.invalid || isLoading()" />
+          <input type="submit" class="button submit" value="Register" i18n-value="@@nav.register" [disabled]="registerForm.invalid || isLoading()" />
         </p>
 
         <div class="form-footer" style="text-align: center; margin-top: 10px;">
-          Already have an account? <a routerLink="/login">Login here</a>
+          <ng-container i18n="@@register.haveAccount">Already have an account?</ng-container>
+          &nbsp;<a routerLink="/login" i18n="@@nav.login">Login</a>
         </div>
       </form>
     </div>

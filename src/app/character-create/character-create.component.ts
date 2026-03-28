@@ -65,21 +65,29 @@ export class CharacterCreateComponent implements OnInit {
   populateForm(data: Character) {
     this.characterName = data.name;
     this.characterAvatar = data.avatar || '';
-    if (data.factions && data.factions.length > 0) {
-      const roots = data.factions.filter(f => !f.parent_id || f.parent_id === 0);
 
-      if (roots.length > 0) {
-        this.factionPaths = roots.map(root => {
-           return data.factions!.filter(f => f.id === root.id || this.isDescendant(f, root, data.factions!));
-        });
-      } else {
-         this.factionPaths = [data.factions];
+    if (data.factions && data.factions.length > 0) {
+      const factions = data.factions;
+      const factionMap = new Map(factions.map(f => [f.id, f]));
+      const usedAsParent = new Set(
+        factions.map(f => f.parent_id).filter((id): id is number => id != null)
+      );
+      const leaves = factions.filter(f => !usedAsParent.has(f.id));
+
+      this.factionPaths = leaves.map(leaf => {
+        const path: Faction[] = [];
+        let current: Faction | undefined = leaf;
+        while (current) {
+          path.unshift(current);
+          current = current.parent_id != null ? factionMap.get(current.parent_id) : undefined;
+        }
+        return path;
+      });
+
+      if (this.factionPaths.length === 0) {
+        this.factionPaths = [[]];
       }
     }
-  }
-
-  isDescendant(child: Faction, root: Faction, all: Faction[]): boolean {
-      return true;
   }
 
   onFactionsChanged(index: number, factions: Faction[]) {

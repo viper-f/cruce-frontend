@@ -11,6 +11,13 @@ import { SpoilerBoxComponent } from './app/components/spoiler-box/spoiler-box.co
 
 const storedLocale = localStorage.getItem('locale');
 
+function detectGuestLocale(): string | null {
+  const languages: readonly string[] = navigator.languages?.length ? navigator.languages : [navigator.language];
+  return languages.some(l => l.startsWith('ru')) ? 'ru-RU' : null;
+}
+
+const locale = storedLocale ?? detectGuestLocale();
+
 function registerCustomElements(appRef: ApplicationRef): void {
   const PostInsertElement = createCustomElement(PostInsertComponent, { injector: appRef.injector });
   customElements.define('post-insert', PostInsertElement);
@@ -19,7 +26,7 @@ function registerCustomElements(appRef: ApplicationRef): void {
   customElements.define('spoiler-box', SpoilerBoxElement);
 }
 
-if (storedLocale === 'ru-RU') {
+if (locale === 'ru-RU') {
   import('./locale/ru').then(module => {
     loadTranslations(module.TRANSLATIONS_RU);
     bootstrapApplication(AppComponent, appConfig)

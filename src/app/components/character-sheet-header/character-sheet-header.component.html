@@ -52,7 +52,12 @@
 
 @if (isAdmin() && context === 'topic' && character.character_status === 2) {
   <div class="admin-actions">
-    <button class="button" (click)="acceptCharacter()">Accept</button>
+    <button class="button" [disabled]="hasPendingFactions" (click)="acceptCharacter()">Accept</button>
+    @if (hasPendingFactions) {
+      <span class="admin-actions-notice" i18n="@@character.pendingFactions">
+        This character cannot be approved until all their factions are approved in the admin section.
+      </span>
+    }
   </div>
 }
 }

@@ -1,25 +1,26 @@
 <div class="login-container">
   <div class="formal">
-    <h2>Welcome Back</h2>
-    <p>Please enter your details</p>
+    <h2 i18n="@@login.title">Welcome Back</h2>
+    <p i18n="@@login.subtitle">Please enter your details</p>
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="container">
       <div class="form-group">
-        <label for="username">Username</label>
+        <label for="username" i18n="@@login.username">Username</label>
         <input
           id="username"
           type="text"
           formControlName="username"
           placeholder="Enter your username"
+          i18n-placeholder="@@login.usernamePlaceholder"
           [class.error]="isFieldInvalid('username')"
         />
         @if (isFieldInvalid('username')) {
-          <small class="error-text">Username is required</small>
+          <small class="error-text" i18n="@@login.usernameRequired">Username is required</small>
         }
       </div>
 
       <div class="form-group">
-        <label for="password">Password</label>
+        <label for="password" i18n="@@login.password">Password</label>
         <input
           id="password"
           type="password"
@@ -28,20 +29,23 @@
           [class.error]="isFieldInvalid('password')"
         />
         @if (isFieldInvalid('password')) {
-          <small class="error-text">Password must be at least 6 characters</small>
+          <small class="error-text" i18n="@@login.passwordMin">Password must be at least 6 characters</small>
         }
       </div>
 
       <button type="submit" [disabled]="loginForm.invalid || isLoading()">
         @if (isLoading()) {
-          <span>Logging in...</span>
+          <span i18n="@@login.loggingIn">Logging in...</span>
         } @else {
-          <span>Sign In</span>
+          <span i18n="@@login.signIn">Sign In</span>
         }
       </button>
 
       <div class="form-footer">
-        <p>Don't have an account? <a routerLink="/register">Register</a></p>
+        <p>
+          <ng-container i18n="@@login.noAccount">Don't have an account?</ng-container>
+          &nbsp;<a routerLink="/register" i18n="@@nav.register">Register</a>
+        </p>
       </div>
     </form>
   </div>

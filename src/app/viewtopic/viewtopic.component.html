@@ -11,7 +11,7 @@
         </form>
       } @else {
         <h1><span>{{ topic().name }}</span></h1>
-        @if (topic().can_edit) {
+        @if (topic().can_edit && !editingTopic()) {
           <span style="font-size: 0.8em; margin-right: 10px;"><a href="#" (click)="editTopic($event)">[Edit]</a></span>
         }
       }
