@@ -16,6 +16,13 @@ export interface Character {
   episodes: CharacterEpisode[];
 }
 
+export interface CharacterListItem {
+  id: number;
+  name: string;
+  is_claim: boolean;
+  wanted_character_id: number | null;
+}
+
 export interface CharacterEpisode {
   id: number;
   name: string;

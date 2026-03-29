@@ -4,10 +4,8 @@
   </div>
 
   <div class="character-tree">
-    <!-- Loop over the grouped factions -->
     @for (group of groupedCharacterList(); track group[0]?.id || $index) {
       <div class="category">
-        <!-- Level 0 Header -->
         <div class="maintitle">
           <h2 class="faction-title"><span>{{ group[0].name }}</span></h2>
         </div>
@@ -17,18 +15,19 @@
             <ul class="character-group">
               @for (char of group[0].characters; track char.id) {
                 <li class="character-list-item">
-                  <a [routerLink]="['/character', char.id]" class="character-link">
-                    {{ char.name }}
-                  </a>
-                  @if (char.character_status !== undefined && char.character_status !== null) {
-                    <span class="character-status">({{ getStatusLabel(char.character_status) }})</span>
+                  @if (char.is_claim) {
+                    <span class="character-link">{{ char.name }}</span>
+                  } @else {
+                    <a [routerLink]="['/character', char.id]" class="character-link">{{ char.name }}</a>
+                  }
+                  @if (char.wanted_character_id != null) {
+                    (<a [routerLink]="['/character', char.wanted_character_id]" class="character-wanted-link" i18n="@@characterList.wanted">wanted</a>)
                   }
                 </li>
               }
             </ul>
           }
 
-          <!-- Loop over the rest of the factions in the group (levels 1+) -->
           @for (faction of group.slice(1); track faction.id) {
             <div class="faction-block" [class.level-1]="faction.level === 1" [class.level-2]="faction.level >= 2">
               @switch (faction.level) {
@@ -41,11 +40,13 @@
                 <ul class="character-group">
                   @for (char of faction.characters; track char.id) {
                     <li class="character-list-item">
-                      <a [routerLink]="['/character', char.id]" class="character-link">
-                        {{ char.name }}
-                      </a>
-                      @if (char.character_status !== undefined && char.character_status !== null) {
-                        <span class="character-status">({{ getStatusLabel(char.character_status) }})</span>
+                      @if (char.is_claim) {
+                        <span class="character-link">{{ char.name }}</span>
+                      } @else {
+                        <a [routerLink]="['/character', char.id]" class="character-link">{{ char.name }}</a>
+                      }
+                      @if (char.wanted_character_id != null) {
+                        (<a [routerLink]="['/character', char.wanted_character_id]" class="character-wanted-link" i18n="@@characterList.wanted">wanted</a>)
                       }
                     </li>
                   }

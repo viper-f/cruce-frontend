@@ -1,0 +1,44 @@
+<h2>Character Claims</h2>
+
+<div class="claims-tree">
+  @for (faction of factions(); track faction.id) {
+    <div class="faction-node" [style.margin-left.px]="faction.level * 24">
+      <div class="faction-header">
+        @if (faction.icon) {
+          <span class="faction-icon">{{ faction.icon }}</span>
+        }
+        <strong class="faction-name">{{ faction.name }}</strong>
+        @if (faction.description) {
+          <span class="faction-description">{{ faction.description }}</span>
+        }
+      </div>
+
+      @if (faction.claims.length > 0) {
+        <table class="claims-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Claimed</th>
+              <th>Can Change Name</th>
+              <th>Last Claim Date</th>
+              <th>User ID</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (claim of faction.claims; track claim.id) {
+              <tr [class.is-claimed]="claim.is_claimed">
+                <td>{{ claim.name }}</td>
+                <td>{{ claim.is_claimed ? 'Yes' : 'No' }}</td>
+                <td>{{ claim.can_change_name ? 'Yes' : 'No' }}</td>
+                <td>{{ claim.last_claim_date ? (claim.last_claim_date | date:'dd.MM.yyyy HH:mm') : '—' }}</td>
+                <td>{{ claim.is_claimed ? claim.user_id : '—' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      } @else {
+        <p class="no-claims">No claims</p>
+      }
+    </div>
+  }
+</div>

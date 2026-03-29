@@ -1,7 +1,7 @@
 import {Component, computed, inject, OnInit, Signal} from '@angular/core';
-import {RouterLink} from '@angular/router';
-import {CharacterService} from '../services/character.service';
-import {Faction} from '../models/Faction';
+import { RouterLink } from '@angular/router';
+import { CharacterService } from '../services/character.service';
+import { Faction } from '../models/Faction';
 
 @Component({
   selector: 'app-character-list',
@@ -53,12 +53,4 @@ export class CharacterListComponent implements OnInit {
     this.characterService.loadCharacterList();
   }
 
-  getStatusLabel(status: number): string {
-    switch (status) {
-      case 0: return 'Active';
-      case 1: return 'Inactive';
-      case 2: return 'Pending';
-      default: return 'Unknown';
-    }
-  }
 }

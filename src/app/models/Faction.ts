@@ -1,4 +1,4 @@
-import {Character} from './Character';
+import { CharacterListItem } from './Character';
 
 export interface Faction {
   id: number,
@@ -9,7 +9,7 @@ export interface Faction {
   icon: string|null,
   faction_status: number,
   show_on_profile: boolean,
-  characters: Character[]
+  characters: CharacterListItem[]
 }
 
 export interface FactionShort {

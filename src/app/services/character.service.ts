@@ -2,7 +2,7 @@ import { Injectable, signal, inject } from '@angular/core';
 import { ApiService } from './api.service';
 import { FieldTemplate } from "../models/FieldTemplate";
 import { Faction } from "../models/Faction";
-import { CharacterShort, CharacterProfile, CreateCharacterRequest, Character } from "../models/Character";
+import { CharacterShort, CharacterProfile, CreateCharacterRequest, Character, CharacterListItem } from "../models/Character";
 
 @Injectable({ providedIn: 'root' })
 export class CharacterService {

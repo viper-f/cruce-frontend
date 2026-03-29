@@ -1,0 +1,58 @@
+.claims-tree {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.faction-node {
+  border-left: 2px solid #d1bc9b;
+  padding-left: 12px;
+}
+
+.faction-header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.faction-icon {
+  font-size: 1.1em;
+}
+
+.faction-name {
+  font-size: 1em;
+}
+
+.faction-description {
+  color: #666;
+  font-size: 0.85em;
+}
+
+.claims-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9em;
+}
+
+.claims-table th,
+.claims-table td {
+  padding: 5px 10px;
+  border: 1px solid #d1bc9b;
+  text-align: left;
+}
+
+.claims-table th {
+  background: #e9e3d5;
+  font-weight: bold;
+}
+
+.claims-table tr.is-claimed td {
+  background: #f0f7ee;
+}
+
+.no-claims {
+  color: #999;
+  font-size: 0.85em;
+  margin: 0;
+}
