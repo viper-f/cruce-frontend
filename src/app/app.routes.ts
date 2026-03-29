@@ -22,6 +22,7 @@ import {AdminFactionsComponent} from './admin/admin-factions/admin-factions.comp
 import {CharacterClaimsComponent} from './admin/character-claims/character-claims.component';
 import {WantedCharacterTemplateEditComponent} from './admin/wanted-character-template-edit/wanted-character-template-edit.component';
 import {WantedCharacterCreateComponent} from './wanted-character-create/wanted-character-create.component';
+import {WantedCharacterListComponent} from './wanted-character-list/wanted-character-list.component';
 import {AdminSettingsComponent} from './admin/admin-settings/admin-settings.component';
 import {PreviewComponent} from './preview/preview.component';
 import {CharacterProfileEditComponent} from './character-profile-edit/character-profile-edit.component';
@@ -141,6 +142,12 @@ export const routes: Routes = [
     component: EpisodeListComponent,
     title: 'Episode List',
     data: { pageId: 'pun-episode-list' }
+  },
+  {
+    path: 'wanted-character-list',
+    component: WantedCharacterListComponent,
+    title: 'Wanted Characters',
+    data: { pageId: 'pun-wanted-character-list' }
   },
   {
     path: 'active-topics',

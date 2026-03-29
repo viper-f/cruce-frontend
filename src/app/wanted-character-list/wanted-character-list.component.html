@@ -1,0 +1,103 @@
+<div id="pun-main" class="main wanted-character-list">
+  <div class="main-header">
+    <h1><span i18n="@@wantedCharacterList.title">Wanted Characters</span></h1>
+  </div>
+
+  <div class="dashboard-layout">
+    <aside class="filter-sidebar">
+      <div class="view-toggle">
+        <button class="button" [class.active]="cardView()" (click)="cardView.set(true)" i18n="@@wantedCharacterList.cardView">Card view</button>
+        <button class="button" [class.active]="!cardView()" (click)="cardView.set(false)" i18n="@@wantedCharacterList.listView">List view</button>
+      </div>
+
+      <h3 i18n="@@wantedCharacterList.filters">Filters</h3>
+
+      <div class="filter-group">
+        <h4 i18n="@@wantedCharacterList.factions">Factions</h4>
+        <div class="checkbox-list">
+          @for (faction of factions(); track faction.id) {
+            <label [style.padding-left.rem]="faction.level > 0 ? faction.level * 1.5 : 0">
+              <input type="checkbox" [checked]="isFactionSelected(faction.id)" (change)="toggleFaction(faction.id)" />
+              {{ faction.name }}
+            </label>
+          }
+        </div>
+      </div>
+    </aside>
+
+    <section class="content-area">
+      @if (cardView()) {
+        <div class="card-list">
+          @for (wc of filteredList(); track wc.id) {
+            <div class="wanted-card">
+              <div class="card-name">
+                <a [routerLink]="['/viewtopic', wc.topic_id]">{{ wc.name }}</a>
+              </div>
+              @if (wc.factions && wc.factions.length > 0) {
+                <div class="card-factions">{{ factionsString(wc) }}</div>
+              }
+              @if (getFields(wc).length > 0) {
+                <ul class="card-fields">
+                  @for (field of getFields(wc); track field.fieldName) {
+                    @if (field.fieldValue) {
+                      <li>
+                        <span class="field-name">{{ field.fieldName }}:</span>
+                        @if (field.type === 'long_text') {
+                          <span class="field-value" [innerHTML]="field.fieldValue"></span>
+                        } @else {
+                          <span class="field-value">{{ field.fieldValue }}</span>
+                        }
+                      </li>
+                    }
+                  }
+                </ul>
+              }
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="character-tree">
+          @for (group of groupedTreeList(); track group[0]?.id || $index) {
+            <div class="category">
+              <div class="maintitle">
+                <h2 class="faction-title"><span>{{ group[0].name }}</span></h2>
+              </div>
+
+              <div class="main-content">
+                @if (group[0].characters && group[0].characters.length > 0) {
+                  <ul class="character-group">
+                    @for (char of group[0].characters; track char.id) {
+                      <li class="character-list-item">
+                        <a [routerLink]="['/viewtopic', char.id]">{{ char.name }}</a>
+                      </li>
+                    }
+                  </ul>
+                }
+
+                @for (faction of group.slice(1); track faction.id) {
+                  <div class="faction-block" [class.level-1]="faction.level === 1" [class.level-2]="faction.level >= 2">
+                    @switch (faction.level) {
+                      @case (1) { <h3 class="faction-title">{{ faction.name }}</h3> }
+                      @case (2) { <h4 class="faction-title">{{ faction.name }}</h4> }
+                      @default { <h5 class="faction-title">{{ faction.name }}</h5> }
+                    }
+
+                    @if (faction.characters && faction.characters.length > 0) {
+                      <ul class="character-group">
+                        @for (char of faction.characters; track char.id) {
+                          <li class="character-list-item">
+                            <a [routerLink]="['/viewtopic', char.id]">{{ char.name }}</a>
+                          </li>
+                        }
+                      </ul>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </section>
+  </div>
+</div>

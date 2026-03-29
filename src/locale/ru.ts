@@ -246,5 +246,11 @@ export const TRANSLATIONS_RU = {
   "wantedCharacterTemplate.contentFieldType": "Тип содержимого:",
   "wantedCharacterTemplate.order": "Порядок:",
   "wantedCharacterTemplate.addField": "Добавить поле",
-  "wantedCharacterTemplate.saveTemplate": "Сохранить шаблон"
+  "wantedCharacterTemplate.saveTemplate": "Сохранить шаблон",
+  "nav.wantedCharacterList": "Разыскиваемые персонажи",
+  "wantedCharacterList.title": "Разыскиваемые персонажи",
+  "wantedCharacterList.cardView": "Карточки",
+  "wantedCharacterList.listView": "Список",
+  "wantedCharacterList.filters": "Фильтры",
+  "wantedCharacterList.factions": "Фракции"
 };
