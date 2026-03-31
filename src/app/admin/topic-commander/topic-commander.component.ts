@@ -104,10 +104,16 @@ export class TopicCommanderComponent implements OnInit {
   }
 
   moveTopics(from: PanelState, to: PanelState) {
-    const targetSubforum = to.openSubforum!;
     const topicIds = Array.from(from.selectedTopicIds);
-    console.log(`[MOCK] Moving topics ${topicIds.join(', ')} to subforum ${targetSubforum.id} (${targetSubforum.name})`);
-    // TODO: this.apiService.post('topic/move', { topic_ids: topicIds, subforum_id: targetSubforum.id }).subscribe(...)
+    const body = { subforum_id: to.openSubforum!.id, topic_ids: topicIds };
+
+    this.apiService.post('topics/move', body).subscribe({
+      next: () => {
+        this.openSubforum(from, from.openSubforum!);
+        this.openSubforum(to, to.openSubforum!);
+      },
+      error: (err) => console.error('Failed to move topics', err)
+    });
   }
 
   archiveTopics(panel: PanelState) {
