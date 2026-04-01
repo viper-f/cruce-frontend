@@ -33,6 +33,7 @@ import { SettingsComponent } from './settings/settings.component';
 import { ActiveTopicsComponent } from './active-topics/active-topics.component';
 import { MaskListComponent } from './mask-list/mask-list.component';
 import { RecoveryCodesComponent } from './recovery-codes/recovery-codes.component';
+import { SettingsRestorationCodesComponent } from './settings-restoration-codes/settings-restoration-codes.component';
 import { PostPageComponent } from './post-page/post-page.component';
 import { NotFoundComponent } from './error-pages/not-found/not-found.component';
 import { ForbiddenComponent } from './error-pages/forbidden/forbidden.component';
@@ -61,6 +62,12 @@ export const routes: Routes = [
     component: RecoveryCodesComponent,
     title: 'Recovery Codes',
     data: { pageId: 'pun-recovery-codes' }
+  },
+  {
+    path: 'restoration-codes',
+    component: SettingsRestorationCodesComponent,
+    title: 'Recovery Codes Settings',
+    data: { pageId: 'pun-restoration-codes' }
   },
   {
     path: 'direct-chat',

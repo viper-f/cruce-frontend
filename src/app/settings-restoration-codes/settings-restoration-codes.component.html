@@ -1,0 +1,143 @@
+<div id="pun-main" class="main">
+  <div class="main-header">
+    <h1 i18n="@@restorationCodes.title">Recovery Codes</h1>
+  </div>
+
+  <div class="main-content">
+    <div class="container">
+
+      @if (step() === 'idle') {
+        <fieldset>
+          <legend i18n="@@restorationCodes.generateLegend">Generate New Recovery Codes</legend>
+          <div class="fs-box">
+            <p i18n="@@restorationCodes.generateDescription">
+              Recovery codes let you regain access to your direct messages if you forget your password.
+              Generating new codes will invalidate all previously issued codes.
+            </p>
+            <p class="formsubmit">
+              <button type="button" class="button" (click)="startGeneration()" i18n="@@restorationCodes.startButton">
+                Generate new recovery codes
+              </button>
+            </p>
+          </div>
+        </fieldset>
+      }
+
+      @if (step() === 'checking') {
+        <fieldset>
+          <legend i18n="@@restorationCodes.checkingLegend">Checking account status…</legend>
+          <div class="fs-box">
+            <p i18n="@@restorationCodes.checking">Please wait…</p>
+          </div>
+        </fieldset>
+      }
+
+      @if (step() === 'confirm') {
+        <fieldset>
+          <legend i18n="@@restorationCodes.confirmLegend">Confirm</legend>
+          <div class="fs-box">
+
+            @if (mode() === 'initial_setup') {
+              <p class="warn-message" i18n="@@restorationCodes.initialSetupWarning">
+                <strong>Your account has no encryption key or recovery codes yet.</strong>
+                This action will generate an encryption key and recovery codes for your account.
+                You will need these codes to recover access to direct messages if you forget your password.
+              </p>
+            }
+
+            @if (mode() === 'regenerate') {
+              <p class="warn-message" i18n="@@restorationCodes.regenerateWarning">
+                <strong>All existing recovery codes will be permanently invalidated.</strong>
+                New codes will be generated and your encryption key will be re-encrypted with them.
+                Make sure to save the new codes — they will only be shown once.
+              </p>
+            }
+
+            <p class="inputfield">
+              <label for="current_password" i18n="@@restorationCodes.passwordLabel">Current password</label><br />
+              <span class="input">
+                <input
+                  id="current_password"
+                  type="password"
+                  name="current_password"
+                  [(ngModel)]="password"
+                  (keydown.enter)="generate()"
+                  i18n-placeholder="@@restorationCodes.passwordPlaceholder"
+                  placeholder="Enter your current password"
+                />
+              </span>
+            </p>
+
+            <p class="formsubmit">
+              <button
+                type="button"
+                class="button submit"
+                [disabled]="!password"
+                (click)="generate()"
+                i18n="@@restorationCodes.generateButton"
+              >
+                Generate
+              </button>
+              <button
+                type="button"
+                class="button"
+                (click)="cancel()"
+                i18n="@@restorationCodes.cancelButton"
+              >
+                Cancel
+              </button>
+            </p>
+          </div>
+        </fieldset>
+      }
+
+      @if (step() === 'loading') {
+        <fieldset>
+          <legend i18n="@@restorationCodes.loadingLegend">Generating…</legend>
+          <div class="fs-box">
+            <p i18n="@@restorationCodes.loading">Generating your recovery codes. This may take a moment…</p>
+          </div>
+        </fieldset>
+      }
+
+      @if (step() === 'done') {
+        <fieldset>
+          <legend i18n="@@restorationCodes.doneLegend">New Recovery Codes</legend>
+          <div class="fs-box">
+            <p class="warn-message" i18n="@@restorationCodes.doneWarning">
+              <strong>This page will only be shown once.</strong>
+              Save these recovery codes in a safe place.
+              They are the only way to recover access to your direct messages if you forget your password.
+            </p>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend i18n="@@restorationCodes.codesLegend">Your Recovery Codes</legend>
+          <div class="fs-box">
+            <ul class="recovery-code-list">
+              @for (code of newCodes(); track $index) {
+                <li class="recovery-code">{{ code }}</li>
+              }
+            </ul>
+          </div>
+        </fieldset>
+      }
+
+      @if (step() === 'error') {
+        <fieldset>
+          <legend i18n="@@restorationCodes.errorLegend">Error</legend>
+          <div class="fs-box">
+            <p class="error-message">{{ errorMessage() }}</p>
+            <p class="formsubmit">
+              <button type="button" class="button" (click)="reset()" i18n="@@restorationCodes.tryAgainButton">
+                Try again
+              </button>
+            </p>
+          </div>
+        </fieldset>
+      }
+
+    </div>
+  </div>
+</div>
