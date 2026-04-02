@@ -114,13 +114,13 @@ export class UserService {
     return Uint8Array.from(atob(base64), c => c.charCodeAt(0));
   }
 
-  generateAndSaveKeys(hashedPassword: string, recoveryCodes: { id: number; code: string }[]): Observable<any> {
-    return from(this.buildKeysPayload(hashedPassword, recoveryCodes)).pipe(
+  generateAndSaveKeys(hashedPassword: string, codes: string[]): Observable<any> {
+    return from(this.buildKeysPayload(hashedPassword, codes)).pipe(
       switchMap(payload => this.apiService.post('user/save-keys', payload))
     );
   }
 
-  private async buildKeysPayload(hashedPassword: string, recoveryCodes: { id: number; code: string }[]): Promise<any> {
+  private async buildKeysPayload(hashedPassword: string, codes: string[]): Promise<any> {
     const userId = this.authService.currentUser()!.id;
 
     const keyPair = await crypto.subtle.generateKey(
@@ -130,17 +130,14 @@ export class UserService {
     );
 
     const publicKeyBuffer = await crypto.subtle.exportKey('spki', keyPair.publicKey);
-
+    const hashedCodes = await Promise.all(codes.map(c => this.authService.hashPassword(c)));
     const passwordKey = await this.encryptPrivateKey(keyPair.privateKey, hashedPassword);
-    const recoveryKeys = await Promise.all(recoveryCodes.map(rc => this.encryptPrivateKey(keyPair.privateKey, rc.code)));
-
-    const privateKeys = [
-      { user_id: userId, private_key: passwordKey.private_key, iv: passwordKey.iv, salt: passwordKey.salt, recover_key_id: null },
-      ...recoveryKeys.map((k, i) => ({ user_id: userId, private_key: k.private_key, iv: k.iv, salt: k.salt, recover_key_id: recoveryCodes[i].id }))
-    ];
+    const recoveryKeys = await Promise.all(codes.map(c => this.encryptPrivateKey(keyPair.privateKey, c)));
 
     return {
-      private_keys: privateKeys,
+      codes: hashedCodes,
+      private_key: { user_id: userId, private_key: passwordKey.private_key, iv: passwordKey.iv, salt: passwordKey.salt },
+      recovery_private_keys: recoveryKeys.map(k => ({ user_id: userId, private_key: k.private_key, iv: k.iv, salt: k.salt })),
       public_key: { user_id: userId, public_key: this.bufferToBase64(publicKeyBuffer) }
     };
   }
@@ -185,9 +182,11 @@ export class UserService {
   }
 
   generateRecoveryCodes(count: number = 8): string[] {
+    const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     return Array.from({ length: count }, () => {
       const bytes = crypto.getRandomValues(new Uint8Array(16));
-      return Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
+      const chars = Array.from(bytes, b => charset[b % charset.length]);
+      return `${chars.slice(0, 4).join('')}-${chars.slice(4, 8).join('')}-${chars.slice(8, 12).join('')}-${chars.slice(12, 16).join('')}`;
     });
   }
 
@@ -208,7 +207,7 @@ export class UserService {
       switchMap(data => from(this.decryptPrivateKeyToBuffer(data.private_key, data.iv, data.salt, hashedPassword))),
       switchMap(pkcs8Buffer => from(this.encryptBufferWithCodes(pkcs8Buffer, userId, codes))),
       switchMap(({ privateKeys, codes: hashedCodes }) =>
-        this.apiService.post<void>('user/save-recovery-keys', { codes: hashedCodes, private_keys: privateKeys })
+        this.apiService.post<void>('user/save-recovery-keys', { codes: hashedCodes, recovery_private_keys: privateKeys })
       )
     );
   }
@@ -228,19 +227,19 @@ export class UserService {
     const publicKeyBuffer = await crypto.subtle.exportKey('spki', keyPair.publicKey);
     const hashedCodes = await Promise.all(codes.map(c => this.authService.hashPassword(c)));
     const passwordKey = await this.encryptPrivateKey(keyPair.privateKey, hashedPassword);
-    const recoveryKeys = await Promise.all(hashedCodes.map(h => this.encryptPrivateKey(keyPair.privateKey, h)));
-
-    const privateKeys = [
-      { user_id: userId, private_key: passwordKey.private_key, iv: passwordKey.iv, salt: passwordKey.salt, recover_key_id: null },
-      ...recoveryKeys.map(k => ({ user_id: userId, private_key: k.private_key, iv: k.iv, salt: k.salt }))
-    ];
+    const recoveryKeys = await Promise.all(codes.map(c => this.encryptPrivateKey(keyPair.privateKey, c)));
 
     // Re-import as non-extractable for IndexedDB storage
     const pkcs8Buffer = await crypto.subtle.exportKey('pkcs8', keyPair.privateKey);
     const storedKey = await crypto.subtle.importKey('pkcs8', pkcs8Buffer, { name: 'RSA-OAEP', hash: 'SHA-256' }, false, ['decrypt']);
 
     return {
-      payload: { codes: hashedCodes, private_keys: privateKeys, public_key: { user_id: userId, public_key: this.bufferToBase64(publicKeyBuffer) } },
+      payload: {
+        codes: hashedCodes,
+        private_key: { user_id: userId, private_key: passwordKey.private_key, iv: passwordKey.iv, salt: passwordKey.salt },
+        recovery_private_keys: recoveryKeys.map(k => ({ user_id: userId, private_key: k.private_key, iv: k.iv, salt: k.salt })),
+        public_key: { user_id: userId, public_key: this.bufferToBase64(publicKeyBuffer) }
+      },
       storedKey
     };
   }
@@ -274,7 +273,7 @@ export class UserService {
   ): Promise<{ privateKeys: any[]; codes: string[] }> {
     const privateKey = await crypto.subtle.importKey('pkcs8', pkcs8Buffer, { name: 'RSA-OAEP', hash: 'SHA-256' }, true, ['decrypt']);
     const hashedCodes = await Promise.all(codes.map(c => this.authService.hashPassword(c)));
-    const recoveryKeys = await Promise.all(hashedCodes.map(h => this.encryptPrivateKey(privateKey, h)));
+    const recoveryKeys = await Promise.all(codes.map(c => this.encryptPrivateKey(privateKey, c)));
     return {
       codes: hashedCodes,
       privateKeys: recoveryKeys.map(k => ({ user_id: userId, private_key: k.private_key, iv: k.iv, salt: k.salt }))

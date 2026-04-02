@@ -23,8 +23,8 @@ export class RestorePasswordComponent {
   passwordError = signal<string | null>(null);
   showPassword = signal(false);
 
-  private hashedCode = '';
-  private encryptedKeyData: { private_key: string; iv: string; salt: string } | null = null;
+  private plainCode = '';
+  private encryptedKeyData: { private_key: { private_key: string; iv: string; salt: string }; security_code: string } | null = null;
 
   private passwordMatchValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
     const pw = control.get('newPassword');
@@ -66,23 +66,23 @@ export class RestorePasswordComponent {
     this.isLoading.set(true);
     this.codeError.set(null);
 
+    this.plainCode = code;
     this.authService.hashPassword(code).then(hashedCode => {
-      this.hashedCode = hashedCode;
       this.authService.recoverWithCode(hashedCode).subscribe({
-        next: (data) => {
-          this.encryptedKeyData = data;
-          this.isLoading.set(false);
-          this.step.set('password');
-        },
-        error: (err) => {
-          this.isLoading.set(false);
-          if (err.status === 400) {
-            this.codeError.set($localize`:@@restorePassword.invalidCode:The recovery code is incorrect or has already been used.`);
-          } else {
-            this.codeError.set($localize`:@@restorePassword.codeError:Something went wrong. Please try again.`);
-          }
+      next: (data) => {
+        this.encryptedKeyData = data;
+        this.isLoading.set(false);
+        this.step.set('password');
+      },
+      error: (err) => {
+        this.isLoading.set(false);
+        if (err.status === 400) {
+          this.codeError.set($localize`:@@restorePassword.invalidCode:The recovery code is incorrect or has already been used.`);
+        } else {
+          this.codeError.set($localize`:@@restorePassword.codeError:Something went wrong. Please try again.`);
         }
-      });
+      }
+    });
     });
   }
 
@@ -96,15 +96,16 @@ export class RestorePasswordComponent {
       const newPassword = this.passwordForm.value.newPassword!;
       const hashedNewPassword = await this.authService.hashPassword(newPassword);
 
-      const { private_key, iv, salt } = this.encryptedKeyData;
-      const pkcs8Buffer = await this.decryptKeyBuffer(private_key, iv, salt, this.hashedCode);
+      const { private_key: pkData, security_code } = this.encryptedKeyData;
+      const pkcs8Buffer = await this.decryptKeyBuffer(pkData.private_key, pkData.iv, pkData.salt, this.plainCode);
       const reEncrypted = await this.encryptKeyBuffer(pkcs8Buffer, hashedNewPassword);
 
       this.authService.updatePasswordWithKey(
         hashedNewPassword,
         reEncrypted.private_key,
         reEncrypted.iv,
-        reEncrypted.salt
+        reEncrypted.salt,
+        security_code
       ).subscribe({
         next: () => {
           this.isLoading.set(false);
@@ -115,10 +116,17 @@ export class RestorePasswordComponent {
           this.passwordError.set(err?.error?.error || err?.error?.message || $localize`:@@restorePassword.updateError:Failed to update password. Please try again.`);
         }
       });
-    } catch {
+    } catch (err) {
+      console.error('[restore-password] crypto error', err);
+      console.error('[restore-password] encryptedKeyData', this.encryptedKeyData);
       this.isLoading.set(false);
       this.passwordError.set($localize`:@@restorePassword.cryptoError:Failed to process recovery key. The code may be invalid.`);
     }
+  }
+
+  private toStandardBase64(str: string): string {
+    const s = str.replace(/-/g, '+').replace(/_/g, '/').replace(/\s/g, '');
+    return s.padEnd(s.length + (4 - s.length % 4) % 4, '=');
   }
 
   private async decryptKeyBuffer(
@@ -127,9 +135,9 @@ export class RestorePasswordComponent {
     saltBase64: string,
     passphrase: string
   ): Promise<ArrayBuffer> {
-    const encryptedBytes = Uint8Array.from(atob(privateKeyBase64), c => c.charCodeAt(0));
-    const iv = Uint8Array.from(atob(ivBase64), c => c.charCodeAt(0));
-    const salt = Uint8Array.from(atob(saltBase64), c => c.charCodeAt(0));
+    const encryptedBytes = Uint8Array.from(atob(this.toStandardBase64(privateKeyBase64)), c => c.charCodeAt(0));
+    const iv = Uint8Array.from(atob(this.toStandardBase64(ivBase64)), c => c.charCodeAt(0));
+    const salt = Uint8Array.from(atob(this.toStandardBase64(saltBase64)), c => c.charCodeAt(0));
 
     const keyMaterial = await crypto.subtle.importKey(
       'raw', new TextEncoder().encode(passphrase), 'PBKDF2', false, ['deriveKey']

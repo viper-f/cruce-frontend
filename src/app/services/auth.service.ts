@@ -58,16 +58,17 @@ export class AuthService {
     );
   }
 
-  recoverWithCode(hashedCode: string): Observable<{ private_key: string; iv: string; salt: string }> {
-    return this.http.post<{ private_key: string; iv: string; salt: string }>(`${this.apiUrl}/recovery`, { code: hashedCode });
+  recoverWithCode(hashedCode: string): Observable<{ private_key: { private_key: string; iv: string; salt: string }; security_code: string }> {
+    return this.http.post<{ private_key: { private_key: string; iv: string; salt: string }; security_code: string }>(`${this.apiUrl}/recovery`, { code: hashedCode });
   }
 
-  updatePasswordWithKey(hashedPassword: string, privateKey: string, iv: string, salt: string): Observable<void> {
+  updatePasswordWithKey(hashedPassword: string, privateKey: string, iv: string, salt: string, securityCode: string): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/update-password`, {
       password: hashedPassword,
       private_key: privateKey,
       iv,
-      salt
+      salt,
+      security_code: securityCode
     });
   }
 

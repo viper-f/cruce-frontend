@@ -57,19 +57,16 @@ export class RegisterComponent {
       const username = registerData.username || '';
       const password = registerData.password || '';
 
-      let recoveryCodes: { id: number; code: string }[] = [];
+      const codes = this.userService.generateRecoveryCodes();
 
       this.authService.register(registerData).pipe(
-        switchMap((response: any) => {
-          recoveryCodes = response?.recovery_codes ?? [];
-          return this.authService.loginSilently({ username, password });
-        }),
+        switchMap(() => this.authService.loginSilently({ username, password })),
         switchMap(() => from(this.authService.hashPassword(password))),
-        switchMap(hashedPassword => this.userService.generateAndSaveKeys(hashedPassword, recoveryCodes))
+        switchMap(hashedPassword => this.userService.generateAndSaveKeys(hashedPassword, codes))
       ).subscribe({
         next: () => {
           this.isLoading.set(false);
-          this.router.navigate(['/recovery-codes'], { state: { codes: recoveryCodes.map(rc => rc.code) } });
+          this.router.navigate(['/recovery-codes'], { state: { codes } });
         },
         error: (err) => {
           this.isLoading.set(false);
