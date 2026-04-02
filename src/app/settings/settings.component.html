@@ -11,8 +11,8 @@
             <img [src]="avatarUrl" alt="Current Avatar">
           </div>
           <div class="avatar-input">
-            <label for="avatar_url" i18n="@@settings.avatarUrl">Avatar URL</label><br />
-            <span class="input"><input id="avatar_url" type="text" name="avatar_url" [(ngModel)]="avatarUrl" /></span>
+            <label i18n="@@settings.avatarUrl">Avatar URL</label>
+            <app-image-field [name]="'avatar_url'" [fieldValue]="avatarUrl" [showFieldName]="false"></app-image-field>
           </div>
         </div>
       </fieldset>

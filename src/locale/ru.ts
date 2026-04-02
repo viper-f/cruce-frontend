@@ -314,5 +314,14 @@ export const TRANSLATIONS_RU = {
   "topicCommander.moveLeft": "← Переместить",
   "topicCommander.subforums": "Подфорумы",
   "topicCommander.loading": "Загрузка...",
-  "topicCommander.noTopics": "Нет тем"
+  "topicCommander.noTopics": "Нет тем",
+  "userprofile.masks": "Маски пользователя",
+  "characterprofileedit.titleNewMask": "Создать новую маску",
+  "characterprofileedit.titleEdit": "Редактировать профиль персонажа",
+  "characterprofileedit.characterDetails": "Детали персонажа",
+  "characterprofileedit.name": "Имя",
+  "characterprofileedit.avatarUrl": "URL аватара",
+  "characterprofileedit.customFields": "Дополнительные поля",
+  "characterprofileedit.create": "Создать",
+  "characterprofileedit.update": "Обновить"
 };

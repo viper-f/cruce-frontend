@@ -21,10 +21,10 @@
           </p>
         }
 
-        <p class="inputfield required">
-          <label for="char_avatar"><ng-container i18n="@@characterprofileedit.avatarUrl">Avatar URL</ng-container></label><br />
-          <span class="input"><input id="char_avatar" type="text" name="avatar" [(ngModel)]="characterAvatar" size="80" maxlength="255" /></span>
-        </p>
+        <div class="inputfield required">
+          <label i18n="@@characterprofileedit.avatarUrl">Avatar URL</label>
+          <app-image-field [name]="'avatar'" [fieldValue]="characterAvatar" [showFieldName]="false"></app-image-field>
+        </div>
       </div>
     </fieldset>
 
