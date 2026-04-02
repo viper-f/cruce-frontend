@@ -169,16 +169,20 @@ export class NotificationService {
   }
 
   private handleConnectionFailure() {
-    this.authService.refreshToken().subscribe({
-      next: (response) => {
-        this.token = response.access_token;
-        this.scheduleReconnect();
-      },
-      error: (err) => {
-        console.error('NotificationService: Token refresh failed.', err);
-        this.scheduleReconnect();
-      }
-    });
+    if (this.authService.isAccessTokenExpired()) {
+      this.authService.refreshToken().subscribe({
+        next: (response) => {
+          this.token = response.access_token;
+          this.scheduleReconnect();
+        },
+        error: (err) => {
+          console.error('NotificationService: Token refresh failed.', err);
+          this.scheduleReconnect();
+        }
+      });
+    } else {
+      this.scheduleReconnect();
+    }
   }
 
   private processMessageQueue() {
