@@ -261,7 +261,7 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
   onAuthorMention(username: string) {
     if (!username || !this.postForm?.messageField) return;
     const textarea = this.postForm.messageField.nativeElement;
-    const mention = `@${username} `;
+    const mention = `@${username}\u200A`;
     const start = textarea.selectionStart ?? textarea.value.length;
     textarea.value = textarea.value.slice(0, start) + mention + textarea.value.slice(start);
     textarea.selectionStart = textarea.selectionEnd = start + mention.length;
