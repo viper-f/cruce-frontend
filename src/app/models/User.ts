@@ -19,6 +19,8 @@ export interface UserProfile {
   user_id: number;
   user_name: string;
   avatar: string;
+  total_posts: number;
+  total_general_posts: number;
 }
 
 export interface UserProfileResponse {
@@ -27,6 +29,8 @@ export interface UserProfileResponse {
   registration_date: string;
   avatar: string;
   characters: CharacterProfileListItem[];
+  total_posts: number;
+  total_general_posts: number;
 }
 
 export interface CharacterProfileListItem {

@@ -28,6 +28,10 @@
       }
     </li>
     <li class="pa-avatar"><img [src]="displayAvatar" alt="Avatar" /></li>
+    @if (post && !isCharacter && post.user_profile) {
+      <li class="pa-posts"><ng-container i18n="@@userprofile.totalPosts">Game posts</ng-container>: {{ post.user_profile.total_posts }}</li>
+      <li class="pa-posts"><ng-container i18n="@@userprofile.totalGeneralPosts">General posts</ng-container>: {{ post.user_profile.total_general_posts }}</li>
+    }
     @if (isCharacter && customFields.length > 0) {
       @for(field of customFields; track field.fieldMachineName; let j = $index) {
         <li class="pa-fld{{ j }}">

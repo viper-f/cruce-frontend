@@ -13,6 +13,8 @@
         <div class="user-details">
           <p><strong><ng-container i18n="@@userprofile.username">Username</ng-container>:</strong> {{ profile.username }}</p>
           <p><strong><ng-container i18n="@@userprofile.registrationDate">Registration Date</ng-container>:</strong> {{ profile.registration_date | date }}</p>
+          <p><strong><ng-container i18n="@@userprofile.totalPosts">Game posts</ng-container>:</strong> {{ profile.total_posts }}</p>
+          <p><strong><ng-container i18n="@@userprofile.totalGeneralPosts">General posts</ng-container>:</strong> {{ profile.total_general_posts }}</p>
         </div>
         <div class="profile-actions">
           <a [routerLink]="['/user-masks', profile.user_id]" i18n="@@userprofile.masks">User's Masks</a>

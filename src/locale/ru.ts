@@ -161,6 +161,8 @@ export const TRANSLATIONS_RU = {
   "userprofile.basicInfo": "Основная информация",
   "userprofile.username": "Имя пользователя",
   "userprofile.registrationDate": "Дата регистрации",
+  "userprofile.totalPosts": "Игровых постов",
+  "userprofile.totalGeneralPosts": "Общих постов",
   "userprofile.characters": "Персонажи",
   "userprofile.addCharacter": "Добавить персонажа",
   "userprofile.charName": "Имя персонажа",

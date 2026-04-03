@@ -492,6 +492,10 @@ body::before {
   margin-bottom: 2em;
 }
 
+.post-author li.pa-posts {
+  margin-bottom: 0.2em;
+}
+
 .punbb .post h3 span {
   margin-left: 21em;
   border: none !important;
