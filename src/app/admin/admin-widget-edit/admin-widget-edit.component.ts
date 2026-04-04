@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
@@ -34,6 +34,7 @@ interface ConfigField {
 export class AdminWidgetEditComponent implements OnInit {
   private apiService = inject(ApiService);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   widgetTypes = signal<WidgetType[]>([]);
   widgetId: number | null = null;
@@ -41,6 +42,7 @@ export class AdminWidgetEditComponent implements OnInit {
   selectedTypeId: number | null = null;
   configFields = signal<ConfigField[]>([]);
   saveState = signal<SaveState>('idle');
+  deleteState = signal<SaveState>('idle');
 
   ngOnInit() {
     const idParam = this.route.snapshot.paramMap.get('id');
@@ -73,6 +75,17 @@ export class AdminWidgetEditComponent implements OnInit {
     this.loadConfigTemplate({});
   }
 
+  delete() {
+    this.deleteState.set('loading');
+    this.apiService.get(`widget/${this.widgetId}/delete`).subscribe({
+      next: () => this.router.navigate(['/admin/widgets']),
+      error: () => {
+        this.deleteState.set('error');
+        setTimeout(() => this.deleteState.set('idle'), 3000);
+      }
+    });
+  }
+
   private loadConfigTemplate(savedValues: Record<string, any>) {
     const type = this.widgetTypes().find(t => t.id === Number(this.selectedTypeId));
     if (!type) {
@@ -101,11 +114,14 @@ export class AdminWidgetEditComponent implements OnInit {
       config[field.key] = field.type === 'int' ? Number(field.value) : field.value;
     }
 
-    const body = {
+    const body: Record<string, any> = {
       name: this.name,
-      template_id: Number(this.selectedTypeId),
       config: JSON.stringify(config)
     };
+
+    if (!this.widgetId) {
+      body['template_id'] = Number(this.selectedTypeId);
+    }
 
     const endpoint = this.widgetId ? `widget/${this.widgetId}/update` : 'widget/create';
     this.apiService.post(endpoint, body).subscribe({

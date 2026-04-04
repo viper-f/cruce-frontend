@@ -14,7 +14,7 @@
 
   <div class="field">
     <label for="widget-type" i18n="@@admin.widgetEdit.type">Template</label>
-    <select id="widget-type" [(ngModel)]="selectedTypeId" (ngModelChange)="onTypeChange()">
+    <select id="widget-type" [(ngModel)]="selectedTypeId" (ngModelChange)="onTypeChange()" [disabled]="!!widgetId">
       <option [ngValue]="null" disabled i18n="@@admin.widgetEdit.selectType">— Select template —</option>
       @for (type of widgetTypes(); track type.id) {
         <option [ngValue]="type.id">{{ type.name }}</option>
@@ -65,5 +65,20 @@
         }
       }
     </button>
+
+    @if (widgetId) {
+      <button
+        type="button"
+        [class]="'btn-delete btn-delete--' + deleteState()"
+        [disabled]="deleteState() === 'loading'"
+        (click)="delete()"
+      >
+        @switch (deleteState()) {
+          @case ('loading') { <span class="spinner"></span> }
+          @case ('error') { <span i18n="@@common.saveFailed">Failed</span> }
+          @default { <span i18n="@@common.delete">Delete</span> }
+        }
+      </button>
+    }
   </div>
 </div>
