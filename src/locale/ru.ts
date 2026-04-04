@@ -128,6 +128,8 @@ export const TRANSLATIONS_RU = {
   "settings.localization": "Локализация",
   "settings.language": "Язык",
   "settings.timezone": "Часовой пояс",
+  "settings.notifications": "Уведомления",
+  "settings.disableSound": "Отключить звуковые уведомления",
   "settings.changePassword": "Сменить пароль",
   "settings.oldPassword": "Старый пароль",
   "settings.newPassword": "Новый пароль",

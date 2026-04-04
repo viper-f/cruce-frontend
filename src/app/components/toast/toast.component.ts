@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Notification } from '../../models/Notification';
 import { NotificationService } from '../../services/notification.service';
+import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { NotificationData } from '../../models/event';
 
@@ -13,6 +14,8 @@ import { NotificationData } from '../../models/event';
 })
 export class ToastComponent implements OnInit {
   private notificationService = inject(NotificationService);
+  private authService = inject(AuthService);
+  private audio = new Audio('/notification.mp3');
   notifications: Notification[] = [];
 
   ngOnInit() {
@@ -25,6 +28,11 @@ export class ToastComponent implements OnInit {
       };
 
       this.notifications.push(newNotification);
+
+      if (!this.authService.currentUser()?.disable_sound) {
+        this.audio.currentTime = 0;
+        this.audio.play().catch(err => console.warn('Audio play failed:', err));
+      }
 
       // Auto-dismiss after 5 minutes (300000 ms)
       setTimeout(() => {

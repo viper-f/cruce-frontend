@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
@@ -72,6 +72,8 @@ export class SettingsComponent implements OnInit {
   timezone: string = 'UTC+00:00';
   fontSize: number = 1.0;
   avatarUrl = '';
+  disableSound: boolean = false;
+  saveState = signal<'idle' | 'loading' | 'success' | 'error'>('idle');
   oldPassword = '';
   newPassword = '';
   confirmPassword = '';
@@ -94,6 +96,7 @@ export class SettingsComponent implements OnInit {
       this.language = currentUser.interface_language || 'en-US';
       this.timezone = currentUser.interface_timezone || 'UTC';
       this.fontSize = currentUser.interface_font_size || 1.0;
+      this.disableSound = currentUser.disable_sound ?? false;
     }
   }
 
@@ -106,19 +109,25 @@ export class SettingsComponent implements OnInit {
       avatar: formData.get('avatar_url') as string,
       interface_timezone: this.timezone,
       interface_language: this.language,
-      interface_font_size: this.fontSize
+      interface_font_size: this.fontSize,
+      disable_sound: this.disableSound
     };
 
     if (this.newPassword && this.newPassword === this.confirmPassword) {
       payload.password = await this.authService.hashPassword(this.newPassword);
     }
 
+    this.saveState.set('loading');
     this.userService.updateUserSettings(payload).subscribe({
       next: (updatedUser) => {
-        console.log('Settings updated successfully');
         this.authService.updateUser(updatedUser);
+        this.saveState.set('success');
+        setTimeout(() => this.saveState.set('idle'), 3000);
       },
-      error: (err) => console.error('Failed to update settings', err)
+      error: () => {
+        this.saveState.set('error');
+        setTimeout(() => this.saveState.set('idle'), 3000);
+      }
     });
   }
 }

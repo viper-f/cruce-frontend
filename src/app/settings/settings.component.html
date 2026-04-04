@@ -53,6 +53,18 @@
       </fieldset>
 
       <fieldset>
+        <legend i18n="@@settings.notifications">Notifications</legend>
+        <div class="fs-box">
+          <p class="inputfield">
+            <label>
+              <input type="checkbox" [(ngModel)]="disableSound" name="disable_sound" />
+              <ng-container i18n="@@settings.disableSound">Disable sound notifications</ng-container>
+            </label>
+          </p>
+        </div>
+      </fieldset>
+
+      <fieldset>
         <legend i18n="@@settings.changePassword">Change Password</legend>
         <div class="fs-box">
           <p class="inputfield">
@@ -70,7 +82,16 @@
         </div>
       </fieldset>
 
-      <p class="formsubmit"><input type="submit" class="button submit" value="Save Settings" i18n-value="@@settings.save" /></p>
+      <p class="formsubmit">
+        <button type="submit" [class]="'btn-save btn-save--' + saveState()" [disabled]="saveState() === 'loading'">
+          @switch (saveState()) {
+            @case ('loading') { <span class="spinner"></span> }
+            @case ('success') { <span i18n="@@common.saved">Saved</span> }
+            @case ('error') { <span i18n="@@common.saveFailed">Failed</span> }
+            @default { <span i18n="@@settings.save">Save Settings</span> }
+          }
+        </button>
+      </p>
     </form>
   </div>
 </div>
