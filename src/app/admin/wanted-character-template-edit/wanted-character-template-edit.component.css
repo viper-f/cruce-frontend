@@ -6,49 +6,6 @@ h2 {
   margin-bottom: 1.5rem;
 }
 
-fieldset {
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
-  background: #f9f9f9;
-}
-
-legend {
-  font-weight: bold;
-  padding: 0 0.5rem;
-}
-
-.form-row {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.form-field {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.form-field label {
-  margin-bottom: 0.25rem;
-  font-weight: 500;
-}
-
-.form-field input,
-.form-field select {
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.fieldset-actions {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 1rem;
-}
-
 .form-actions {
   display: flex;
   gap: 1rem;
@@ -64,12 +21,14 @@ button {
   font-size: 1rem;
 }
 
-.btn-primary { background-color: #007bff; color: white; }
-.btn-primary:hover { background-color: #0056b3; }
-.btn-secondary { background-color: #6c757d; color: white; }
-.btn-secondary:hover { background-color: #545b62; }
-.btn-danger { background-color: #dc3545; color: white; }
-.btn-danger:hover { background-color: #c82333; }
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #545b62;
+}
 
 .btn-save {
   padding: 0.5rem 1.25rem;

@@ -3,70 +3,7 @@
 
   <form (submit)="saveTemplate(); $event.preventDefault()">
     @for (field of fields; track field.id; let i = $index) {
-      <fieldset>
-        <legend>Field {{ i + 1 }}</legend>
-
-        <div class="form-row">
-          <div class="form-field">
-            <label [for]="'machine-name-' + i">Machine Field Name:</label>
-            <input
-              [id]="'machine-name-' + i"
-              type="text"
-              name="machine_field_name_{{ i }}"
-              [(ngModel)]="field.machine_field_name"
-              placeholder="e.g., episode_location">
-          </div>
-
-          <div class="form-field">
-            <label [for]="'human-name-' + i">Human Field Name:</label>
-            <input
-              [id]="'human-name-' + i"
-              type="text"
-              name="human_field_name_{{ i }}"
-              [(ngModel)]="field.human_field_name"
-              placeholder="e.g., Location">
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-field">
-            <label [for]="'field-type-' + i">Field Type:</label>
-            <select
-              [id]="'field-type-' + i"
-              name="field_type_{{ i }}"
-              [(ngModel)]="field.field_type">
-              @for (type of fieldTypes; track type) {
-                <option [value]="type">{{ type }}</option>
-              }
-            </select>
-          </div>
-
-          <div class="form-field">
-            <label [for]="'content-type-' + i">Content Field Type:</label>
-            <select
-              [id]="'content-type-' + i"
-              name="content_field_type_{{ i }}"
-              [(ngModel)]="field.content_field_type">
-              @for (type of contentFieldTypes; track type) {
-                <option [value]="type">{{ type }}</option>
-              }
-            </select>
-          </div>
-
-          <div class="form-field">
-            <label [for]="'order-' + i">Order:</label>
-            <input
-              [id]="'order-' + i"
-              type="number"
-              name="order_{{ i }}"
-              [(ngModel)]="field.order">
-          </div>
-        </div>
-
-        <div class="fieldset-actions">
-          <button type="button" (click)="removeField(i)" class="btn-danger">Remove</button>
-        </div>
-      </fieldset>
+      <app-field-template-row [field]="field" [index]="i" (remove)="removeField(i)" />
     }
 
     <div class="form-actions">

@@ -1,0 +1,85 @@
+<fieldset>
+  <legend>Field {{ index + 1 }}</legend>
+
+  <div class="form-row">
+    <div class="form-field">
+      <label [for]="'machine-name-' + index">Machine Field Name:</label>
+      <input
+        [id]="'machine-name-' + index"
+        type="text"
+        [name]="'machine_field_name_' + index"
+        [(ngModel)]="field.machine_field_name"
+        placeholder="e.g., character_name">
+    </div>
+
+    <div class="form-field">
+      <label [for]="'human-name-' + index">Human Field Name:</label>
+      <input
+        [id]="'human-name-' + index"
+        type="text"
+        [name]="'human_field_name_' + index"
+        [(ngModel)]="field.human_field_name"
+        placeholder="e.g., Character Name">
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-field">
+      <label [for]="'field-type-' + index">Field Type:</label>
+      <select
+        [id]="'field-type-' + index"
+        [name]="'field_type_' + index"
+        [(ngModel)]="field.field_type">
+        @for (type of fieldTypes; track type) {
+          <option [value]="type">{{ type }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="form-field">
+      <label [for]="'content-type-' + index">Content Field Type:</label>
+      <select
+        [id]="'content-type-' + index"
+        [name]="'content_field_type_' + index"
+        [(ngModel)]="field.content_field_type">
+        @for (type of contentFieldTypes; track type) {
+          <option [value]="type">{{ type }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="form-field">
+      <label [for]="'order-' + index">Order:</label>
+      <input
+        [id]="'order-' + index"
+        type="number"
+        [name]="'order_' + index"
+        [(ngModel)]="field.order">
+    </div>
+  </div>
+
+  @if (field.content_field_type === 'cropped_image') {
+    <div class="form-row">
+      <div class="form-field">
+        <label [for]="'width-' + index">Width (px):</label>
+        <input
+          [id]="'width-' + index"
+          type="number"
+          [name]="'width_' + index"
+          [(ngModel)]="field.width">
+      </div>
+      <div class="form-field">
+        <label [for]="'height-' + index">Height (px):</label>
+        <input
+          [id]="'height-' + index"
+          type="number"
+          [name]="'height_' + index"
+          [(ngModel)]="field.height">
+      </div>
+    </div>
+  }
+
+  <div class="fieldset-actions">
+    <button type="button" (click)="remove.emit()" class="btn-danger">Remove</button>
+  </div>
+</fieldset>

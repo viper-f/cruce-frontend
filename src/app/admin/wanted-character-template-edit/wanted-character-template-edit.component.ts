@@ -1,16 +1,10 @@
 import { Component, inject, signal, OnInit, effect } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { CharacterService } from '../../services/character.service';
-import { FieldTemplate } from '../../models/FieldTemplate';
-
-interface FieldTemplateForm extends FieldTemplate {
-  id?: number;
-}
+import { FieldTemplateRowComponent, FieldTemplateForm } from '../field-template-row/field-template-row.component';
 
 @Component({
   selector: 'app-wanted-character-template-edit',
-  imports: [CommonModule, FormsModule],
+  imports: [FieldTemplateRowComponent],
   templateUrl: './wanted-character-template-edit.component.html',
   standalone: true,
   styleUrl: './wanted-character-template-edit.component.css'
@@ -19,9 +13,6 @@ export class WantedCharacterTemplateEditComponent implements OnInit {
   characterService = inject(CharacterService);
   fields: FieldTemplateForm[] = [];
   saveState = signal<'idle' | 'loading' | 'success' | 'error'>('idle');
-
-  fieldTypes = ['string', 'text', 'int', 'decimal', 'date'];
-  contentFieldTypes = ['short_text', 'number', 'decimal', 'long_text', 'image'];
 
   private templateLoaded = false;
 
