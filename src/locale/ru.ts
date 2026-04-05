@@ -359,5 +359,14 @@ export const TRANSLATIONS_RU = {
   "characterprofileedit.avatarUrl": "URL аватара",
   "characterprofileedit.customFields": "Дополнительные поля",
   "characterprofileedit.create": "Создать",
-  "characterprofileedit.update": "Обновить"
+  "characterprofileedit.update": "Обновить",
+  "templateEdit.addField": "Добавить поле",
+  "templateEdit.machineFieldName": "Техническое название:",
+  "templateEdit.humanFieldName": "Отображаемое название:",
+  "templateEdit.fieldType": "Тип поля:",
+  "templateEdit.contentFieldType": "Тип контента:",
+  "templateEdit.order": "Порядок:",
+  "wantedCharacter.factions": "Фракции",
+  "croppedImageField.hint": "Перетащите для перемещения · Угол для изменения размера",
+  "croppedImageField.cropUpload": "Обрезать и загрузить"
 };
