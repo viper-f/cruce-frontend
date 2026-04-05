@@ -39,6 +39,7 @@ interface ConfigField {
   endpointOptions: EndpointOption[]; // dynamically loaded select options
   dependsOn: string[];         // keys of fields referenced in endpoint
   canEmpty: boolean;
+  isSpecial: boolean;          // key starts with _, handled separately in template
 }
 
 @Component({
@@ -111,15 +112,21 @@ export class AdminWidgetEditComponent implements OnInit {
             ? (def.endpoint.match(/:(\w+)/g) ?? []).map(p => p.slice(1))
             : [];
           const canEmpty = !!def.can_empty;
+          const isSpecial = key.startsWith('_');
+          const specialDefault = key === '_refresh_interval' ? 0 : false;
+          const defaultValue = isSpecial
+            ? (savedValues[key] ?? specialDefault)
+            : (savedValues[key] ?? (def.type === 'int' ? 0 : (canEmpty ? '' : (def.values?.[0] ?? ''))));
           return {
             key,
             type: def.type,
-            value: savedValues[key] ?? (def.type === 'int' ? 0 : (canEmpty ? '' : (def.values?.[0] ?? ''))),
+            value: defaultValue,
             values: def.values,
             endpoint: def.endpoint,
             endpointOptions: [],
             dependsOn,
-            canEmpty
+            canEmpty,
+            isSpecial
           };
         });
 
@@ -191,7 +198,7 @@ export class AdminWidgetEditComponent implements OnInit {
 
     const config: Record<string, any> = {};
     for (const field of this.configFields()) {
-      if (field.value === '' || field.value === null || field.value === undefined) continue;
+      if (!field.isSpecial && (field.value === '' || field.value === null || field.value === undefined)) continue;
       config[field.key] = field.type === 'int' ? Number(field.value) : field.value;
     }
 

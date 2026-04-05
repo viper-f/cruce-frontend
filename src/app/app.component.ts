@@ -1,4 +1,4 @@
-import {Component, effect, inject, OnInit, computed, signal} from '@angular/core';
+import {afterNextRender, Component, effect, inject, Injector, OnInit, computed, signal} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Router, RouterOutlet} from '@angular/router';
 import {FooterComponent} from './components/footer/footer.component';
 import {NavlinksComponent} from './components/navlinks/navlinks.component';
@@ -38,6 +38,7 @@ export class AppComponent implements OnInit {
   currentUser = this.authService.currentUser;
   currentDate = new Date();
   private notificationService = inject(NotificationService);
+  private injector = inject(Injector);
 
   constructor() {
     this.listenForAuthChanges();
@@ -69,7 +70,10 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.boardService.loadBoard();
     this.apiService.getText('panel/header/content').subscribe({
-      next: html => this.headerPanelHtml.set(this.sanitizer.bypassSecurityTrustHtml(html)),
+      next: html => {
+        this.headerPanelHtml.set(this.sanitizer.bypassSecurityTrustHtml(html));
+        afterNextRender(() => this.processHeaderPanelLinks(), { injector: this.injector });
+      },
       error: () => {}
     });
   }
@@ -136,6 +140,36 @@ export class AppComponent implements OnInit {
         }
       }
     };
+  }
+
+  private processHeaderPanelLinks() {
+    const panel = document.getElementById('header-widget-panel');
+    if (!panel) return;
+
+    panel.querySelectorAll<HTMLElement>('[data-is-link="true"]').forEach(widget => {
+      widget.querySelectorAll<HTMLElement>('[data-entity-type][data-entity-id]').forEach(child => {
+        const entityType = child.getAttribute('data-entity-type');
+        const entityId = child.getAttribute('data-entity-id');
+        if (!entityType || !entityId) return;
+
+        const route = this.entityRoute(entityType, +entityId);
+        if (!route) return;
+
+        child.style.cursor = 'pointer';
+        child.addEventListener('click', () => this.router.navigate(route));
+      });
+    });
+  }
+
+  private entityRoute(entityType: string, entityId: number): any[] | null {
+    switch (entityType) {
+      case 'character': return ['/character', entityId];
+      case 'topic':
+      case 'episode':
+      case 'wanted_character': return ['/viewtopic', entityId];
+      case 'user': return ['/profile', entityId];
+      default: return null;
+    }
   }
 
   protected readonly Date = Date;

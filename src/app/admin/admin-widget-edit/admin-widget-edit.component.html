@@ -27,44 +27,66 @@
       <legend i18n="@@admin.widgetEdit.config">Configuration</legend>
 
       @for (field of configFields(); track field.key) {
-        <div class="field">
-          <label [for]="'cfg-' + field.key">{{ field.key }}</label>
+        @if (field.isSpecial) {
+          <!-- Special fields -->
+          @if (field.key === '_is_link') {
+            <div class="field field--checkbox">
+              <label>
+                <input type="checkbox" [(ngModel)]="field.value" />
+                <ng-container i18n="@@admin.widgetEdit.isLink">Block is link to entity</ng-container>
+              </label>
+            </div>
+          }
+          @if (field.key === '_refresh_interval') {
+            <div class="field field--inline">
+              <label>
+                <ng-container i18n="@@admin.widgetEdit.refreshIntervalBefore">Refresh widget every</ng-container>
+                <input type="number" [(ngModel)]="field.value" min="0" />
+                <ng-container i18n="@@admin.widgetEdit.refreshIntervalAfter">seconds</ng-container>
+              </label>
+            </div>
+          }
+          <!-- Unknown special fields are ignored -->
+        } @else {
+          <div class="field">
+            <label [for]="'cfg-' + field.key">{{ field.key }}</label>
 
-          @if (field.values && field.values.length > 0) {
-            <!-- Static select -->
-            <select [id]="'cfg-' + field.key" [(ngModel)]="field.value" (ngModelChange)="onFieldChange(field)">
-              @if (field.canEmpty) {
-                <option value="">—</option>
-              }
-              @for (opt of field.values; track opt) {
-                <option [value]="opt">{{ opt }}</option>
-              }
-            </select>
-          } @else if (field.endpointOptions.length > 0) {
-            <!-- Dynamic select loaded from endpoint -->
-            <select [id]="'cfg-' + field.key" [(ngModel)]="field.value" (ngModelChange)="onFieldChange(field)">
-              @if (field.canEmpty) {
-                <option value="">—</option>
-              }
-              @for (opt of field.endpointOptions; track opt.value) {
-                <option [value]="opt.value">{{ opt.label }}</option>
-              }
-            </select>
-          } @else {
-            <!-- Plain input -->
-            @switch (field.type) {
-              @case ('text') {
-                <textarea [id]="'cfg-' + field.key" [(ngModel)]="field.value" (ngModelChange)="onFieldChange(field)" rows="4"></textarea>
-              }
-              @case ('int') {
-                <input [id]="'cfg-' + field.key" type="number" [(ngModel)]="field.value" (ngModelChange)="onFieldChange(field)" />
-              }
-              @default {
-                <input [id]="'cfg-' + field.key" type="text" [(ngModel)]="field.value" (ngModelChange)="onFieldChange(field)" />
+            @if (field.values && field.values.length > 0) {
+              <!-- Static select -->
+              <select [id]="'cfg-' + field.key" [(ngModel)]="field.value" (ngModelChange)="onFieldChange(field)">
+                @if (field.canEmpty) {
+                  <option value="">—</option>
+                }
+                @for (opt of field.values; track opt) {
+                  <option [value]="opt">{{ opt }}</option>
+                }
+              </select>
+            } @else if (field.endpointOptions.length > 0) {
+              <!-- Dynamic select loaded from endpoint -->
+              <select [id]="'cfg-' + field.key" [(ngModel)]="field.value" (ngModelChange)="onFieldChange(field)">
+                @if (field.canEmpty) {
+                  <option value="">—</option>
+                }
+                @for (opt of field.endpointOptions; track opt.value) {
+                  <option [value]="opt.value">{{ opt.label }}</option>
+                }
+              </select>
+            } @else {
+              <!-- Plain input -->
+              @switch (field.type) {
+                @case ('text') {
+                  <textarea [id]="'cfg-' + field.key" [(ngModel)]="field.value" (ngModelChange)="onFieldChange(field)" rows="4"></textarea>
+                }
+                @case ('int') {
+                  <input [id]="'cfg-' + field.key" type="number" [(ngModel)]="field.value" (ngModelChange)="onFieldChange(field)" />
+                }
+                @default {
+                  <input [id]="'cfg-' + field.key" type="text" [(ngModel)]="field.value" (ngModelChange)="onFieldChange(field)" />
+                }
               }
             }
-          }
-        </div>
+          </div>
+        }
       }
     </fieldset>
   }
