@@ -8,8 +8,14 @@
           <span class="toast-time">now</span>
         </div>
         <div class="toast-content">
-          <span class="toast-sender">{{ notification.from }}:</span>
-          <span class="toast-text">{{ notification.message }}</span>
+          <span class="toast-sender">{{ notification.type }}:</span>
+          @if (notification.type === 'mention' && notification.mention) {
+            <span class="toast-text">{{ notification.message }}
+              <a [routerLink]="['/viewtopic', notification.mention.topic_id]" (click)="remove(notification.id)">{{ notification.mention.topic_name }}</a>
+            </span>
+          } @else {
+            <span class="toast-text">{{ notification.message }}</span>
+          }
         </div>
       </div>
       <button class="toast-close" (click)="remove(notification.id)">&times;</button>

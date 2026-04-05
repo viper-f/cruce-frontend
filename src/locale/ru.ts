@@ -253,6 +253,7 @@ export const TRANSLATIONS_RU = {
   "admin.characterClaims": "Заявки на персонажей",
   "admin.wantedCharacterTemplate": "Шаблон разыскиваемого персонажа",
   "admin.widgets": "Виджеты",
+  "admin.widgets.colId": "ID",
   "admin.widgets.colName": "Название",
   "admin.widgets.colTemplate": "Шаблон",
   "admin.widgets.empty": "Виджеты не найдены.",

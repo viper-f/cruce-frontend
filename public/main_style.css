@@ -1756,3 +1756,20 @@ spoiler-box .spoiler-content {
   border-radius: 0 0 4px 4px;
   padding: 0 10px;
 }
+
+.widget-grid {
+  display: grid;
+}
+
+.widget-grid--cols-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.widget-grid__name {
+  text-align: center;
+  font-weight: bold;
+}
+
+.widget-grid__field img {
+  max-width: 100%;
+}

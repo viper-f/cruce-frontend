@@ -6,6 +6,7 @@
 <table class="widgets-table">
   <thead>
     <tr>
+      <th i18n="@@admin.widgets.colId">ID</th>
       <th i18n="@@admin.widgets.colName">Name</th>
       <th i18n="@@admin.widgets.colTemplate">Template</th>
     </tr>
@@ -13,12 +14,13 @@
   <tbody>
     @for (widget of widgets(); track widget.id) {
       <tr>
+        <td>{{ widget.id }}</td>
         <td><a [routerLink]="['/admin/widget', widget.id]">{{ widget.name }}</a></td>
         <td>{{ widget.template_name }}</td>
       </tr>
     } @empty {
       <tr>
-        <td colspan="2" i18n="@@admin.widgets.empty">No widgets found.</td>
+        <td colspan="3" i18n="@@admin.widgets.empty">No widgets found.</td>
       </tr>
     }
   </tbody>

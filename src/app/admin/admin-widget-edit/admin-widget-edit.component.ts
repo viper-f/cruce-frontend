@@ -18,10 +18,27 @@ interface WidgetDetail {
   config: string | null;
 }
 
+interface ConfigFieldDef {
+  type: string;
+  values?: string[];
+  endpoint?: string;
+  can_empty?: boolean;
+}
+
+interface EndpointOption {
+  value: string;
+  label: string;
+}
+
 interface ConfigField {
   key: string;
-  type: string; // 'int' | 'string' | 'text'
+  type: string;
   value: any;
+  values?: string[];           // static select options
+  endpoint?: string;           // endpoint template, e.g. "entity/fields/:entity_type"
+  endpointOptions: EndpointOption[]; // dynamically loaded select options
+  dependsOn: string[];         // keys of fields referenced in endpoint
+  canEmpty: boolean;
 }
 
 @Component({
@@ -71,8 +88,91 @@ export class AdminWidgetEditComponent implements OnInit {
     });
   }
 
-  onTypeChange() {
+  onTypeChange(typeId: number) {
+    this.selectedTypeId = typeId;
     this.loadConfigTemplate({});
+  }
+
+  private loadConfigTemplate(savedValues: Record<string, any>) {
+    const type = this.widgetTypes().find(t => t.id === Number(this.selectedTypeId));
+    if (!type) {
+      this.configFields.set([]);
+      return;
+    }
+
+    this.apiService.get<Record<string, ConfigFieldDef>>(`widget-type/${type.name}/config-template`).subscribe({
+      next: template => {
+        if (!template || typeof template !== 'object' || Array.isArray(template)) {
+          this.configFields.set([]);
+          return;
+        }
+        const fields: ConfigField[] = Object.entries(template).map(([key, def]) => {
+          const dependsOn = def.endpoint
+            ? (def.endpoint.match(/:(\w+)/g) ?? []).map(p => p.slice(1))
+            : [];
+          const canEmpty = !!def.can_empty;
+          return {
+            key,
+            type: def.type,
+            value: savedValues[key] ?? (def.type === 'int' ? 0 : (canEmpty ? '' : (def.values?.[0] ?? ''))),
+            values: def.values,
+            endpoint: def.endpoint,
+            endpointOptions: [],
+            dependsOn,
+            canEmpty
+          };
+        });
+
+        console.log('[widget-edit] setting configFields', fields);
+        this.configFields.set(fields);
+
+        // Load endpoint options for fields that have endpoints
+        for (const field of fields) {
+          if (field.endpoint) {
+            this.loadEndpointOptions(field);
+          }
+        }
+      },
+      error: (err) => { console.error('[widget-edit] config template error', err); }
+    });
+  }
+
+  private loadEndpointOptions(field: ConfigField) {
+    if (!field.endpoint) return;
+
+    const fields = this.configFields();
+    let endpoint = field.endpoint;
+
+    // Replace :param placeholders with current field values
+    for (const dep of field.dependsOn) {
+      const depField = fields.find(f => f.key === dep);
+      if (!depField?.value) return; // wait until dependency has a value
+      endpoint = endpoint.replace(`:${dep}`, encodeURIComponent(depField.value));
+    }
+
+    this.apiService.get<any[]>(endpoint).subscribe({
+      next: raw => {
+        const options: EndpointOption[] = raw.map(item =>
+          typeof item === 'string'
+            ? { value: item, label: item }
+            : { value: item.machine_field_name, label: item.human_field_name }
+        );
+        this.configFields.update(fs =>
+          fs.map(f => f.key === field.key ? { ...f, endpointOptions: options } : f)
+        );
+      },
+      error: () => {}
+    });
+  }
+
+  onFieldChange(changedField: ConfigField) {
+    // Reload endpoint options for any field that depends on the changed field
+    const fields = this.configFields();
+    for (const field of fields) {
+      if (field.dependsOn.includes(changedField.key)) {
+        this.loadEndpointOptions(field);
+      }
+    }
   }
 
   delete() {
@@ -86,31 +186,12 @@ export class AdminWidgetEditComponent implements OnInit {
     });
   }
 
-  private loadConfigTemplate(savedValues: Record<string, any>) {
-    const type = this.widgetTypes().find(t => t.id === Number(this.selectedTypeId));
-    if (!type) {
-      this.configFields.set([]);
-      return;
-    }
-
-    this.apiService.get<Record<string, string>>(`widget-type/${type.name}/config-template`).subscribe({
-      next: template => {
-        const fields: ConfigField[] = Object.entries(template).map(([key, fieldType]) => ({
-          key,
-          type: fieldType,
-          value: savedValues[key] ?? (fieldType === 'int' ? 0 : '')
-        }));
-        this.configFields.set(fields);
-      },
-      error: () => {}
-    });
-  }
-
   save() {
     this.saveState.set('loading');
 
     const config: Record<string, any> = {};
     for (const field of this.configFields()) {
+      if (field.value === '' || field.value === null || field.value === undefined) continue;
       config[field.key] = field.type === 'int' ? Number(field.value) : field.value;
     }
 
