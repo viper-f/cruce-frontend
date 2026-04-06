@@ -1,4 +1,4 @@
-import {afterNextRender, Component, effect, inject, Injector, OnInit, computed, signal} from '@angular/core';
+import {afterNextRender, Component, effect, inject, Injector, OnInit, computed, signal, HostBinding} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Router, RouterOutlet} from '@angular/router';
 import {FooterComponent} from './components/footer/footer.component';
 import {NavlinksComponent} from './components/navlinks/navlinks.component';
@@ -33,6 +33,11 @@ export class AppComponent implements OnInit {
   headerPanelHtml = signal<SafeHtml>('');
 
   title = computed(() => this.boardService.board().site_name || 'Cuento');
+
+  @HostBinding('class')
+  get designClass(): string {
+    return this.currentUser()?.interface_design || '';
+  }
 
   pageId = 'pun-main';
   currentUser = this.authService.currentUser;

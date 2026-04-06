@@ -42,6 +42,7 @@ import { AdminWidgetPanelsComponent } from './admin/admin-widget-panels/admin-wi
 import { AdminWidgetPanelEditComponent } from './admin/admin-widget-panel-edit/admin-widget-panel-edit.component';
 import { AdminWidgetsComponent } from './admin/admin-widgets/admin-widgets.component';
 import { AdminWidgetEditComponent } from './admin/admin-widget-edit/admin-widget-edit.component';
+import { AdminDesignComponent } from './admin/admin-design/admin-design.component';
 import { PostPageComponent } from './post-page/post-page.component';
 import { NotFoundComponent } from './error-pages/not-found/not-found.component';
 import { ForbiddenComponent } from './error-pages/forbidden/forbidden.component';
@@ -286,6 +287,11 @@ export const routes: Routes = [
         path: 'widget/:id',
         component: AdminWidgetEditComponent,
         title: 'Admin - Edit Widget'
+      },
+      {
+        path: 'design',
+        component: AdminDesignComponent,
+        title: 'Admin - Design'
       }
     ]
   },

@@ -9,6 +9,7 @@ export interface User {
   interface_timezone: string;
   interface_font_size: number;
   disable_sound?: boolean;
+  interface_design?: string | null;
   roles: Role[];
 }
 export interface Role {
@@ -49,6 +50,7 @@ export interface UpdateSettingsRequest {
   interface_language?: string;
   interface_font_size?: number;
   disable_sound?: boolean;
+  interface_design?: string | null;
   password?: string;
 }
 

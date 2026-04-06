@@ -3,8 +3,15 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
+import { ApiService } from '../services/api.service';
 import { UpdateSettingsRequest } from '../models/User';
 import { ImageFieldComponent } from '../components/image-field/image-field.component';
+
+interface DesignVariation {
+  id: number;
+  class_name: string | null;
+  name: string | null;
+}
 
 const IANA_TIMEZONES = [
   { label: "(UTC-11:00) Midway", value: "Pacific/Midway" },
@@ -67,9 +74,12 @@ const IANA_TIMEZONES = [
 export class SettingsComponent implements OnInit {
   private authService = inject(AuthService);
   private userService = inject(UserService);
+  private apiService = inject(ApiService);
 
   language: string = 'en-US';
   timezone: string = 'UTC+00:00';
+  interfaceDesign: string | null = null;
+  designVariations = signal<DesignVariation[]>([]);
   fontSize: number = 1.0;
   avatarUrl = '';
   disableSound: boolean = false;
@@ -97,7 +107,12 @@ export class SettingsComponent implements OnInit {
       this.timezone = currentUser.interface_timezone || 'UTC';
       this.fontSize = currentUser.interface_font_size || 1.0;
       this.disableSound = currentUser.disable_sound ?? false;
+      this.interfaceDesign = currentUser.interface_design ?? null;
     }
+    this.apiService.get<DesignVariation[]>('design-variation/list').subscribe({
+      next: (list) => this.designVariations.set(list),
+      error: (err) => console.error('Failed to load design variations', err)
+    });
   }
 
   async onSubmit(event: Event) {
@@ -110,7 +125,8 @@ export class SettingsComponent implements OnInit {
       interface_timezone: this.timezone,
       interface_language: this.language,
       interface_font_size: this.fontSize,
-      disable_sound: this.disableSound
+      disable_sound: this.disableSound,
+      interface_design: this.interfaceDesign
     };
 
     if (this.newPassword && this.newPassword === this.confirmPassword) {

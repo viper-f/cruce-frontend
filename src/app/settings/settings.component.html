@@ -40,6 +40,17 @@
             </span>
           </p>
           <p class="inputfield">
+            <label for="interface_design" i18n="@@settings.design">Design</label><br />
+            <span class="input">
+              <select id="interface_design" name="interface_design" [(ngModel)]="interfaceDesign">
+                <option [ngValue]="null" i18n="@@settings.designDefault">Default</option>
+                @for (v of designVariations(); track v.id) {
+                  <option [ngValue]="v.class_name">{{ v.name }}</option>
+                }
+              </select>
+            </span>
+          </p>
+          <p class="inputfield">
             <label for="font_size">Font Size</label><br />
             <span class="input">
               <select id="font_size" name="font_size" [(ngModel)]="fontSize">

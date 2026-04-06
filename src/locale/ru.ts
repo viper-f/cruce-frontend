@@ -368,5 +368,21 @@ export const TRANSLATIONS_RU = {
   "templateEdit.order": "Порядок:",
   "wantedCharacter.factions": "Фракции",
   "croppedImageField.hint": "Перетащите для перемещения · Угол для изменения размера",
-  "croppedImageField.cropUpload": "Обрезать и загрузить"
+  "croppedImageField.cropUpload": "Обрезать и загрузить",
+  "common.uploaded": "Загружено",
+  "common.uploadFailed": "Ошибка",
+  "settings.design": "Дизайн",
+  "settings.designDefault": "По умолчанию",
+  "admin.design": "Дизайн",
+  "admin.design.variations": "Варианты дизайна",
+  "admin.design.variationDefault": "По умолчанию",
+  "admin.design.variationClassName": "CSS-класс",
+  "admin.design.variationName": "Название варианта",
+  "admin.design.addVariation": "+ Добавить вариант",
+  "admin.design.favicon": "Фавикон",
+  "admin.design.uploadFavicon": "Загрузить фавикон",
+  "admin.design.uploadCustomStyle": "Загрузить custom_style.css",
+  "admin.design.uploadMainStyle": "Загрузить main_style.css",
+  "admin.design.previousVersions": "Предыдущие версии",
+  "admin.design.view": "Открыть"
 };

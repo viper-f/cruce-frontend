@@ -1,0 +1,166 @@
+<div class="design-container">
+  <h2 i18n="@@admin.design">Design</h2>
+
+  <!-- Design Variations -->
+  <section class="design-section">
+    <h3 i18n="@@admin.design.variations">Design variations</h3>
+    <ul class="variation-list">
+      <li class="variation-item variation-header">
+        <span i18n="@@admin.design.variationClassName">class_name</span>
+        <span i18n="@@admin.design.variationName">Name</span>
+        <span></span>
+      </li>
+      <li class="variation-item variation-item--default">
+        <input class="variation-input" type="text" name="default-class" value="" disabled />
+        <input class="variation-input" type="text" name="default-name" i18n-value="@@admin.design.variationDefault" value="Default" disabled />
+        <span class="btn-remove-placeholder"></span>
+      </li>
+      @for (v of variations(); track v.id) {
+        <li class="variation-item">
+          <input
+            class="variation-input"
+            type="text"
+            [(ngModel)]="v.class_name"
+            [name]="'variation-class-' + v.id"
+            i18n-placeholder="@@admin.design.variationClassName"
+            placeholder="class_name"
+          />
+          <input
+            class="variation-input"
+            type="text"
+            [(ngModel)]="v.name"
+            [name]="'variation-name-' + v.id"
+            i18n-placeholder="@@admin.design.variationName"
+            placeholder="Name"
+          />
+          <button type="button" class="btn-remove" (click)="removeVariation(v.id)" i18n="@@common.remove">Remove</button>
+        </li>
+      }
+    </ul>
+    <div class="variation-actions">
+      <button type="button" class="btn-add" (click)="addVariation()" i18n="@@admin.design.addVariation">+ Add variation</button>
+      <button
+        type="button"
+        class="btn-save"
+        [class]="'btn-save--' + variationsSaveState()"
+        [disabled]="variationsSaveState() === 'loading'"
+        (click)="saveVariations()"
+      >
+        @switch (variationsSaveState()) {
+          @case ('loading') { <span class="spinner"></span> }
+          @case ('success') { <span i18n="@@common.saved">Saved</span> }
+          @case ('error') { <span i18n="@@common.saveFailed">Failed</span> }
+          @default { <span i18n="@@common.save">Save</span> }
+        }
+      </button>
+    </div>
+  </section>
+
+  <!-- Favicon -->
+  <section class="design-section">
+    <h3 i18n="@@admin.design.favicon">Favicon</h3>
+    <div class="upload-row">
+      <label class="upload-label">
+        <input
+          type="file"
+          accept=".ico,.png,.svg"
+          class="file-input"
+          (change)="onFileSelected('favicon', $event)"
+          [disabled]="stateFor('favicon') === 'loading'"
+        />
+        <span class="btn-upload" [class]="'btn-upload--' + stateFor('favicon')">
+          @switch (stateFor('favicon')) {
+            @case ('loading') { <span class="spinner"></span> }
+            @case ('success') { <span i18n="@@common.uploaded">Uploaded</span> }
+            @case ('error') { <span i18n="@@common.uploadFailed">Failed</span> }
+            @default { <span i18n="@@admin.design.uploadFavicon">Upload favicon</span> }
+          }
+        </span>
+      </label>
+    </div>
+    <div class="versions">
+      <h4 i18n="@@admin.design.previousVersions">Previous versions</h4>
+      <ul class="version-list">
+        @for (v of faviconVersions(); track v.file_created_date; let i = $index) {
+          <li class="version-item" [class.version-item--current]="i === 0">
+            <span class="version-filename">{{ v.file_name }}</span>
+            <span class="version-date">{{ v.file_created_date | date:'yyyy-MM-dd HH:mm' }}</span>
+            <a class="version-link" [href]="'/' + v.file_name" target="_blank" i18n="@@admin.design.view">View</a>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- custom_style.css -->
+  <section class="design-section">
+    <h3>custom_style.css</h3>
+    <div class="upload-row">
+      <label class="upload-label">
+        <input
+          type="file"
+          accept=".css"
+          class="file-input"
+          (change)="onFileSelected('custom_style', $event)"
+          [disabled]="stateFor('custom_style') === 'loading'"
+        />
+        <span class="btn-upload" [class]="'btn-upload--' + stateFor('custom_style')">
+          @switch (stateFor('custom_style')) {
+            @case ('loading') { <span class="spinner"></span> }
+            @case ('success') { <span i18n="@@common.uploaded">Uploaded</span> }
+            @case ('error') { <span i18n="@@common.uploadFailed">Failed</span> }
+            @default { <span i18n="@@admin.design.uploadCustomStyle">Upload custom_style.css</span> }
+          }
+        </span>
+      </label>
+    </div>
+    <div class="versions">
+      <h4 i18n="@@admin.design.previousVersions">Previous versions</h4>
+      <ul class="version-list">
+        @for (v of customStyleVersions(); track v.file_created_date; let i = $index) {
+          <li class="version-item" [class.version-item--current]="i === 0">
+            <span class="version-filename">{{ v.file_name }}</span>
+            <span class="version-date">{{ v.file_created_date | date:'yyyy-MM-dd HH:mm' }}</span>
+            <a class="version-link" [href]="'/' + v.file_name" target="_blank" i18n="@@admin.design.view">View</a>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- main_style.css -->
+  <section class="design-section">
+    <h3>main_style.css</h3>
+    <div class="upload-row">
+      <label class="upload-label">
+        <input
+          type="file"
+          accept=".css"
+          class="file-input"
+          (change)="onFileSelected('main_style', $event)"
+          [disabled]="stateFor('main_style') === 'loading'"
+        />
+        <span class="btn-upload" [class]="'btn-upload--' + stateFor('main_style')">
+          @switch (stateFor('main_style')) {
+            @case ('loading') { <span class="spinner"></span> }
+            @case ('success') { <span i18n="@@common.uploaded">Uploaded</span> }
+            @case ('error') { <span i18n="@@common.uploadFailed">Failed</span> }
+            @default { <span i18n="@@admin.design.uploadMainStyle">Upload main_style.css</span> }
+          }
+        </span>
+      </label>
+    </div>
+    <div class="versions">
+      <h4 i18n="@@admin.design.previousVersions">Previous versions</h4>
+      <ul class="version-list">
+        @for (v of mainStyleVersions(); track v.file_created_date; let i = $index) {
+          <li class="version-item" [class.version-item--current]="i === 0">
+            <span class="version-filename">{{ v.file_name }}</span>
+            <span class="version-date">{{ v.file_created_date | date:'yyyy-MM-dd HH:mm' }}</span>
+            <a class="version-link" [href]="'/' + v.file_name" target="_blank" i18n="@@admin.design.view">View</a>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+</div>

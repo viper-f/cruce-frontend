@@ -1,0 +1,272 @@
+.design-container {
+  padding: 1rem;
+  max-width: 680px;
+}
+
+.design-container h2 {
+  margin-bottom: 1.5rem;
+}
+
+.design-section {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.design-section h3 {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Design variations */
+.variation-list {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.variation-item {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.btn-remove-placeholder {
+  display: inline-block;
+  width: calc(0.7rem + 0.75rem * 5 + 2px); /* matches btn-remove: padding + border */
+}
+
+.variation-item--default .variation-input {
+  color: #999;
+  background-color: #f8f9fa;
+  cursor: default;
+}
+
+.variation-header {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0 0 0.25rem;
+}
+
+.variation-input {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  transition: border-color 0.15s;
+}
+
+.variation-input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.btn-remove {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.85rem;
+  color: #dc3545;
+  background: none;
+  border: 1px solid #dc3545;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.btn-remove:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+.variation-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.btn-add {
+  padding: 0.4rem 0.9rem;
+  font-size: 0.9rem;
+  color: #007bff;
+  background: none;
+  border: 1px dashed #007bff;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.btn-add:hover {
+  background-color: #e8f4fd;
+}
+
+.btn-save {
+  padding: 0.4rem 1.1rem;
+  min-width: 80px;
+  font-size: 0.9rem;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  transition: background-color 0.2s;
+}
+
+.btn-save--idle,
+.btn-save--loading {
+  background-color: #007bff;
+}
+
+.btn-save--idle:hover {
+  background-color: #0069d9;
+}
+
+.btn-save--success {
+  background-color: #28a745;
+}
+
+.btn-save--error {
+  background-color: #dc3545;
+}
+
+.btn-save:disabled {
+  cursor: not-allowed;
+  opacity: 0.85;
+}
+
+/* Upload button via label trick */
+.upload-row {
+  margin-bottom: 1.25rem;
+}
+
+.upload-label {
+  display: inline-block;
+  cursor: pointer;
+}
+
+.file-input {
+  display: none;
+}
+
+.btn-upload {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 1.1rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  user-select: none;
+}
+
+.btn-upload--idle {
+  background-color: #007bff;
+}
+
+.btn-upload--idle:hover {
+  background-color: #0069d9;
+}
+
+.btn-upload--loading {
+  background-color: #007bff;
+  opacity: 0.85;
+  cursor: not-allowed;
+}
+
+.btn-upload--success {
+  background-color: #28a745;
+}
+
+.btn-upload--error {
+  background-color: #dc3545;
+}
+
+/* Versions list */
+.versions h4 {
+  margin: 0 0 0.6rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.version-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.version-item {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: 4px;
+  background-color: #f8f9fa;
+  font-size: 0.875rem;
+}
+
+.version-item--current {
+  background-color: #e8f4fd;
+  border-left: 3px solid #007bff;
+}
+
+.version-link {
+  color: #007bff;
+  text-decoration: none;
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+.version-link:hover {
+  text-decoration: underline;
+}
+
+.version-filename {
+  color: #333;
+  word-break: break-all;
+  font-family: monospace;
+  font-size: 0.82rem;
+}
+
+.version-date {
+  color: #777;
+  white-space: nowrap;
+  font-size: 0.82rem;
+}
+
+.spinner {
+  width: 13px;
+  height: 13px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
