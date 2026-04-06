@@ -639,3 +639,323 @@ body::before {
   content: "✦ ";
   color: #9c7d58;
 }
+
+/* ══════════════════════════════════════════════════════════════
+   DARK THEME  —  app-root.dark
+   ══════════════════════════════════════════════════════════════ */
+
+/* Base: make all text light inside the app */
+app-root.dark {
+  color: #c8c8e0;
+}
+
+app-root.dark #pun,
+app-root.dark #pun * {
+  color: #c8c8e0;
+}
+
+/* Main content container */
+app-root.dark #pun {
+  background-color: #1e1e2e;
+  border-color: #3a3a5c;
+  box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.3), 0 20px 50px rgba(0, 0, 0, 0.8);
+}
+
+/* Categories */
+app-root.dark .category {
+  background: #252537;
+  border-color: #3a3a5c;
+  box-shadow:
+    0 0 0 3px #1e1e2e,
+    0 0 0 4px #3a3a5c,
+    0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+app-root.dark .category::before,
+app-root.dark .category::after {
+  border-color: #4a4a7a;
+}
+
+app-root.dark .category h2 {
+  background: #12122a;
+  border-color: #3a3a5c;
+}
+
+/* Tables */
+app-root.dark .pun table td,
+app-root.dark .pun table th {
+  border-color: rgba(80, 80, 130, 0.3) !important;
+  color: #c8c8e0;
+}
+
+app-root.dark .pun tr:hover td {
+  background-color: rgba(255, 255, 255, 0.04) !important;
+}
+
+/* Links */
+app-root.dark .pun a,
+app-root.dark #pun * a {
+  color: #7c8dff !important;
+}
+
+app-root.dark .pun a:hover,
+app-root.dark #pun * a:hover {
+  color: #a8b4ff !important;
+}
+
+app-root.dark #pun-navlinks {
+  border-bottom-color: #3a3a5c;
+}
+
+app-root.dark #pun-navlinks a {
+  color: #a0a0c8 !important;
+}
+
+app-root.dark #pun-navlinks a:hover {
+  color: #c8c8ff !important;
+}
+
+/* Posts */
+app-root.dark .post {
+  background-color: #252537;
+  border-color: #3a3a5c;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+app-root.dark .post h3 {
+  background: #1a1a2e;
+  border-bottom-color: #3a3a5c;
+  color: #a0a0c0;
+}
+
+app-root.dark .post h3 a {
+  color: #7c8dff;
+}
+
+app-root.dark .post-author {
+  border-right-color: #3a3a5c;
+}
+
+app-root.dark .pa-author a {
+  color: #7c8dff;
+}
+
+app-root.dark .post-content {
+  color: #c8c8e0;
+}
+
+app-root.dark .post-footer {
+  background: #1e1e2e;
+}
+
+app-root.dark .post-contacts a,
+app-root.dark .post-links a {
+  color: #7c8dff;
+}
+
+/* Quote block */
+app-root.dark .punbb .post-content .quote-box {
+  background: #1a1a2e;
+  border-left-color: #4a4a9a;
+  color: #a8a8cc;
+}
+
+app-root.dark .punbb .quote-box cite {
+  color: #7c8dff;
+}
+
+app-root.dark .punbb .quote-box cite::before {
+  color: #4a4a9a;
+}
+
+/* Direct chat */
+app-root.dark .message-box {
+  background: #252537;
+  border-color: #3a3a5c;
+}
+
+app-root.dark .message.altstyle .message-box {
+  background: #1a1a3e;
+  border-color: #3a3a6c;
+}
+
+app-root.dark .message-content p {
+  color: #c8c8e0;
+}
+
+app-root.dark .message-username {
+  color: #7c8dff;
+}
+
+app-root.dark .message-avatar {
+  border-color: #3a3a5c;
+}
+
+app-root.dark .message-avatar-placeholder {
+  background: #2a2a5a;
+  border-color: #3a3a5c;
+}
+
+/* Episode & character items */
+app-root.dark .episode-header {
+  background-color: #252537;
+  border-color: #3a3a5c;
+}
+
+app-root.dark .episode-info h2 {
+  color: #c8c8f0;
+}
+
+app-root.dark .episode-summary {
+  color: #a0a0c0;
+}
+
+app-root.dark .episode-characters h3,
+app-root.dark .episode-custom-fields h3 {
+  color: #b0b0d8;
+  border-bottom-color: #3a3a5c;
+}
+
+app-root.dark .character-item {
+  background-color: #1e1e2e;
+  border-color: #3a3a5c;
+}
+
+app-root.dark .character-item a {
+  color: #7c8dff;
+}
+
+/* Custom fields */
+app-root.dark .custom-field-display label {
+  color: #8080a8;
+}
+
+app-root.dark .custom-field-display span,
+app-root.dark .custom-field-display div {
+  color: #c0c0e0;
+}
+
+app-root.dark .long-text-field div {
+  background-color: #1a1a2e;
+  border-color: #3a3a5c;
+  color: #c0c0e0;
+}
+
+/* Inputs & forms */
+app-root.dark .punbb input,
+app-root.dark .punbb textarea,
+app-root.dark .punbb select {
+  background-color: #1a1a2e;
+  color: #c8c8e0;
+  border-color: #3a3a5c;
+}
+
+/* Section blocks (e.g. #pun-active, #pun-stats, #pun-notifications) */
+app-root.dark .punbb .section .container,
+app-root.dark .punbb .info .container,
+app-root.dark .punbb .main .container {
+  background-color: #252537 !important;
+  border-color: #3a3a5c !important;
+  color: #c8c8e0 !important;
+}
+
+app-root.dark .punbb .section h2,
+app-root.dark #pun-main h1,
+app-root.dark #pun-main h2 {
+  background-color: #12122a !important;
+  color: #c8c8e0 !important;
+  border-color: #3a3a5c !important;
+}
+
+/* Spoiler & blockquote */
+app-root.dark spoiler-box .spoiler-header {
+  background-color: #252537 !important;
+  border-color: #3a3a5c !important;
+  color: #c8c8e0 !important;
+}
+
+app-root.dark spoiler-box .spoiler-header:hover {
+  background-color: #2e2e48 !important;
+}
+
+app-root.dark spoiler-box .spoiler-content {
+  border-color: #3a3a5c !important;
+  color: #c8c8e0 !important;
+}
+
+app-root.dark blockquote {
+  background-color: #1a1a2e !important;
+  border-left-color: #4a4a9a !important;
+}
+
+app-root.dark blockquote cite,
+app-root.dark blockquote p,
+app-root.dark blockquote > * {
+  color: #c8c8e0 !important;
+  border-color: #3a3a5c !important;
+}
+
+/* Alternating table rows */
+app-root.dark tr.altstyle td {
+  background-color: #252537 !important;
+  color: #c8c8e0 !important;
+}
+
+/* Notification block */
+app-root.dark .notification-block {
+  background-color: #252537 !important;
+  border-color: #3a3a5c !important;
+  color: #c8c8e0 !important;
+}
+
+app-root.dark .notification-block:hover {
+  background-color: #2e2e48 !important;
+}
+
+/* Notifications modal */
+app-root.dark .modal-content {
+  background-color: #1e1e2e !important;
+  color: #c8c8e0 !important;
+}
+
+app-root.dark .feed-item {
+  border-bottom-color: #3a3a5c !important;
+  color: #c8c8e0 !important;
+}
+
+app-root.dark .feed-item h3,
+app-root.dark .feed-item p {
+  color: #c8c8e0 !important;
+}
+
+app-root.dark .feed-item .date {
+  color: #7070a0 !important;
+}
+
+app-root.dark .data-table th,
+app-root.dark .data-table td {
+  border-color: #3a3a5c !important;
+  color: #c8c8e0 !important;
+}
+
+app-root.dark .data-table th {
+  background-color: #12122a !important;
+}
+
+app-root.dark .data-table td {
+  background-color: #1e1e2e !important;
+}
+
+app-root.dark .dm-entry {
+  color: #c8c8e0 !important;
+}
+
+app-root.dark .dm-unread-count {
+  color: #a08040 !important;
+}
+
+/* Active PM contact */
+app-root.dark .pm-contact.active {
+  background: #2e2e48 !important;
+}
+
