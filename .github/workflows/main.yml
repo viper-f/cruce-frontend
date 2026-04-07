@@ -51,4 +51,4 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             chown -R www-data:www-data /var/www/frontend
-            chmod -R 755 /var/www/frontend
+            chmod -R 765 /var/www/frontend
