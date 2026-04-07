@@ -62,7 +62,7 @@ jobs:
             
             # 2. Fix Permissions (keeping your specific 765 requirement)
             chown -R www-data:www-data /var/www/frontend
-            chmod -R 765 /var/www/frontend
+            chmod -R 775 /var/www/frontend
             
             # 3. Clean up staging
             rm -rf /tmp/frontend_staging
