@@ -27,6 +27,7 @@ import {AdminSettingsComponent} from './admin/admin-settings/admin-settings.comp
 import {AdminSubforumsComponent} from './admin/admin-subforums/admin-subforums.component';
 import {TopicCommanderComponent} from './admin/topic-commander/topic-commander.component';
 import {AdminUsersComponent} from './admin/admin-users/admin-users.component';
+import {AdminCreateUserComponent} from './admin/admin-create-user/admin-create-user.component';
 import {PreviewComponent} from './preview/preview.component';
 import {CharacterProfileEditComponent} from './character-profile-edit/character-profile-edit.component';
 import { UserListComponent } from './user-list/user-list.component';
@@ -262,6 +263,11 @@ export const routes: Routes = [
         path: 'users',
         component: AdminUsersComponent,
         title: 'Admin - Users'
+      },
+      {
+        path: 'create-user',
+        component: AdminCreateUserComponent,
+        title: 'Admin - Create User'
       },
       {
         path: 'widget-panels',

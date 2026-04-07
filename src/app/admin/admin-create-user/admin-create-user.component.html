@@ -1,0 +1,36 @@
+<div id="pun-main" class="main">
+  <div class="main-header">
+    <h1><span i18n="@@admin.createUser">Create User</span></h1>
+  </div>
+
+  <div class="formal">
+    <form class="container" (submit)="onSubmit($event)">
+      <fieldset>
+        <legend><span i18n="@@admin.createUser">Create User</span></legend>
+        <div class="fs-box">
+          <div class="fs-group">
+            <label for="username" i18n="@@common.username">Username</label>
+            <input type="text" id="username" name="username" required>
+          </div>
+          <div class="fs-group">
+            <label for="password" i18n="@@common.password">Password</label>
+            <input type="password" id="password" name="password" required>
+          </div>
+
+          @if (success()) {
+            <p class="form-success" i18n="@@admin.createUserSuccess">User created successfully.</p>
+          }
+          @if (error()) {
+            <p class="form-error">{{ error() }}</p>
+          }
+
+          <div class="buttons">
+            <input type="submit" class="button" i18n-value="@@common.save" value="Save">
+          </div>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+
+  <div class="main-footer"></div>
+</div>

@@ -1,0 +1,16 @@
+.fs-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.form-success {
+  color: green;
+  margin-bottom: 10px;
+}
+
+.form-error {
+  color: red;
+  margin-bottom: 10px;
+}
