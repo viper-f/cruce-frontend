@@ -57,6 +57,7 @@ export class NotificationService {
 
   private messageQueue: string[] = [];
   private explicitlyClosed = false;
+  private lastMsgId: number | null = null;
 
   constructor() {
     const baseUrl = environment.wsUrl;
@@ -138,7 +139,8 @@ export class NotificationService {
 
   private _doConnect(): void {
     if (!this.token) return;
-    const urlWithAuth = `${this.url}?token=${this.token}`;
+    const lastId = this.lastMsgId !== null ? `&last_message_id=${this.lastMsgId}` : '';
+    const urlWithAuth = `${this.url}?token=${this.token}${lastId}`;
     this.ws = new WebSocket(urlWithAuth);
 
     this.connectionTimeout = window.setTimeout(() => {
@@ -208,6 +210,9 @@ export class NotificationService {
   }
 
   private handleNotification(notification: WebSocketEvent): void {
+    if (notification.msg_id !== undefined) {
+      this.lastMsgId = notification.msg_id;
+    }
     switch (notification.type) {
       case 'post_created':
         this.postCreatedSubject.next(notification as PostCreatedEvent);

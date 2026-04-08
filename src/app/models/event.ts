@@ -4,6 +4,7 @@ import { DirectMessageRaw } from './DirectChat';
 
 export interface TopicCreatedEvent {
   type: 'topic_created';
+  msg_id?: number;
   TopicID: number;
   SubforumID: number;
   Title: string;
@@ -14,11 +15,13 @@ export interface TopicCreatedEvent {
 
 export interface PostCreatedEvent {
   type: 'post_created';
+  msg_id?: number;
   data: Post;
 }
 
 export interface PostUpdatedEvent {
   type: 'post_updated';
+  msg_id?: number;
   data: Post;
 }
 
@@ -62,6 +65,7 @@ export interface NotificationData {
 
 export interface NotificationEvent {
   type: 'notification';
+  msg_id?: number;
   data: NotificationData;
 }
 
@@ -74,21 +78,25 @@ export interface UnreadNotificationsResponse {
 
 export interface TopicViewersUpdateEvent {
   type: 'topic_viewers_update';
+  msg_id?: number;
   data: UserShort[];
 }
 
 export interface DirectMessageCreatedEvent {
   type: 'direct_message_created';
+  msg_id?: number;
   data: DirectMessageRaw;
 }
 
 export interface ActiveUsersUpdateEvent {
   type: 'active_users_update';
+  msg_id?: number;
   data: UserShort[];
 }
 
 export interface PanelReloadEvent {
   type: 'panel_reload';
+  msg_id?: number;
   panel_name: string;
 }
 
