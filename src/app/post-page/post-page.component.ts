@@ -9,7 +9,6 @@ import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
   standalone: true,
   imports: [SafeHtmlPipe],
   templateUrl: './post-page.component.html',
-  styleUrl: './post-page.component.css'
 })
 export class PostPageComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);

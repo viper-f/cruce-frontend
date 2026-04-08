@@ -7,7 +7,6 @@ import { BbToolbarComponent } from '../bb-toolbar/bb-toolbar.component';
   imports: [CommonModule, BbToolbarComponent],
   templateUrl: './long-text-field.component.html',
   standalone: true,
-  styleUrl: './long-text-field.component.css'
 })
 export class LongTextFieldComponent {
   @Input() fieldName: string | undefined;
