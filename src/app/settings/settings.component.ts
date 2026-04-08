@@ -69,7 +69,6 @@ const IANA_TIMEZONES = [
   standalone: true,
   imports: [CommonModule, FormsModule, ImageFieldComponent],
   templateUrl: './settings.component.html',
-  styleUrl: './settings.component.css'
 })
 export class SettingsComponent implements OnInit {
   private authService = inject(AuthService);

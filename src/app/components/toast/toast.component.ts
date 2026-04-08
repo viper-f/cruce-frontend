@@ -10,7 +10,6 @@ import { NotificationData } from '../../models/event';
   imports: [CommonModule, RouterLink],
   templateUrl: './toast.component.html',
   standalone: true,
-  styleUrl: './toast.component.css'
 })
 export class ToastComponent implements OnInit {
   private notificationService = inject(NotificationService);

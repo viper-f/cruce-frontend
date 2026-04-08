@@ -5,7 +5,6 @@ import {Component, Input} from '@angular/core';
   imports: [],
   templateUrl: './short-text-field-display.component.html',
   standalone: true,
-  styleUrl: './short-text-field-display.component.css'
 })
 export class ShortTextFieldDisplayComponent {
   @Input() fieldMachineName: string | undefined;

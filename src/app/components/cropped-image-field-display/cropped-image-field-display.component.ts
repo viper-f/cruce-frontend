@@ -5,7 +5,6 @@ import { Component, Input } from '@angular/core';
   imports: [],
   standalone: true,
   templateUrl: './cropped-image-field-display.component.html',
-  styleUrl: './cropped-image-field-display.component.css'
 })
 export class CroppedImageFieldDisplayComponent {
   @Input() fieldName: string | undefined;

@@ -9,7 +9,6 @@ import { MaskService } from '../services/mask.service';
   standalone: true,
   imports: [CommonModule, RouterLink],
   templateUrl: './mask-list.component.html',
-  styleUrl: './mask-list.component.css'
 })
 export class MaskListComponent implements OnInit {
   // Accept the userId so it can be embedded dynamically anywhere

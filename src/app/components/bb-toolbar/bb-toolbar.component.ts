@@ -7,7 +7,6 @@ import { ImageUploadComponent } from '../image-upload/image-upload.component';
   standalone: true,
   imports: [CommonModule, ImageUploadComponent],
   templateUrl: './bb-toolbar.component.html',
-  styleUrl: './bb-toolbar.component.css'
 })
 export class BbToolbarComponent {
   @Input() textarea!: HTMLTextAreaElement;

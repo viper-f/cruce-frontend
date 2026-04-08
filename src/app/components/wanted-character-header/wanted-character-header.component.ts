@@ -10,7 +10,6 @@ import { FieldDisplayComponent } from '../field-display/field-display.component'
   standalone: true,
   imports: [CommonModule, FieldDisplayComponent],
   templateUrl: './wanted-character-header.component.html',
-  styleUrl: './wanted-character-header.component.css'
 })
 export class WantedCharacterHeaderComponent implements OnInit, OnChanges {
   @Input() wantedCharacter!: WantedCharacter | null;

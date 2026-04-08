@@ -10,7 +10,6 @@ type Step = 'code' | 'password' | 'loading' | 'done';
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './restore-password.component.html',
-  styleUrl: './restore-password.component.css'
 })
 export class RestorePasswordComponent {
   private fb = inject(FormBuilder);

@@ -9,7 +9,6 @@ import { AuthService } from '../services/auth.service';
   standalone: true,
   imports: [CommonModule, RouterLink, DatePipe],
   templateUrl: './user-profile.component.html',
-  styleUrls: ['./user-profile.component.css']
 })
 export class UserProfileComponent implements OnInit {
   @Input() id?: number;

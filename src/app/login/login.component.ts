@@ -9,7 +9,6 @@ import { UserService } from '../services/user.service';
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
   private fb = inject(FormBuilder);

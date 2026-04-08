@@ -13,7 +13,6 @@ import { TopicService } from '../services/topic.service';
   standalone: true,
   imports: [CommonModule, FieldInputComponent, FactionPathsComponent],
   templateUrl: './wanted-character-create.component.html',
-  styleUrl: './wanted-character-create.component.css'
 })
 export class WantedCharacterCreateComponent implements OnInit {
   private wantedCharacterService = inject(WantedCharacterService);

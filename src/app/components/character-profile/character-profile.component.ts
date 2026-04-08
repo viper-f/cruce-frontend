@@ -16,7 +16,6 @@ import { CroppedImageFieldDisplayComponent } from '../cropped-image-field-displa
   imports: [CommonModule, ShortTextFieldDisplayComponent, LongTextFieldDisplayComponent, NumberFieldDisplayComponent, ImageFieldDisplayComponent, CroppedImageFieldDisplayComponent, FormsModule],
   templateUrl: './character-profile.component.html',
   standalone: true,
-  styleUrl: './character-profile.component.css'
 })
 export class CharacterProfileComponent implements OnInit {
   private characterService = inject(CharacterService);

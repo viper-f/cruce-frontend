@@ -12,7 +12,6 @@ import { CharacterProfile } from '../models/Character';
   selector: 'app-character-profile-edit',
   imports: [FieldInputComponent, ImageFieldComponent, FormsModule],
   templateUrl: './character-profile-edit.component.html',
-  styleUrl: './character-profile-edit.component.css',
   standalone: true
 })
 export class CharacterProfileEditComponent implements OnInit {

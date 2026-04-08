@@ -7,7 +7,6 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './faction-create-modal.component.html',
-  styleUrl: './faction-create-modal.component.css'
 })
 export class FactionCreateModalComponent {
   @Input() parentId: number | null = null;

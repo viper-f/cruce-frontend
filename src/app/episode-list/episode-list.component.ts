@@ -21,7 +21,6 @@ import {Faction} from '../models/Faction';
   ],
   templateUrl: './episode-list.component.html',
   standalone: true,
-  styleUrl: './episode-list.component.css'
 })
 export class EpisodeListComponent implements OnInit {
   protected episodeService = inject(EpisodeService);

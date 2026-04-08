@@ -13,7 +13,6 @@ type Mode = 'initial_setup' | 'regenerate';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './settings-restoration-codes.component.html',
-  styleUrl: './settings-restoration-codes.component.css'
 })
 export class SettingsRestorationCodesComponent {
   private authService = inject(AuthService);

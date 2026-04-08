@@ -49,7 +49,6 @@ function coerceToPage(value: unknown): number {
   ],
   templateUrl: './viewtopic.component.html',
   standalone: true,
-  styleUrl: './viewtopic.component.css'
 })
 export class ViewtopicComponent implements OnInit, OnDestroy {
   private titleService = inject(Title);

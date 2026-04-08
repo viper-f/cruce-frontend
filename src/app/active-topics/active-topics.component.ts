@@ -16,7 +16,6 @@ function coerceToPage(value: unknown): number {
   imports: [CommonModule, RouterLink, BreadcrumbsComponent],
   templateUrl: './active-topics.component.html',
   standalone: true,
-  styleUrl: './active-topics.component.css'
 })
 export class ActiveTopicsComponent implements OnInit {
   forumService = inject(ForumService);

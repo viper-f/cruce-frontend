@@ -16,7 +16,6 @@ interface FactionLevel {
   standalone: true,
   imports: [CommonModule, FormsModule, FactionCreateModalComponent],
   templateUrl: './faction-paths.component.html',
-  styleUrl: './faction-paths.component.css'
 })
 export class FactionPathsComponent implements OnInit {
   private factionService = inject(FactionService);

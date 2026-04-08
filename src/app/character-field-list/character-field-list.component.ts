@@ -6,7 +6,6 @@ import { ApiService } from '../services/api.service';
   selector: 'app-character-field-list',
   standalone: true,
   templateUrl: './character-field-list.component.html',
-  styleUrl: './character-field-list.component.css'
 })
 export class CharacterFieldListComponent implements OnInit {
   private route = inject(ActivatedRoute);

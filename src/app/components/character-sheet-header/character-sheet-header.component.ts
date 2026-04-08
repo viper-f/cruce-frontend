@@ -10,7 +10,6 @@ import { CharacterService } from '../../services/character.service';
   imports: [CommonModule, FieldDisplayComponent],
   templateUrl: './character-sheet-header.component.html',
   standalone: true,
-  styleUrl: './character-sheet-header.component.css'
 })
 export class CharacterSheetHeaderComponent implements OnInit, OnChanges {
   @Input() character!: Character | null;

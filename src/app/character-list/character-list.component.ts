@@ -12,7 +12,6 @@ import { Faction } from '../models/Faction';
   ],
   templateUrl: './character-list.component.html',
   standalone: true,
-  styleUrl: './character-list.component.css'
 })
 export class CharacterListComponent implements OnInit {
   characterService = inject(CharacterService);

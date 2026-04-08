@@ -17,7 +17,6 @@ import { PreviewService } from '../services/preview.service';
   selector: 'app-episode-create',
   imports: [CommonModule, ReactiveFormsModule, FormsModule, FieldInputComponent],
   templateUrl: './episode-create.component.html',
-  styleUrl: './episode-create.component.css'
 })
 export class EpisodeCreateComponent implements OnInit {
   episodeService = inject(EpisodeService);

@@ -5,7 +5,6 @@ import {Component, Input} from '@angular/core';
   imports: [],
   templateUrl: './number-field-display.component.html',
   standalone: true,
-  styleUrl: './number-field-display.component.css'
 })
 export class NumberFieldDisplayComponent {
   @Input() fieldMachineName: string | undefined;

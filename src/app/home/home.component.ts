@@ -9,7 +9,6 @@ import {CurrentlyActiveComponent} from '../components/currently-active/currently
   selector: 'app-home',
   standalone: true,
   templateUrl: './home.component.html',
-  styleUrl: './home.component.css',
   imports: [
     RouterLink,
     CurrentlyActiveComponent

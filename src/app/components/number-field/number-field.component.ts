@@ -6,7 +6,6 @@ import { FormsModule } from '@angular/forms';
   imports: [FormsModule],
   templateUrl: './number-field.component.html',
   standalone: true,
-  styleUrl: './number-field.component.css'
 })
 export class NumberFieldComponent {
   @Input() fieldName: string | undefined;

@@ -11,7 +11,6 @@ import { takeUntil } from 'rxjs/operators';
   imports: [CommonModule, RouterLink],
   templateUrl: './topic-read-by.component.html',
   standalone: true,
-  styleUrl: './topic-read-by.component.css'
 })
 export class TopicReadByComponent implements OnInit, OnDestroy {
   private notificationService = inject(NotificationService);

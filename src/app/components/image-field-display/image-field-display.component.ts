@@ -5,7 +5,6 @@ import { Component, Input } from '@angular/core';
   imports: [],
   standalone: true,
   templateUrl: './image-field-display.component.html',
-  styleUrl: './image-field-display.component.css'
 })
 export class ImageFieldDisplayComponent {
   @Input() fieldName: string | undefined;

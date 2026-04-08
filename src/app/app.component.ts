@@ -17,7 +17,6 @@ import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
   imports: [RouterOutlet, FooterComponent, NavlinksComponent, ToastComponent, NotificationsComponent],
   templateUrl: './app.component.html',
   standalone: true,
-  styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit {
   private router = inject(Router);

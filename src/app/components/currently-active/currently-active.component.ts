@@ -10,7 +10,6 @@ import { takeUntil } from 'rxjs/operators';
   imports: [RouterLink],
   templateUrl: './currently-active.component.html',
   standalone: true,
-  styleUrl: './currently-active.component.css'
 })
 export class CurrentlyActiveComponent implements OnInit, OnDestroy {
   private notificationService = inject(NotificationService);

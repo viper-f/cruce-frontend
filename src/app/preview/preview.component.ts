@@ -13,7 +13,6 @@ import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
   imports: [CommonModule, CharacterProfileComponent, EpisodeHeaderComponent, CharacterSheetHeaderComponent, SafeHtmlPipe],
   standalone: true,
   templateUrl: './preview.component.html',
-  styleUrl: './preview.component.css'
 })
 export class PreviewComponent {
   previewService = inject(PreviewService);

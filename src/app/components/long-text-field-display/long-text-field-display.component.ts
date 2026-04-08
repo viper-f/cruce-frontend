@@ -6,7 +6,6 @@ import { SafeHtmlPipe } from '../../pipes/safe-html.pipe';
   imports: [SafeHtmlPipe],
   templateUrl: './long-text-field-display.component.html',
   standalone: true,
-  styleUrl: './long-text-field-display.component.css'
 })
 export class LongTextFieldDisplayComponent {
   @Input() fieldMachineName: string | undefined;

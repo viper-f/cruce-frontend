@@ -15,7 +15,6 @@ import {debounceTime, distinctUntilChanged, switchMap} from 'rxjs/operators';
   imports: [CommonModule, FormsModule],
   templateUrl: './direct-chat.component.html',
   standalone: true,
-  styleUrl: './direct-chat.component.css'
 })
 export class DirectChatComponent implements OnInit, OnDestroy {
   private directChatService = inject(DirectChatService);

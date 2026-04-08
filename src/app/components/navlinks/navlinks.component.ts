@@ -10,7 +10,6 @@ import { AdditionalNavlink, AdditionalNavlinkType } from '../../models/Additiona
   standalone: true,
   imports: [RouterLink],
   templateUrl: './navlinks.component.html',
-  styleUrl: './navlinks.component.css'
 })
 export class NavlinksComponent {
   protected authService = inject(AuthService);

@@ -13,7 +13,6 @@ import { PreviewService } from '../services/preview.service';
   imports: [LongTextFieldComponent, CharacterProfileComponent],
   templateUrl: './topic-create.component.html',
   standalone: true,
-  styleUrl: './topic-create.component.css'
 })
 export class TopicCreateComponent implements OnInit {
   private authService = inject(AuthService);

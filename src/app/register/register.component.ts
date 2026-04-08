@@ -11,7 +11,6 @@ import { switchMap } from 'rxjs/operators';
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './register.component.html',
-  styleUrl: './register.component.css'
 })
 export class RegisterComponent {
   private fb = inject(FormBuilder);

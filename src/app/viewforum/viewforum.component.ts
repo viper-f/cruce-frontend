@@ -17,7 +17,6 @@ function coerceToPage(value: unknown): number {
   ],
   templateUrl: './viewforum.component.html',
   standalone: true,
-  styleUrl: './viewforum.component.css'
 })
 export class ViewforumComponent implements OnInit, OnDestroy {
   forumService = inject(ForumService);

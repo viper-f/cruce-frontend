@@ -14,7 +14,6 @@ import { CharacterService } from '../services/character.service';
   ],
   templateUrl: './characterview.component.html',
   standalone: true,
-  styleUrl: './characterview.component.css'
 })
 export class CharacterviewComponent implements OnInit {
   @Input() id?: number;

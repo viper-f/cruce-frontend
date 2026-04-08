@@ -15,7 +15,6 @@ import { PreviewService } from '../services/preview.service';
   imports: [FieldInputComponent, FactionPathsComponent, CommonModule],
   templateUrl: './character-create.component.html',
   standalone: true,
-  styleUrl: './character-create.component.css'
 })
 export class CharacterCreateComponent implements OnInit {
   characterService = inject(CharacterService);

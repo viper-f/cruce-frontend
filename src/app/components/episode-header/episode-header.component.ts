@@ -10,7 +10,6 @@ import { RouterLink } from '@angular/router';
   imports: [CommonModule, RouterLink, FieldDisplayComponent],
   templateUrl: './episode-header.component.html',
   standalone: true,
-  styleUrl: './episode-header.component.css'
 })
 export class EpisodeHeaderComponent implements OnInit, OnChanges {
   @Input() episode!: Episode | null;

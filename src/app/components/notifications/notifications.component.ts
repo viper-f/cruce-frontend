@@ -10,7 +10,6 @@ import { DirectChatService } from '../../services/direct-chat.service';
   imports: [CommonModule, DatePipe, RouterLink],
   templateUrl: './notifications.component.html',
   standalone: true,
-  styleUrl: './notifications.component.css'
 })
 export class NotificationsComponent implements OnInit {
   private notificationService = inject(NotificationService);

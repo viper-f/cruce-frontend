@@ -7,7 +7,6 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './recovery-codes.component.html',
-  styleUrl: './recovery-codes.component.css'
 })
 export class RecoveryCodesComponent implements OnInit {
   codes: string[] = [];

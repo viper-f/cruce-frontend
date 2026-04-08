@@ -11,7 +11,6 @@ import { BbToolbarComponent } from '../bb-toolbar/bb-toolbar.component';
   imports: [CommonModule, BbToolbarComponent],
   templateUrl: './post-form.component.html',
   standalone: true,
-  styleUrl: './post-form.component.css'
 })
 export class PostFormComponent implements AfterViewInit, OnDestroy {
   @ViewChild('messageField') messageField!: ElementRef<HTMLTextAreaElement>;

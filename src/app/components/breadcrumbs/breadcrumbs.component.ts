@@ -12,7 +12,6 @@ export interface BreadcrumbItem {
   imports: [CommonModule, RouterLink],
   templateUrl: './breadcrumbs.component.html',
   standalone: true,
-  styleUrl: './breadcrumbs.component.css'
 })
 export class BreadcrumbsComponent {
   @Input() items: BreadcrumbItem[] = [];

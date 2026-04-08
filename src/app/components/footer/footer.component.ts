@@ -6,7 +6,6 @@ import { BoardService } from '../../services/board.service';
   imports: [],
   templateUrl: './footer.component.html',
   standalone: true,
-  styleUrl: './footer.component.css'
 })
 export class FooterComponent {
   private boardService = inject(BoardService);

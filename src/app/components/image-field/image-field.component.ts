@@ -7,7 +7,6 @@ import { ImageService } from '../../services/image.service';
   imports: [FormsModule],
   templateUrl: './image-field.component.html',
   standalone: true,
-  styleUrl: './image-field.component.css'
 })
 export class ImageFieldComponent implements OnInit {
   @Input() fieldName: string | undefined;

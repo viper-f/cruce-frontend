@@ -1186,3 +1186,905 @@ app-root.dark .pm-contact.active {
   color: #666;
   margin-left: 5px;
 }
+
+/* === topic-create.component === */
+.profile-sidebar {
+  background: #f9f9f9;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+.avatar-box img {
+  border-radius: 4px;
+}
+
+.identity-name {
+  font-weight: bold;
+}
+
+/* === episode-list.component === */
+.filter-sidebar {
+  background: #f4f4f4;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.filter-group h4 {
+  font-size: 0.9em;
+  text-transform: uppercase;
+  border-bottom: 1px solid #ddd;
+  color: #555;
+}
+
+.autocomplete-wrapper input {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.suggestions-dropdown {
+  background: white;
+  border: 1px solid #ccc;
+  border-top: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.suggestion-item {
+  transition: background 0.2s;
+}
+
+.suggestion-item:hover {
+  background: #f0f0f0;
+}
+
+.tag {
+  background: #007bff;
+  color: white;
+  font-size: 0.85em;
+}
+
+.tag i {
+  font-style: normal;
+  font-weight: bold;
+}
+
+.tag i:hover {
+  color: #ff0000;
+}
+
+.search-bar input {
+  font-size: 1.1em;
+  border: 1px solid #ccc;
+}
+
+.episode-table {
+  border: 1px solid #ccc;
+}
+
+.episode-table th {
+  background: #e1e1e1;
+}
+
+.episode-table td {
+  border-bottom: 1px solid #eee;
+}
+
+.character-avatars img {
+  border: 1px solid #fff;
+  box-shadow: 0 0 3px rgba(0,0,0,0.2);
+  transition: transform 0.2s;
+}
+
+.character-avatars img:hover {
+  transform: scale(1.2);
+}
+
+.status-badge {
+  color: white;
+  font-size: 0.8em;
+}
+
+.status-badge.open { background: #27ae60; }
+.status-badge.closed { background: #7f8c8d; }
+
+/* === toast.component === */
+.toast-item {
+  background-color: #f1f1f1;
+  border: 1px solid #0066b3;
+  color: #333;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  animation: slideInLeft 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  font-family: Verdana, Helvetica, Arial, sans-serif;
+  font-size: 11px;
+}
+
+.toast-side-accent {
+  background: #0066b3;
+}
+
+.toast-item.error .toast-side-accent {
+  background: #d9534f;
+}
+
+.toast-item.info .toast-side-accent {
+  background: #5bc0de;
+}
+
+.toast-header {
+  font-weight: bold;
+  color: #0066b3;
+  border-bottom: 1px solid #ccc;
+}
+
+.toast-sender {
+  font-weight: bold;
+  color: #333;
+}
+
+.toast-text {
+  color: #333;
+  line-height: 1.4;
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 16px;
+}
+
+.toast-close:hover {
+  color: #333;
+}
+
+@keyframes slideInLeft {
+  0% { transform: translateX(-100%); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+
+/* === short-text-field-display.component === */
+app-short-text-field-display label {
+  font-weight: bold;
+  font-size: 0.9em;
+  color: #555;
+}
+
+app-short-text-field-display span {
+  font-size: 1em;
+  color: #333;
+}
+
+/* === number-field-display.component === */
+app-number-field-display label {
+  font-weight: bold;
+  font-size: 0.9em;
+  color: #555;
+}
+
+app-number-field-display span {
+  font-size: 1em;
+  color: #333;
+}
+
+/* === settings.component === */
+.current-avatar img {
+  border: 2px solid #ccc;
+}
+
+/* === user-list.component === */
+table th {
+  background-color: #1b3a6d;
+  color: #fcfaf2;
+  font-weight: bold;
+}
+
+table th, table td {
+  border-bottom: 1px solid #e9e3d5;
+}
+
+tr.altstyle td {
+  background-color: #fcfaf2;
+}
+
+/* === register.component === */
+.input-error {
+  border-color: #dc3545;
+}
+
+.error-msg {
+  display: block;
+  color: #dc3545;
+  font-size: 0.875rem;
+}
+
+.alert-error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.toggle-password {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-size: 0.8em;
+}
+
+.toggle-password:hover {
+  color: #333;
+}
+
+/* === faction-create-modal.component === */
+.faction-modal-input,
+.faction-modal-textarea {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.faction-modal-label {
+  font-weight: bold;
+}
+
+/* === viewforum.component === */
+.new-icon {
+  background-color: #ffc107;
+  color: #333;
+  font-weight: bold;
+  font-size: 0.7em;
+  border-radius: 3px;
+  text-transform: uppercase;
+}
+
+.new-posts .tclcon h3 a {
+  font-weight: bold;
+}
+
+.new-posts-link {
+  font-size: 0.8em;
+  font-weight: normal;
+  color: #d9534f;
+}
+
+.new-posts-link:hover {
+  text-decoration: underline;
+}
+
+/* === mask-list.component === */
+.mask-table th,
+.mask-table td {
+  border: 1px solid #e2e8f0;
+}
+
+.mask-table th {
+  background-color: #f8fafc;
+  font-weight: 600;
+}
+
+.mask-avatar {
+  border-radius: 50%;
+}
+
+.no-avatar {
+  border-radius: 50%;
+  background-color: #cbd5e1;
+  font-size: 0.75rem;
+  color: #475569;
+}
+
+.error-message {
+  color: #ef4444;
+}
+
+/* === recovery-codes.component === */
+.warn-message {
+  background-color: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 4px;
+}
+
+.recovery-code {
+  font-family: monospace;
+  font-size: 1.5em;
+  letter-spacing: 0.05em;
+}
+
+/* === characterview.component === */
+.portrait-frame img {
+  border: 2px solid #d1bc9b;
+  background: #fcfaf2;
+}
+
+.char-meta-sidebar {
+  font-size: 0.9em;
+  color: #7a5d3b;
+}
+
+.char-name-title {
+  font-size: 2em;
+  color: #1b3a6d;
+  border-bottom: 1px solid #d1bc9b;
+}
+
+.field-item {
+  background: #fffdf7;
+  border-left: 3px solid #9c7d58;
+}
+
+.field-item .label {
+  font-size: 0.8em;
+  color: #7a5d3b;
+  text-transform: uppercase;
+}
+
+.field-item .value {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.char-biography h3 {
+  color: #1b3a6d;
+  border-bottom: 1px solid #d1bc9b;
+}
+
+.bio-text {
+  line-height: 1.8;
+  color: #333;
+  white-space: pre-wrap;
+}
+
+.char-activity-table th,
+.char-activity-table td {
+  border: 1px solid #d1bc9b;
+}
+
+.char-activity-table th {
+  background: #1b3a6d;
+  color: #fcfaf2;
+}
+
+.char-group-path {
+  background: rgba(0, 0, 0, 0.03);
+  border-left: 3px solid #9c7d58;
+  font-size: 0.95em;
+}
+
+.group-label {
+  font-weight: bold;
+  color: #7a5d3b;
+  text-transform: uppercase;
+  font-size: 0.8em;
+}
+
+.main-group {
+  font-weight: 600;
+  color: #1b3a6d;
+}
+
+.group-separator {
+  color: #9c7d58;
+  font-size: 0.8em;
+}
+
+.group-item {
+  color: #444;
+}
+
+/* === direct-chat.component === */
+.pm-container {
+  border-top: 1px solid #000;
+}
+
+.pm-sidebar {
+  border-right: 1px solid #d1bc9b;
+}
+
+.pm-contact {
+  cursor: pointer;
+  border-bottom: 1px solid #000;
+}
+
+.pm-contact.active {
+  background: #e9e3d5;
+}
+
+.new-chat-block {
+  border-bottom: 1px solid #d1bc9b;
+}
+
+.autocomplete-dropdown {
+  border: 1px solid #d1bc9b;
+  background: #fffdf7;
+}
+
+.autocomplete-dropdown li:hover {
+  background: #e9e3d5;
+}
+
+.unread-badge {
+  background: #9c7d58;
+  color: #fcfaf2;
+  font-size: 0.75em;
+  font-weight: bold;
+}
+
+.pm-no-chat {
+  color: var(--text-muted, #888);
+  font-style: italic;
+}
+
+.loader-spinner {
+  border: 2px solid #d1bc9b;
+  border-top-color: #9c7d58;
+  animation: spin 0.7s linear infinite;
+}
+
+.pm-history .post {
+  border: none;
+}
+
+::ng-deep .search-highlight {
+  background: #c2a67a;
+  color: #000;
+}
+
+#pm-form-buttons td:hover {
+  background: #e9e3d5;
+}
+
+.pm-input {
+  border-top: 1px solid #d1bc9b;
+}
+
+.pm-input textarea {
+  border: 1px solid #d1bc9b;
+}
+
+/* === image-upload.component === */
+.btn-remove {
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: #888;
+}
+
+.btn-remove:hover {
+  color: #c00;
+}
+
+.loader-row {
+  color: #555;
+}
+
+.loader {
+  border: 3px solid #ccc;
+  border-top-color: #555;
+  animation: spin 0.7s linear infinite;
+}
+
+.thumbnail-preview {
+  border: 1px solid #ddd;
+}
+
+.error-text {
+  color: #c00;
+  font-size: 13px;
+}
+
+.btn-primary {
+  font-weight: bold;
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* === preview.component === */
+.preview-banner {
+  background-color: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.preview-post-banner {
+  background-color: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 4px 4px 0 0;
+  font-weight: 500;
+}
+
+.preview-post {
+  border: 2px dashed #ffc107;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  opacity: 0.9;
+}
+
+/* === bb-toolbar.component === */
+.spoiler-modal-backdrop {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.spoiler-modal {
+  background: #fffdf7;
+  border: 1px solid #d1bc9b;
+  border-radius: 4px;
+}
+
+.spoiler-modal p {
+  color: #333;
+  font-size: 0.9em;
+}
+
+.spoiler-modal input {
+  border: 1px solid #d1bc9b;
+  border-radius: 4px;
+  font-size: 0.9em;
+  background: #fff;
+  color: #333;
+}
+
+.spoiler-modal-actions button {
+  border: 1px solid #d1bc9b;
+  border-radius: 4px;
+  font-size: 0.9em;
+  background: #e9e3d5;
+  color: #333;
+}
+
+.spoiler-modal-actions button:first-child {
+  background: #1b3a6d;
+  color: #fff;
+  border-color: #1b3a6d;
+}
+
+/* === post-form.component === */
+.post-form-profile-sidebar {
+  background: #f9f9f9;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+.mention-dropdown {
+  border: 1px solid #d1bc9b;
+  background: #fffdf7;
+}
+
+.mention-dropdown li:hover {
+  background: #e9e3d5;
+}
+
+.post-form-avatar-box img {
+  border-radius: 4px;
+}
+
+.post-form-identity-name {
+  font-weight: bold;
+}
+
+/* === image-field.component === */
+.mode-toggle button {
+  border: 1px solid #ccc;
+  background: #f5f5f5;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.mode-toggle button:first-child {
+  border-radius: 4px 0 0 4px;
+}
+
+.mode-toggle button:last-child {
+  border-radius: 0 4px 4px 0;
+}
+
+.mode-toggle button.active {
+  background: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.btn-upload {
+  background: #007bff;
+  color: white;
+}
+
+.btn-upload:hover {
+  background: #0069d9;
+}
+
+.preview {
+  border: 1px solid #ddd;
+}
+
+.error-row {
+  color: #dc3545;
+}
+
+.error-text {
+  font-size: 0.875rem;
+}
+
+.spinner {
+  border: 2px solid rgba(0, 0, 0, 0.15);
+  border-top-color: #007bff;
+  animation: spin 0.6s linear infinite;
+}
+
+/* === wanted-character-list.component === */
+.wanted-filter-sidebar {
+  background: #f4f4f4;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.view-toggle .button {
+  font-size: 0.85em;
+  background: #e0e0e0;
+  border: 1px solid #bbb;
+}
+
+.view-toggle .button.active {
+  background: #555;
+  color: #fff;
+  border-color: #555;
+}
+
+.wanted-filter-group h4 {
+  font-size: 0.9em;
+  text-transform: uppercase;
+  border-bottom: 1px solid #ddd;
+  color: #555;
+}
+
+.wanted-card {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fff;
+}
+
+.card-show-more {
+  background: linear-gradient(to bottom, transparent, #fff);
+}
+
+.card-show-more span {
+  font-size: 0.85em;
+  color: #555;
+  text-decoration: underline;
+}
+
+.card-hide span {
+  font-size: 0.85em;
+  color: #555;
+  text-decoration: underline;
+}
+
+.card-name {
+  font-size: 1.05em;
+  font-weight: bold;
+}
+
+.card-factions {
+  font-size: 0.85em;
+  color: #666;
+  font-style: italic;
+}
+
+.card-fields {
+  font-size: 0.88em;
+}
+
+.field-name {
+  font-weight: bold;
+}
+
+.field-value {
+  color: #333;
+}
+
+.wanted-table {
+  border: 1px solid #ccc;
+}
+
+.wanted-table th {
+  background: #e1e1e1;
+}
+
+.wanted-table td {
+  border-bottom: 1px solid #eee;
+}
+
+/* === user-profile.component === */
+.user-avatar img {
+  border: 1px solid #d1bc9b;
+  background: #fcfaf2;
+}
+
+.add-char-link {
+  cursor: pointer;
+  color: #7a5d3b;
+  text-decoration: underline;
+}
+
+:host ::ng-deep .punbb .main .category th,
+.user-profile-th {
+  background-color: #1b3a6d;
+  color: #fcfaf2;
+  border-bottom: 2px solid #c2a67a;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.9em !important;
+}
+
+.user-profile-td {
+  border-bottom: 1px solid #e9e3d5;
+}
+
+.user-profile-altstyle td {
+  background-color: #fcfaf2;
+}
+
+.tclcon a {
+  font-weight: bold;
+  color: #7a5d3b;
+  text-decoration: none;
+}
+
+.tclcon a:hover {
+  text-decoration: underline;
+}
+
+.edit-link {
+  font-weight: normal;
+  font-size: 0.9em;
+}
+
+/* === character-profile-edit.component === */
+.readonly-input {
+  background-color: #f0f0f0;
+  color: #666;
+  cursor: not-allowed;
+  border: 1px solid #ccc;
+}
+
+.btn-save {
+  color: white;
+  font-size: 0.95rem;
+  transition: background-color 0.2s;
+}
+
+.btn-save--idle,
+.btn-save--loading {
+  background-color: #007bff;
+}
+
+.btn-save--idle:hover {
+  background-color: #0069d9;
+}
+
+.btn-save--success {
+  background-color: #28a745;
+}
+
+.btn-save--error {
+  background-color: #dc3545;
+}
+
+.btn-save:disabled {
+  opacity: 0.85;
+}
+
+.btn-save .spinner {
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: white;
+  animation: spin 0.6s linear infinite;
+}
+
+/* === cropped-image-field.component === */
+.dimensions {
+  font-size: 0.8em;
+  color: #666;
+}
+
+.cropped-mode-toggle button {
+  border: 1px solid #ccc;
+  background: #f5f5f5;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.cropped-mode-toggle button:first-child {
+  border-radius: 4px 0 0 4px;
+}
+
+.cropped-mode-toggle button:last-child {
+  border-radius: 0 4px 4px 0;
+}
+
+.cropped-mode-toggle button.active {
+  background: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.overlay {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.crop-box {
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4);
+}
+
+.resize-handle {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  border-radius: 2px;
+}
+
+.crop-hint {
+  font-size: 0.8em;
+  color: #888;
+}
+
+.btn-crop {
+  background: #007bff;
+  color: white;
+  font-size: 0.875rem;
+}
+
+.btn-crop:hover {
+  background: #0069d9;
+}
+
+.btn-cancel {
+  background: #f5f5f5;
+  border: 1px solid #ccc;
+  font-size: 0.875rem;
+}
+
+.btn-cancel:hover {
+  background: #e8e8e8;
+}
+
+.cropped-preview {
+  border: 1px solid #ddd;
+}
+
+.cropped-error-row {
+  color: #dc3545;
+}
+
+.cropped-error-text {
+  font-size: 0.875rem;
+}
+
+.cropped-spinner {
+  border: 2px solid rgba(0, 0, 0, 0.15);
+  border-top-color: #007bff;
+  animation: spin 0.6s linear infinite;
+}
+
+/* === viewtopic.component === */
+.topic-full-banner {
+  border: 1px solid #d1bc9b;
+  border-left: 4px solid #9c7d58;
+  background-color: #fdf6ec;
+  color: #5a4020;
+  font-size: 0.95em;
+}
+
+.post-link-btn {
+  cursor: pointer;
+  opacity: 0.5;
+}
+
+.post-link-btn:hover {
+  opacity: 1;
+}
+
+/* === navlinks.component === */
+.navlink-inactive {
+  opacity: 0.4;
+}

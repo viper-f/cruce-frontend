@@ -22,7 +22,6 @@ interface ProcessedField {
   standalone: true,
   imports: [RouterLink, CommonModule, FormsModule, FieldDisplayComponent],
   templateUrl: './wanted-character-list.component.html',
-  styleUrl: './wanted-character-list.component.css'
 })
 export class WantedCharacterListComponent implements OnInit {
   private wantedCharacterService = inject(WantedCharacterService);

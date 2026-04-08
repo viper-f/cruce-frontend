@@ -9,7 +9,6 @@ type UploadState = 'idle' | 'uploading' | 'done' | 'error';
   imports: [FormsModule],
   templateUrl: './cropped-image-field.component.html',
   standalone: true,
-  styleUrl: './cropped-image-field.component.css'
 })
 export class CroppedImageFieldComponent implements OnInit {
   @Input() fieldName: string | undefined;
