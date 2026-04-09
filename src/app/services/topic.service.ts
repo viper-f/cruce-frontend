@@ -94,12 +94,15 @@ export class TopicService {
           this.pageLoadedSubject.next({ page: data.page, topicId: topicId });
 
           if (data.posts.length > 0) {
-            const maxPostId = Math.max(...data.posts.map(p => p.id));
+            const postIds = data.posts.map(p => p.id);
+            const maxPostId = Math.max(...postIds);
             this.notificationService.sendMessage({
               type: 'topic_view',
               topic_id: topicId,
               post_id: maxPostId
             });
+            this.notificationService.checkPostIds(postIds);
+            this.notificationService.checkTopicId(topicId);
           }
         } else {
           console.warn('Invalid posts response format', data);

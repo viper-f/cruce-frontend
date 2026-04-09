@@ -61,6 +61,7 @@ export class DirectChatService {
 
   loadDirectChat(chatId: number): void {
     this.notificationService.sendPageChange('direct_chat', chatId);
+    this.notificationService.checkChatId(chatId);
     this.apiService.get<DirectChatResponse>(`direct-chat/${chatId}`).subscribe({
       next: (data) => {
         this.currentChatSignal.set(data);

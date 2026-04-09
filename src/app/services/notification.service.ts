@@ -60,6 +60,11 @@ export class NotificationService {
   private lastMsgId: number | null = null;
   private seenPostMsgIds = new Set<number>();
 
+  // Auto-dismissal trigger maps
+  private mentionPostTriggers = new Map<number, NotificationData>();  // post_id → notification
+  private gameTopicTriggers = new Map<number, NotificationData>();    // topic_id → notification
+  private dmChatTriggers = new Map<number, NotificationData>();       // chat_id → notification
+
   constructor() {
     const baseUrl = environment.wsUrl;
     this.url = baseUrl.replace(/^http/, 'ws') + '/ws';
@@ -72,12 +77,69 @@ export class NotificationService {
         this.gameNotificationsSignal.set(response.game || []);
         this.mentionNotificationsSignal.set(response.mention || []);
         this.directMessageNotificationsSignal.set(response.direct_message || []);
+        this.rebuildTriggers(response);
       },
       error: (err) => console.error('Failed to load unread notifications', err)
     });
   }
 
+  private rebuildTriggers(response: UnreadNotificationsResponse): void {
+    this.mentionPostTriggers.clear();
+    this.gameTopicTriggers.clear();
+    this.dmChatTriggers.clear();
+    for (const n of response.mention || []) {
+      if (n.mention?.post_id) this.mentionPostTriggers.set(n.mention.post_id, n);
+    }
+    for (const n of response.game || []) {
+      if (n.game?.topic_id) this.gameTopicTriggers.set(n.game.topic_id, n);
+    }
+    for (const n of response.direct_message || []) {
+      if (n.direct_message?.chat_id) this.dmChatTriggers.set(n.direct_message.chat_id, n);
+    }
+  }
+
+  private addTrigger(n: NotificationData): void {
+    if (n.type === 'mention' && n.mention?.post_id) {
+      this.mentionPostTriggers.set(n.mention.post_id, n);
+    } else if (n.type === 'game' && n.game?.topic_id) {
+      this.gameTopicTriggers.set(n.game.topic_id, n);
+    } else if (n.type === 'direct_message' && n.direct_message?.chat_id) {
+      this.dmChatTriggers.set(n.direct_message.chat_id, n);
+    }
+  }
+
+  private removeTrigger(n: NotificationData): void {
+    if (n.type === 'mention' && n.mention?.post_id) {
+      this.mentionPostTriggers.delete(n.mention.post_id);
+    } else if (n.type === 'game' && n.game?.topic_id) {
+      this.gameTopicTriggers.delete(n.game.topic_id);
+    } else if (n.type === 'direct_message' && n.direct_message?.chat_id) {
+      this.dmChatTriggers.delete(n.direct_message.chat_id);
+    }
+  }
+
+  public checkPostIds(postIds: number[]): void {
+    if (this.mentionNotificationsSignal().length === 0) return;
+    for (const postId of postIds) {
+      const n = this.mentionPostTriggers.get(postId);
+      if (n) this.dismissNotification(n);
+    }
+  }
+
+  public checkTopicId(topicId: number): void {
+    if (this.gameNotificationsSignal().length === 0) return;
+    const n = this.gameTopicTriggers.get(topicId);
+    if (n) this.dismissNotification(n);
+  }
+
+  public checkChatId(chatId: number): void {
+    if (this.directMessageNotificationsSignal().length === 0) return;
+    const n = this.dmChatTriggers.get(chatId);
+    if (n) this.dismissNotification(n);
+  }
+
   public dismissNotification(notification: NotificationData): void {
+    this.removeTrigger(notification);
     this.apiService.post(`notifications/dismiss/${notification.id}`, {}).subscribe({
       next: () => {
         // On success, remove the notification from the corresponding list
@@ -235,6 +297,7 @@ export class NotificationService {
 
         // Push to subject for real-time toast
         this.notificationSubject.next(notificationData);
+        this.addTrigger(notificationData);
 
         // Also update the corresponding signal for the notification list
         if (notificationData.type === 'system') {

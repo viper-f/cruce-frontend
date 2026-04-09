@@ -50,6 +50,16 @@ export class FactionService {
     })
   }
 
+  private wantedFactionsSignal = signal<Faction[]>([]);
+  readonly wantedFactions = this.wantedFactionsSignal.asReadonly();
+
+  loadWantedFactions(): void {
+    this.apiService.get<Faction[]>('factions/get/wanted').subscribe({
+      next: (data) => this.wantedFactionsSignal.set(data),
+      error: (err) => console.error('Failed to load wanted factions', err)
+    });
+  }
+
   factionTree = signal<Faction[]>([]);
 
   loadFactionTree(): void {

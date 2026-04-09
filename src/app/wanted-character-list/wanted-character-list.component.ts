@@ -35,7 +35,7 @@ export class WantedCharacterListComponent implements OnInit {
 
   list = this.wantedCharacterService.wantedCharacterList;
   treeList = this.wantedCharacterService.wantedCharacterTreeList;
-  factions = this.factionService.factions;
+  factions = this.factionService.wantedFactions;
 
   groupedTreeList = computed(() => {
     const list = this.treeList();
@@ -57,7 +57,7 @@ export class WantedCharacterListComponent implements OnInit {
 
   ngOnInit() {
     this.wantedCharacterService.loadTreeList();
-    this.factionService.loadFactions();
+    this.factionService.loadWantedFactions();
     this.applyFilters();
   }
 
