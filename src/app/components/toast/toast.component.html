@@ -4,8 +4,15 @@
       <div class="toast-side-accent"></div>
       <div class="toast-main">
         <div class="toast-header">
-          <span class="toast-label">{{ notification.title }}</span>
-          <span class="toast-time">now</span>
+          @if (notification.type === 'mention') {
+            <span class="toast-label" i18n="@@toast.title.mention">Mention</span>
+          } @else if (notification.type === 'game') {
+            <span class="toast-label" i18n="@@toast.title.game">Post</span>
+          } @else if (notification.type === 'direct_message') {
+            <span class="toast-label" i18n="@@toast.title.dm">DM</span>
+          } @else {
+            <span class="toast-label">{{ notification.title }}</span>
+          }
         </div>
         <div class="toast-content">
           <span class="toast-sender">{{ notification.type }}:</span>
