@@ -16,17 +16,19 @@ export class ToastComponent implements OnInit {
   private authService = inject(AuthService);
   private audio = new Audio('/notification.mp3');
   notifications: NotificationData[] = [];
-  removingIds = new Set<number>();
+  removingIds: number[] = [];
 
   private readonly ANIMATION_MS = 300;
 
   ngOnInit() {
     this.notificationService.notification$.subscribe((event: NotificationData) => {
-      this.notifications.push(event);
+      this.notifications = [...this.notifications, event];
 
       if (!this.authService.currentUser()?.disable_sound) {
-        this.audio.currentTime = 0;
-        this.audio.play().catch(err => console.warn('Audio play failed:', err));
+        setTimeout(() => {
+          this.audio.currentTime = 0;
+          this.audio.play().catch(err => console.warn('Audio play failed:', err));
+        });
       }
 
       setTimeout(() => this.remove(event.id), 10000);
@@ -34,8 +36,8 @@ export class ToastComponent implements OnInit {
   }
 
   remove(toastId: number) {
-    if (this.removingIds.has(toastId)) return;
-    this.removingIds.add(toastId);
+    if (this.removingIds.includes(toastId)) return;
+    this.removingIds = [...this.removingIds, toastId];
 
     setTimeout(() => {
       const notification = this.notifications.find(n => n.id === toastId);
@@ -43,7 +45,7 @@ export class ToastComponent implements OnInit {
         this.notificationService.dismissNotification(notification);
       }
       this.notifications = this.notifications.filter(n => n.id !== toastId);
-      this.removingIds.delete(toastId);
+      this.removingIds = this.removingIds.filter(id => id !== toastId);
     }, this.ANIMATION_MS);
   }
 }
