@@ -1,0 +1,14 @@
+@if (showUp()) {
+  <button class="scroll-nav-btn scroll-nav-up" (click)="scrollToTop()" aria-label="Scroll to top">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="18 15 12 9 6 15"/>
+    </svg>
+  </button>
+}
+@if (showDown()) {
+  <button class="scroll-nav-btn scroll-nav-down" (click)="scrollToBottom()" aria-label="Scroll to bottom">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="6 9 12 15 18 9"/>
+    </svg>
+  </button>
+}

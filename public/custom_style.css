@@ -2087,3 +2087,15 @@ tr.altstyle td {
 .navlink-inactive {
   opacity: 0.4;
 }
+
+/* === scroll-nav.component === */
+.scroll-nav-btn {
+  background: var(--link-color, #888);
+  color: #fff;
+  border-radius: 50%;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+.scroll-nav-btn:hover {
+  opacity: 1;
+}

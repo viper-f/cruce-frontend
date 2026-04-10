@@ -3149,3 +3149,29 @@ app-number-field-display:host {
 .navlink-inactive {
   cursor: default;
 }
+
+/* === scroll-nav.component === */
+.scroll-nav-btn {
+  position: fixed;
+  right: max(10px, calc((100vw - 1200px) / 2 - 40px));
+  top: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+  z-index: 9999;
+}
+.scroll-nav-up {
+  transform: translateY(calc(-50% - 20px));
+}
+.scroll-nav-down {
+  transform: translateY(calc(-50% + 20px));
+}
+.scroll-nav-btn svg {
+  width: 18px;
+  height: 18px;
+}

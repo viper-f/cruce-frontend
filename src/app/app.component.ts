@@ -4,6 +4,7 @@ import {FooterComponent} from './components/footer/footer.component';
 import {NavlinksComponent} from './components/navlinks/navlinks.component';
 import {filter, map, mergeMap} from 'rxjs';
 import {ToastComponent} from './components/toast/toast.component';
+import {ScrollNavComponent} from './components/scroll-nav/scroll-nav.component';
 import {BoardService} from './services/board.service';
 import {AuthService} from './services/auth.service';
 import {UserService} from './services/user.service';
@@ -14,7 +15,7 @@ import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, FooterComponent, NavlinksComponent, ToastComponent, NotificationsComponent],
+  imports: [RouterOutlet, FooterComponent, NavlinksComponent, ToastComponent, NotificationsComponent, ScrollNavComponent],
   templateUrl: './app.component.html',
   standalone: true,
 })
