@@ -33,12 +33,12 @@ export class ToastComponent implements OnInit {
 
   ngOnInit() {
     this.notificationService.notification$.subscribe((event: NotificationData) => {
-      this.notifications = [...this.notifications, event];
-
       if (!this.authService.currentUser()?.disable_sound) {
         this.audio.currentTime = 0;
         this.audio.play().catch(err => console.warn('Audio play failed:', err));
       }
+
+      this.notifications = [...this.notifications, event];
 
       setTimeout(() => this.remove(event.id), 10000);
     });
