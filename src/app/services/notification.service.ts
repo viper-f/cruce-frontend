@@ -42,7 +42,7 @@ export class NotificationService {
   private panelReloadSubject = new Subject<PanelReloadEvent>();
   public panelReload$ = this.panelReloadSubject.asObservable();
 
-  private systemNotificationsSignal = signal<NotificationData[]>([]);
+private systemNotificationsSignal = signal<NotificationData[]>([]);
   public systemNotifications = this.systemNotificationsSignal.asReadonly();
   private gameNotificationsSignal = signal<NotificationData[]>([]);
   public gameNotifications = this.gameNotificationsSignal.asReadonly();

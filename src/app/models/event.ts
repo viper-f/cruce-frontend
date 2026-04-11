@@ -50,10 +50,18 @@ export interface NotificationGame {
   character_name: string;
 }
 
+export interface NotificationAccountUpdate {
+  income_type_key: string;
+  amount: number;
+  total_amount: number;
+  post_id: number;
+  topic_id: number;
+}
+
 export interface NotificationData {
   id: number;
   user_id: number;
-  type: 'system' | 'game' | 'mention' | 'direct_message';
+  type: 'system' | 'game' | 'mention' | 'direct_message' | 'account_update';
   title: string;
   message: string;
   date_created: string;
@@ -61,6 +69,7 @@ export interface NotificationData {
   mention: NotificationMention | null;
   game: NotificationGame | null;
   direct_message: NotificationDirectMessage | null;
+  account_update: NotificationAccountUpdate | null;
 }
 
 export interface NotificationEvent {

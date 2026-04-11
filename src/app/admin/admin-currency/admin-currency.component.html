@@ -1,0 +1,63 @@
+<div class="currency-container">
+  <h2 i18n="@@adminCurrency.title">Currency</h2>
+
+  <section class="currency-section">
+    <h3 i18n="@@adminCurrency.nameTitle">Currency Name</h3>
+    <div class="name-row">
+      <input type="text" [(ngModel)]="currencyName" />
+      <button
+        type="button"
+        class="btn-save btn-save--{{ nameState() }}"
+        [disabled]="nameState() === 'loading'"
+        (click)="saveName()"
+        i18n="@@adminCurrency.save">
+        Save
+      </button>
+    </div>
+  </section>
+
+  <section class="currency-section">
+    <h3 i18n="@@adminCurrency.incomeTypesTitle">Income Types</h3>
+    <table cellspacing="0">
+      <thead>
+        <tr>
+          <th i18n="@@adminCurrency.name">Name</th>
+          <th i18n="@@adminCurrency.description">Description</th>
+          <th i18n="@@adminCurrency.amount">Amount</th>
+          <th i18n="@@adminCurrency.active">Active</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (type of incomeTypes(); track type.key) {
+          <tr>
+            <td>{{ type.name }}</td>
+            <td class="description">{{ type.description }}</td>
+            <td class="amount">
+              <input
+                type="number"
+                [ngModel]="type.amount"
+                (ngModelChange)="updateIncomeType(type, { amount: $event })"
+                min="0" />
+            </td>
+            <td class="active">
+              <input
+                type="checkbox"
+                [checked]="type.is_active"
+                (change)="updateIncomeType(type, { is_active: !type.is_active })" />
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+    <div class="income-actions">
+      <button
+        type="button"
+        class="btn-save btn-save--{{ incomeTypesState() }}"
+        [disabled]="incomeTypesState() === 'loading'"
+        (click)="saveIncomeTypes()"
+        i18n="@@adminCurrency.saveIncomeTypes">
+        Save
+      </button>
+    </div>
+  </section>
+</div>

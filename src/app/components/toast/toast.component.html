@@ -10,6 +10,8 @@
             <span class="toast-label" i18n="@@toast.title.game">Post</span>
           } @else if (notification.type === 'direct_message') {
             <span class="toast-label" i18n="@@toast.title.dm">DM</span>
+          } @else if (notification.type === 'account_update') {
+            <span class="toast-label" i18n="@@toast.title.accountUpdate">Currency</span>
           } @else {
             <span class="toast-label">{{ notification.title }}</span>
           }
@@ -33,6 +35,15 @@
             <span class="toast-text">
               <strong>{{ notification.direct_message.sender_username }}</strong>
               <ng-container i18n="@@toast.directMessage.sentYouA"> sent you a </ng-container><a [routerLink]="['/direct-chat']" (click)="remove(notification.id)" i18n="@@toast.directMessage.message">message</a>
+            </span>
+          } @else if (notification.type === 'account_update' && notification.account_update) {
+            <span class="toast-text">
+              <ng-container i18n="@@toast.accountUpdate.earned">You have earned</ng-container>
+              <strong> {{ notification.account_update.amount }} </strong>
+              <ng-container i18n="@@toast.accountUpdate.for">for your</ng-container>
+              <a [routerLink]="['/viewtopic', notification.account_update.topic_id]" [queryParams]="{ post_id: notification.account_update.post_id }" (click)="remove(notification.id)" i18n="@@toast.accountUpdate.post"> post</a>.
+              <ng-container i18n="@@toast.accountUpdate.newTotal"> Your new total amount is</ng-container>
+              <strong> {{ notification.account_update.total_amount }}</strong>.
             </span>
           } @else {
             <span class="toast-text">{{ notification.message }}</span>

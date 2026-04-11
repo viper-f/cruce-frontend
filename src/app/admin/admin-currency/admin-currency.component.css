@@ -1,0 +1,160 @@
+.currency-container {
+  padding: 1rem;
+  max-width: 720px;
+}
+
+.currency-container h2 {
+  margin-bottom: 1.5rem;
+}
+
+.currency-section {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.currency-section h3 {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+  color: #333;
+}
+
+.name-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.name-row input {
+  flex: 1;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.name-row input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead tr {
+  border-bottom: 2px solid #ddd;
+}
+
+th {
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  font-weight: 600;
+  color: #444;
+}
+
+td {
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid #f0f0f0;
+  vertical-align: middle;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+tbody tr:hover {
+  background-color: #fafafa;
+}
+
+td.description {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+td.amount {
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+td.active {
+  width: 60px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.badge--active {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.badge--inactive {
+  background-color: #f0f0f0;
+  color: #666;
+}
+
+.btn-save {
+  padding: 0.4rem 1rem;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+}
+
+.btn-save--idle,
+.btn-save--loading {
+  background-color: #007bff;
+}
+
+.btn-save--idle:hover {
+  background-color: #0069d9;
+}
+
+.btn-save--success {
+  background-color: #28a745;
+}
+
+.btn-save--error {
+  background-color: #dc3545;
+}
+
+.btn-save:disabled {
+  cursor: not-allowed;
+  opacity: 0.85;
+}
+
+td.amount input[type="number"] {
+  width: 80px;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+td.amount input[type="number"]:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+td.active input[type="checkbox"] {
+  width: 1.1rem;
+  height: 1.1rem;
+  cursor: pointer;
+}
+
+.income-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}

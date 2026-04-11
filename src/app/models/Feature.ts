@@ -4,3 +4,8 @@ export interface Feature {
   description: string;
   is_active: boolean;
 }
+
+export interface FeatureToggleResponse {
+  key: string;
+  is_active: boolean;
+}
