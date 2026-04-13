@@ -1,6 +1,5 @@
 <div class="features-container">
   <h2 i18n="@@adminFeatures.title">Features</h2>
-  <a routerLink="/admin/currency" i18n="@@adminFeatures.currencyLink">Currency settings</a>
 
   <table cellspacing="0">
     <thead>
@@ -8,6 +7,7 @@
         <th i18n="@@adminFeatures.name">Name</th>
         <th i18n="@@adminFeatures.description">Description</th>
         <th i18n="@@adminFeatures.enabled">Enabled</th>
+        <th i18n="@@adminFeatures.settings">Settings</th>
       </tr>
     </thead>
     <tbody>
@@ -17,6 +17,9 @@
           <td>{{ feature.description }}</td>
           <td>
             <input type="checkbox" [checked]="feature.is_active" (change)="toggle(feature.key)" />
+          </td>
+          <td>
+            <a [routerLink]="['/admin/features', feature.key]" i18n="@@adminFeatures.settingsLink">Settings</a>
           </td>
         </tr>
       }

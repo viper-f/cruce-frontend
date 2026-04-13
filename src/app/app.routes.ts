@@ -22,6 +22,8 @@ import {PermissionMatrixComponent} from './admin/permission-matrix/permission-ma
 import {AdminFactionsComponent} from './admin/admin-factions/admin-factions.component';
 import {AdminFeaturesComponent} from './admin/admin-features/admin-features.component';
 import {AdminCurrencyComponent} from './admin/admin-currency/admin-currency.component';
+import {AdminPostTopComponent} from './admin/admin-post-top/admin-post-top.component';
+import {PostTopComponent} from './post-top/post-top.component';
 import {CharacterClaimsComponent} from './admin/character-claims/character-claims.component';
 import {WantedCharacterTemplateEditComponent} from './admin/wanted-character-template-edit/wanted-character-template-edit.component';
 import {WantedCharacterCreateComponent} from './wanted-character-create/wanted-character-create.component';
@@ -141,6 +143,12 @@ export const routes: Routes = [
     path: 'viewtopic/:id',
     component: ViewtopicComponent,
     data: { pageId: 'pun-viewtopic' }
+  },
+  {
+    path: 'post-top/:id',
+    component: PostTopComponent,
+    title: 'Post Top',
+    data: { pageId: 'pun-post-top' }
   },
   {
     path: 'profile/:id',
@@ -320,9 +328,14 @@ export const routes: Routes = [
         title: 'Admin - Features'
       },
       {
-        path: 'currency',
+        path: 'features/currency',
         component: AdminCurrencyComponent,
         title: 'Admin - Currency'
+      },
+      {
+        path: 'features/post_top',
+        component: AdminPostTopComponent,
+        title: 'Admin - Post Top'
       }
     ]
   },

@@ -1,0 +1,73 @@
+<div class="post-top-container">
+  <h2 i18n="@@adminPostTop.title">Post Top</h2>
+
+  <table cellspacing="0">
+    <thead>
+      <tr>
+        <th i18n="@@adminPostTop.colName">Name</th>
+        <th i18n="@@adminPostTop.colUserCount">Users</th>
+        <th i18n="@@adminPostTop.colDays">Days</th>
+        <th i18n="@@adminPostTop.colMonthly">Monthly</th>
+        <th i18n="@@adminPostTop.colOpen">Open to users</th>
+        <th i18n="@@adminPostTop.colStartDate">Start Date</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (top of tops(); track top.id) {
+        <tr>
+          <td><input type="text" [(ngModel)]="top.name" /></td>
+          <td><input type="number" [(ngModel)]="top.user_count" min="1" /></td>
+          <td><input type="number" [(ngModel)]="top.days" [disabled]="top.is_monthly" /></td>
+          <td><input type="checkbox" [(ngModel)]="top.is_monthly" /></td>
+          <td><input type="checkbox" [(ngModel)]="top.is_open" /></td>
+          <td><input type="date" [(ngModel)]="top.start_date" /></td>
+          <td class="row-actions">
+            <button type="button" (click)="update(top)" i18n="@@adminPostTop.save">Save</button>
+            <button type="button" class="btn-delete" (click)="delete(top.id)" i18n="@@adminPostTop.delete">Delete</button>
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="7"><p i18n="@@adminPostTop.empty">No tops yet.</p></td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  @if (!showCreateForm) {
+    <button type="button" (click)="openCreateForm()" i18n="@@adminPostTop.add">+ Add Top</button>
+  } @else {
+    <div class="create-form">
+      <h3 i18n="@@adminPostTop.newTop">New Top</h3>
+      <div class="form-row">
+        <label i18n="@@adminPostTop.colName">Name</label>
+        <input type="text" [(ngModel)]="newTop.name" />
+      </div>
+      <div class="form-row">
+        <label i18n="@@adminPostTop.colUserCount">Users</label>
+        <input type="number" [(ngModel)]="newTop.user_count" min="1" />
+      </div>
+      <div class="form-row">
+        <label i18n="@@adminPostTop.colDays">Days</label>
+        <input type="number" [(ngModel)]="newTop.days" [disabled]="newTop.is_monthly" />
+      </div>
+      <div class="form-row">
+        <label i18n="@@adminPostTop.colMonthly">Monthly</label>
+        <input type="checkbox" [(ngModel)]="newTop.is_monthly" />
+      </div>
+      <div class="form-row">
+        <label i18n="@@adminPostTop.colOpen">Open to users</label>
+        <input type="checkbox" [(ngModel)]="newTop.is_open" />
+      </div>
+      <div class="form-row">
+        <label i18n="@@adminPostTop.colStartDate">Start Date</label>
+        <input type="date" [(ngModel)]="newTop.start_date" />
+      </div>
+      <div class="form-actions">
+        <button type="button" [disabled]="saving()" (click)="create()" i18n="@@adminPostTop.create">Create</button>
+        <button type="button" (click)="cancelCreate()" i18n="@@adminPostTop.cancel">Cancel</button>
+      </div>
+    </div>
+  }
+</div>

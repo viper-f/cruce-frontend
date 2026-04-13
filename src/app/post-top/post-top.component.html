@@ -1,0 +1,46 @@
+@if (loading) {
+  <p class="post-top-loading" i18n="@@postTop.loading">Loading…</p>
+} @else if (error || !top) {
+  <p class="post-top-error" i18n="@@postTop.error">Failed to load top.</p>
+} @else {
+<div id="pun-main" class="main">
+  <div class="main-header">
+    <h1>{{ top.name }}</h1>
+  </div>
+
+  <div class="main-content">
+    <p class="post-top-period">
+      @if (top.is_monthly) {
+        <ng-container i18n="@@postTop.monthly">Monthly top</ng-container>
+      } @else if (top.days) {
+        <ng-container i18n="@@postTop.days">Top for {top.days, plural, =1 {1 day} other {{{top.days}} days}}</ng-container>
+      }
+      &nbsp;·&nbsp;{{ top.start_date }} — {{ top.end_date }}
+    </p>
+
+    @if (top.items.length === 0) {
+      <p class="post-top-empty" i18n="@@postTop.empty">No entries yet.</p>
+    } @else {
+      <ol class="post-top-list">
+        @for (entry of top.items; track entry.user_id; let i = $index) {
+          <li class="post-top-entry" [class.post-top-entry--gold]="i === 0" [class.post-top-entry--silver]="i === 1" [class.post-top-entry--bronze]="i === 2">
+            <span class="post-top-rank">{{ i + 1 }}</span>
+            <div class="post-top-avatar">
+              @if (entry.avatar) {
+                <img [src]="entry.avatar" [alt]="entry.username" />
+              } @else {
+                <div class="post-top-avatar-placeholder"></div>
+              }
+            </div>
+            <div class="post-top-user">
+              <a [routerLink]="['/profile', entry.user_id]" class="post-top-username">{{ entry.username }}</a>
+              <span class="post-top-chars" i18n="@@postTop.characters">{entry.character_count, plural, =1 {1 character} other {{{entry.character_count}} characters}}</span>
+            </div>
+            <span class="post-top-count" i18n="@@postTop.posts">{entry.post_count, plural, =1 {1 post} other {{{entry.post_count}} posts}}</span>
+          </li>
+        }
+      </ol>
+    }
+  </div>
+</div>
+}
