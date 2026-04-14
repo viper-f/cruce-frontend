@@ -89,17 +89,18 @@
         <h2 i18n="@@notifications.mentions">Mentions</h2>
         <div class="feed-list">
           @for (item of mentionNotifications(); track item.id) {
+            @let mention = $any(item.mention ?? item.data);
             <div class="feed-item">
               <div class="feed-item-content">
                 <span class="date">[{{ item.date_created | date:'short' }}]</span>
                 <span>
-                  {{ item.mention?.user_name || 'User' }} mentioned you in
-                  @if (item.mention?.topic_id) {
-                    <a [routerLink]="['/viewtopic', item.mention!.topic_id]"
-                       [queryParams]="{post_id: item.mention!.post_id}"
-                       (click)="onNotificationClick(item)">{{ item.mention!.topic_name || 'Topic' }}</a>
+                  {{ mention?.user_name || 'User' }} mentioned you in
+                  @if (mention?.topic_id) {
+                    <a [routerLink]="['/viewtopic', mention.topic_id]"
+                       [queryParams]="{post_id: mention.post_id}"
+                       (click)="onNotificationClick(item)">{{ mention.topic_name || item.title }}</a>
                   } @else {
-                    {{ item.title || 'Topic' }}
+                    {{ item.title }}
                   }
                 </span>
               </div>
