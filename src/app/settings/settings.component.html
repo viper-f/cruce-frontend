@@ -66,12 +66,68 @@
       <fieldset>
         <legend i18n="@@settings.notifications">Notifications</legend>
         <div class="fs-box">
-          <p class="inputfield">
-            <label>
-              <input type="checkbox" [(ngModel)]="disableSound" name="disable_sound" />
-              <ng-container i18n="@@settings.disableSound">Disable sound notifications</ng-container>
-            </label>
-          </p>
+          @if (notificationSettings().length > 0) {
+            <table class="data-table notif-settings-table">
+              <thead>
+                <tr>
+                  <th i18n="@@settings.notif.type">Type</th>
+                  <th>
+                    <div class="notif-col-header">
+                      <span i18n="@@settings.notif.disableToast">Disable toast</span>
+                      <input type="checkbox"
+                             [checked]="isColumnAll('disable_toast')"
+                             (change)="toggleColumn('disable_toast', $any($event.target).checked)" />
+                    </div>
+                  </th>
+                  <th>
+                    <div class="notif-col-header">
+                      <span i18n="@@settings.notif.disableSound">Disable sound</span>
+                      <input type="checkbox"
+                             [checked]="isColumnAll('disable_sound')"
+                             (change)="toggleColumn('disable_sound', $any($event.target).checked)" />
+                    </div>
+                  </th>
+                  <th>
+                    <div class="notif-col-header">
+                      <span i18n="@@settings.notif.disableAll">Disable all</span>
+                      <input type="checkbox"
+                             [checked]="isColumnAll('disable_all')"
+                             (change)="toggleColumn('disable_all', $any($event.target).checked)" />
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (setting of notificationSettings(); track setting.notification_type) {
+                  <tr>
+                    <td>{{ setting.notification_type }}</td>
+                    <td class="notif-check-cell">
+                      <input type="checkbox" [(ngModel)]="setting.disable_toast" [name]="'toast_' + setting.notification_type" />
+                    </td>
+                    <td class="notif-check-cell">
+                      <input type="checkbox" [(ngModel)]="setting.disable_sound" [name]="'sound_' + setting.notification_type" />
+                    </td>
+                    <td class="notif-check-cell">
+                      <input type="checkbox" [(ngModel)]="setting.disable_all" [name]="'all_' + setting.notification_type" />
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+            <div class="notif-save-row">
+              <button type="button"
+                      [class]="'btn-save btn-save--' + notifSaveState()"
+                      [disabled]="notifSaveState() === 'loading'"
+                      (click)="saveNotificationSettings()">
+                @switch (notifSaveState()) {
+                  @case ('loading') { <span class="spinner"></span> }
+                  @case ('success') { <span i18n="@@common.saved">Saved</span> }
+                  @case ('error') { <span i18n="@@common.saveFailed">Failed</span> }
+                  @default { <span i18n="@@settings.notif.save">Save notification settings</span> }
+                }
+              </button>
+            </div>
+          }
         </div>
       </fieldset>
 

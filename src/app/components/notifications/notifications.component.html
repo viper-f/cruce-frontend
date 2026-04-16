@@ -1,33 +1,33 @@
 <div class="notifications-container">
-  @if (systemNotifications().length > 0) {
+  @if (systemNotifications().length > 0 && !isTypeDisabled('system')) {
     <div class="notification-block system-messages" (click)="openModal('system')">
       <span class="count">{{ systemNotifications().length }}</span>
       <span class="label" i18n="@@notifications.systemMessages">System messages</span>
     </div>
   }
 
-  @if (gameNotifications().length > 0) {
+  @if (gameNotifications().length > 0 && !isTypeDisabled('game')) {
     <div class="notification-block game-posts" (click)="openModal('game')">
       <span class="count">{{ gameNotifications().length }}</span>
       <span class="label" i18n="@@notifications.myGamePosts">Posts in my games</span>
     </div>
   }
 
-  @if (mentionNotifications().length > 0) {
+  @if (mentionNotifications().length > 0 && !isTypeDisabled('mention')) {
     <div class="notification-block mentions" (click)="openModal('mention')">
       <span class="count">{{ mentionNotifications().length }}</span>
       <span class="label" i18n="@@notifications.mentions">Mentions</span>
     </div>
   }
 
-  @if (directMessageNotifications().length > 0) {
+  @if (directMessageNotifications().length > 0 && !isTypeDisabled('direct_message')) {
     <div class="notification-block direct-messages" (click)="openModal('direct_message')">
       <span class="count">{{ directMessageNotifications().length }}</span>
       <span class="label" i18n="@@notifications.directMessages">Direct messages</span>
     </div>
   }
 
-  @if (reactionNotifications().length > 0) {
+  @if (reactionNotifications().length > 0 && !isTypeDisabled('reaction')) {
     <div class="notification-block reactions" (click)="openModal('reaction')">
       <span class="count">{{ reactionNotifications().length }}</span>
       <span class="label" i18n="@@notifications.reactions">Reactions</span>

@@ -1,6 +1,13 @@
 import { Faction } from './Faction';
 import { CharacterShort } from './Character';
 
+export interface UserNotificationSetting {
+  notification_type: string;
+  disable_toast: boolean;
+  disable_sound: boolean;
+  disable_all: boolean;
+}
+
 export interface User {
   id: number;
   username: string;
@@ -11,6 +18,7 @@ export interface User {
   disable_sound?: boolean;
   interface_design?: string | null;
   roles: Role[];
+  notification_settings?: UserNotificationSetting[];
   currency_amount?: number;
 }
 export interface Role {

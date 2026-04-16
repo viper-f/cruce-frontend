@@ -7,6 +7,13 @@ import { ApiService } from '../services/api.service';
 import { UpdateSettingsRequest } from '../models/User';
 import { ImageFieldComponent } from '../components/image-field/image-field.component';
 
+interface UserNotificationSetting {
+  notification_type: string;
+  disable_toast: boolean;
+  disable_sound: boolean;
+  disable_all: boolean;
+}
+
 interface DesignVariation {
   id: number;
   class_name: string | null;
@@ -83,6 +90,9 @@ export class SettingsComponent implements OnInit {
   avatarUrl = '';
   disableSound: boolean = false;
   saveState = signal<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+  notificationSettings = signal<UserNotificationSetting[]>([]);
+  notifSaveState = signal<'idle' | 'loading' | 'success' | 'error'>('idle');
   oldPassword = '';
   newPassword = '';
   confirmPassword = '';
@@ -108,9 +118,38 @@ export class SettingsComponent implements OnInit {
       this.disableSound = currentUser.disable_sound ?? false;
       this.interfaceDesign = currentUser.interface_design ?? null;
     }
+    this.notificationSettings.set(currentUser?.notification_settings ?? []);
     this.apiService.get<DesignVariation[]>('design-variation/list').subscribe({
       next: (list) => this.designVariations.set(list),
       error: (err) => console.error('Failed to load design variations', err)
+    });
+  }
+
+  isColumnAll(col: keyof UserNotificationSetting): boolean {
+    return this.notificationSettings().every(s => s[col] as boolean);
+  }
+
+  toggleColumn(col: keyof UserNotificationSetting, value: boolean) {
+    this.notificationSettings.update(list =>
+      list.map(s => ({ ...s, [col]: value }))
+    );
+  }
+
+  saveNotificationSettings() {
+    this.notifSaveState.set('loading');
+    this.apiService.post('notifications/settings/update', this.notificationSettings()).subscribe({
+      next: () => {
+        const currentUser = this.authService.currentUser();
+        if (currentUser) {
+          this.authService.updateUser({ ...currentUser, notification_settings: this.notificationSettings() });
+        }
+        this.notifSaveState.set('success');
+        setTimeout(() => this.notifSaveState.set('idle'), 3000);
+      },
+      error: () => {
+        this.notifSaveState.set('error');
+        setTimeout(() => this.notifSaveState.set('idle'), 3000);
+      }
     });
   }
 

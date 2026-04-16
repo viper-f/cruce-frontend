@@ -302,12 +302,13 @@ private systemNotificationsSignal = signal<NotificationData[]>([]);
       case 'notification':
         const event = notification as NotificationEvent;
         const notificationData = event.data;
+        const notifSetting = this.authService.currentUser()?.notification_settings
+          ?.find(s => s.notification_type === notificationData.type);
 
-        // Push to subject for real-time toast
-        this.notificationSubject.next(notificationData);
+        if (notifSetting?.disable_all) break;
+
         this.addTrigger(notificationData);
 
-        // Also update the corresponding signal for the notification list
         if (notificationData.type === 'system') {
           this.systemNotificationsSignal.update(current => [notificationData, ...current]);
         } else if (notificationData.type === 'game') {
@@ -318,6 +319,10 @@ private systemNotificationsSignal = signal<NotificationData[]>([]);
           this.directMessageNotificationsSignal.update(current => [notificationData, ...current]);
         } else if (notificationData.type === 'reaction') {
           this.reactionNotificationsSignal.update(current => [notificationData, ...current]);
+        }
+
+        if (!notifSetting?.disable_toast) {
+          this.notificationSubject.next(notificationData);
         }
         break;
       case 'topic_viewers_update':

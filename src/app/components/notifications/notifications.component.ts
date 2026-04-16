@@ -4,6 +4,7 @@ import { NotificationService } from '../../services/notification.service';
 import { NotificationData } from '../../models/event';
 import { Router, RouterLink } from '@angular/router';
 import { DirectChatService } from '../../services/direct-chat.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-notifications',
@@ -14,6 +15,7 @@ import { DirectChatService } from '../../services/direct-chat.service';
 export class NotificationsComponent implements OnInit {
   private notificationService = inject(NotificationService);
   private directChatService = inject(DirectChatService);
+  private authService = inject(AuthService);
   private router = inject(Router);
 
   systemNotifications = this.notificationService.systemNotifications;
@@ -46,5 +48,10 @@ export class NotificationsComponent implements OnInit {
   onNotificationClick(item: NotificationData) {
     this.notificationService.dismissNotification(item);
     this.closeModal();
+  }
+
+  isTypeDisabled(type: string): boolean {
+    return this.authService.currentUser()?.notification_settings
+      ?.find(s => s.notification_type === type)?.disable_all ?? false;
   }
 }
