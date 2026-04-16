@@ -36,7 +36,7 @@
       }
     }
     @if (isCharacter && customFields.length > 0) {
-      @for(field of customFields; track field.fieldMachineName; let j = $index) {
+      @for(field of customFields; track (field.fieldMachineName || $index); let j = $index) {
         <li class="pa-fld{{ j }}">
           @switch (field.type) {
             @case('short_text') {
