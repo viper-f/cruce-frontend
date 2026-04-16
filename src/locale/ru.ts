@@ -523,5 +523,10 @@ export const TRANSLATIONS_RU = {
   "charactercreate.claimAddText": "Вы уверены, что хотите заявить права на персонажа?",
   "charactercreate.claimBlockedTitle": "Персонаж уже занят",
   "charactercreate.claimBlockedText": "Этот персонаж занят другим пользователем до {$INTERPOLATION}.",
-  "character.claimedUntil": "Занято до {$INTERPOLATION}"
+  "character.claimedUntil": "Занято до {$INTERPOLATION}",
+  "admin.reactions": "Реакции",
+  "admin.reactions.image": "Изображение",
+  "admin.reactions.status": "Статус",
+  "admin.reactions.upload": "Загрузить новую реакцию",
+  "admin.reactions.uploadButton": "Загрузить реакцию"
 };

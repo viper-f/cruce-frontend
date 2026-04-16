@@ -136,6 +136,12 @@ export class TopicService {
     this.postsSignal.update(posts => posts.map(p => p.id === updatedPost.id ? updatedPost : p));
   }
 
+  updatePostReactions(postId: number, reactions: Post['reactions']) {
+    this.postsSignal.update(posts =>
+      posts.map(p => p.id === postId ? { ...p, reactions } : p)
+    );
+  }
+
   updateLocalTopic(updatedTopic: Topic) {
     const enrichedTopic = this.enrichTopicWithPermissions(updatedTopic);
     this.topicSignal.set(enrichedTopic);

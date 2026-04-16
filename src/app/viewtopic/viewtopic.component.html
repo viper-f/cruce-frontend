@@ -108,6 +108,39 @@
             }
           </div>
         </div>
+        <div class="post-reactions">
+          @if (post.reactions) {
+            @for (reaction of post.reactions; track reaction.reaction_id) {
+              <div class="reaction-chip">
+                <img [src]="'/reactions/' + reaction.url" class="reaction-img" alt="" />
+                <span class="reaction-count">{{ reaction.number }}</span>
+                <div class="reaction-tooltip">
+                  @for (user of reaction.users; track user.id) {
+                    <a [routerLink]="['/profile', user.id]">{{ user.name }}</a>
+                  }
+                </div>
+              </div>
+            }
+          }
+          <div class="reaction-add-wrapper">
+            <button
+              type="button"
+              class="reaction-add-btn"
+              (click)="openReactionPicker(post.id, $event)"
+              title="Add reaction"
+              i18n-title="@@viewtopic.addReaction"
+            >+</button>
+            @if (reactionPickerPostId() === post.id) {
+              <div class="reaction-picker">
+                @for (r of activeReactions(); track r.id) {
+                  <button type="button" class="reaction-picker-item" (click)="addReaction(post.id, r.id)">
+                    <img [src]="'/reactions/' + r.url" alt="" />
+                  </button>
+                }
+              </div>
+            }
+          </div>
+        </div>
         <div class="clearer"></div>
       </div>
       <div class="post-footer">
@@ -203,6 +236,10 @@
 
   <div class="main-footer"></div>
 </div>
+
+@if (reactionPickerPostId() !== null) {
+  <div class="reaction-picker-backdrop" (click)="closeReactionPicker()"></div>
+}
 
 @if (showDeactivateModal()) {
   <div class="modal-overlay">

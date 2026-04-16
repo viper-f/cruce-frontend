@@ -50,6 +50,7 @@ import { AdminWidgetPanelEditComponent } from './admin/admin-widget-panel-edit/a
 import { AdminWidgetsComponent } from './admin/admin-widgets/admin-widgets.component';
 import { AdminWidgetEditComponent } from './admin/admin-widget-edit/admin-widget-edit.component';
 import { AdminDesignComponent } from './admin/admin-design/admin-design.component';
+import { AdminReactionsComponent } from './admin/admin-reactions/admin-reactions.component';
 import { PostPageComponent } from './post-page/post-page.component';
 import { NotFoundComponent } from './error-pages/not-found/not-found.component';
 import { ForbiddenComponent } from './error-pages/forbidden/forbidden.component';
@@ -336,6 +337,11 @@ export const routes: Routes = [
         path: 'features/post_top',
         component: AdminPostTopComponent,
         title: 'Admin - Post Top'
+      },
+      {
+        path: 'reactions',
+        component: AdminReactionsComponent,
+        title: 'Admin - Reactions'
       }
     ]
   },

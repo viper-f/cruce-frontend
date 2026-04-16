@@ -1,6 +1,17 @@
 import {UserProfile} from './User';
 import {CharacterProfile} from './Character';
 
+export interface ReactionUser {
+  id: number;
+  name: string;
+}
+
+export interface PostReaction {
+  reaction_id: number;
+  url: string;
+  number: number;
+  users: ReactionUser[];
+}
 
 export interface Post {
   id: number;
@@ -15,4 +26,5 @@ export interface Post {
   can_edit?: boolean;
   author_user_id: number;
   author_user_name: string;
+  reactions?: PostReaction[];
 }

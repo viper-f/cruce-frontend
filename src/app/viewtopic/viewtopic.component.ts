@@ -7,7 +7,9 @@ import {CommonModule} from '@angular/common';
 import {CharacterProfileComponent} from '../components/character-profile/character-profile.component';
 import {TopicType, TopicStatus} from '../models/Topic';
 import {EpisodeHeaderComponent} from '../components/episode-header/episode-header.component';
-import {Post} from '../models/Post';
+import {Post, PostReaction} from '../models/Post';
+import {Reaction} from '../models/Reaction';
+import {ApiService} from '../services/api.service';
 import {BreadcrumbItem, BreadcrumbsComponent} from '../components/breadcrumbs/breadcrumbs.component';
 import {ForumService} from '../services/forum.service';
 import {TopicReadByComponent} from '../components/topic-read-by/topic-read-by.component';
@@ -52,6 +54,7 @@ function coerceToPage(value: unknown): number {
 })
 export class ViewtopicComponent implements OnInit, OnDestroy {
   private titleService = inject(Title);
+  private apiService = inject(ApiService);
   topicService = inject(TopicService);
   forumService = inject(ForumService);
   characterService = inject(CharacterService);
@@ -115,6 +118,10 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
   editingPostId = signal<number | null>(null);
   editingTopic = signal(false);
   showDeactivateModal = signal(false);
+
+  reactionPickerPostId = signal<number | null>(null);
+  activeReactions = signal<Reaction[]>([]);
+  private activeReactionsLoaded = false;
 
   private destroy$ = new Subject<void>();
   private lastLoadedProfilesForTopicId: number | null = null;
@@ -544,5 +551,37 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
       },
       error: (err: any) => console.error('Failed to update episode', err)
     });
+  }
+
+  openReactionPicker(postId: number, event: Event) {
+    event.stopPropagation();
+    if (this.reactionPickerPostId() === postId) {
+      this.reactionPickerPostId.set(null);
+      return;
+    }
+    if (!this.activeReactionsLoaded) {
+      this.apiService.get<Reaction[]>('reaction/list/active').subscribe({
+        next: (list) => {
+          this.activeReactions.set(list);
+          this.activeReactionsLoaded = true;
+        },
+        error: (err) => console.error('Failed to load active reactions', err)
+      });
+    }
+    this.reactionPickerPostId.set(postId);
+  }
+
+  closeReactionPicker() {
+    this.reactionPickerPostId.set(null);
+  }
+
+  addReaction(postId: number, reactionId: number) {
+    this.apiService.post<PostReaction[]>('post-reaction/create', { post_id: postId, reaction_id: reactionId }).subscribe({
+      next: (reactions) => {
+        this.topicService.updatePostReactions(postId, reactions);
+      },
+      error: (err) => console.error('Failed to add reaction', err)
+    });
+    this.reactionPickerPostId.set(null);
   }
 }
