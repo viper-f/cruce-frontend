@@ -38,7 +38,16 @@ export class AuthService {
     } else {
       this.setGuestUser();
     }
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && this.isAuthenticated() && this.isAccessTokenExpired()) {
+        this.refreshToken().subscribe({
+          error: () => {}
+        });
+      }
+    });
   }
+
 
   public hashPassword(password: string): Promise<string> {
     const encoder = new TextEncoder();

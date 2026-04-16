@@ -8,6 +8,16 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const authToken = authService.authToken();
 
+  // Skip auth endpoints to avoid infinite loops
+  if (req.url.includes('/refresh') || req.url.includes('/login')) {
+    return next(req);
+  }
+
+  // Proactively refresh if token is expired before even sending the request
+  if (authToken && authService.isAccessTokenExpired()) {
+    return handle401Error(req, next, authService);
+  }
+
   if (authToken) {
     req = addTokenHeader(req, authToken);
   }
