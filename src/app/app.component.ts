@@ -42,6 +42,8 @@ export class AppComponent implements OnInit {
   }
 
   pageId = 'pun-main';
+  private currentPageType = 'unknown';
+  private currentPageNumId = 0;
   currentUser = this.authService.currentUser;
   currentDate = new Date();
   private notificationService = inject(NotificationService);
@@ -94,6 +96,7 @@ export class AppComponent implements OnInit {
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible' && this.authService.isAuthenticated()) {
         this.notificationService.loadUnreadNotifications();
+        this.notificationService.sendPageChange(this.currentPageType, this.currentPageNumId);
         this.loadHeaderPanel();
       }
     });
@@ -154,6 +157,8 @@ export class AppComponent implements OnInit {
           pageType = this.pageId.replace('pun-', '');
       }
 
+      this.currentPageType = pageType;
+      this.currentPageNumId = pageId;
       this.notificationService.sendPageChange(pageType, pageId);
     });
   }
