@@ -1,8 +1,8 @@
 import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
-import { ApiService } from '../../services/api.service';
-import { ActiveUserInfo } from '../../models/event';
+import { ApiService } from '../services/api.service';
+import { ActiveUserInfo } from '../models/event';
 
 const PAGE_TYPE_NAMES: Record<string, string> = {
   home: $localize`:@@activeUsers.page.home:Home`,
@@ -16,6 +16,7 @@ const PAGE_TYPE_NAMES: Record<string, string> = {
   'user-list': $localize`:@@activeUsers.page.userList:User List`,
   'active-topics': $localize`:@@activeUsers.page.activeTopics:Active Topics`,
   'direct-chat': $localize`:@@activeUsers.page.directChat:Direct Chat`,
+  'active-users': $localize`:@@activeUsers.page.activeUsers:Active Users`,
   settings: $localize`:@@activeUsers.page.settings:Settings`,
   login: $localize`:@@activeUsers.page.login:Login`,
   register: $localize`:@@activeUsers.page.register:Registration`,
@@ -75,6 +76,7 @@ export class ActiveUsersComponent implements OnInit, OnDestroy {
       case 'user-list': return ['/user-list'];
       case 'active-topics': return ['/active-topics'];
       case 'direct-chat': return ['/direct-chat'];
+      case 'active-users': return ['/active-users'];
       case 'settings': return ['/settings'];
       default: return null;
     }
