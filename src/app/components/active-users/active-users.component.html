@@ -1,17 +1,28 @@
-@if (users().length > 0) {
-  <ul class="active-users-list">
-    @for (user of users(); track user.user_id) {
-      <li class="active-user">
-        {{ user.last_active | date:'dd.MM.yy HH:mm:ss' }}
-        <ng-container i18n="@@activeUsers.entry">User</ng-container>
-        <a [routerLink]="['/profile', user.user_id]">{{ user.username }}</a>
-        <ng-container i18n="@@activeUsers.isOnPage">is on the page</ng-container>
-        @if (pageRoute(user); as route) {
-          <a [routerLink]="route">{{ pageLabel(user) }}</a>
-        } @else {
-          {{ pageLabel(user) }}
-        }
-      </li>
-    }
-  </ul>
-}
+<div id="pun-main" class="main">
+  <div class="main-header">
+    <h1 i18n="@@activeUsers.title">Active Users</h1>
+  </div>
+  <div class="main-content">
+    <div class="container">
+      @if (users().length > 0) {
+        <ul class="active-users-list">
+          @for (user of users(); track user.user_id) {
+            <li class="active-user">
+              {{ user.last_active | date:'dd.MM.yy HH:mm:ss' }}
+              <ng-container i18n="@@activeUsers.entry">User</ng-container>
+              <a [routerLink]="['/profile', user.user_id]">{{ user.username }}</a>
+              <ng-container i18n="@@activeUsers.isOnPage">is on the page</ng-container>
+              @if (pageRoute(user); as route) {
+                <a [routerLink]="route">{{ pageLabel(user) }}</a>
+              } @else {
+                {{ pageLabel(user) }}
+              }
+            </li>
+          }
+        </ul>
+      } @else {
+        <p i18n="@@activeUsers.empty">No active users.</p>
+      }
+    </div>
+  </div>
+</div>

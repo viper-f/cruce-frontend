@@ -49,6 +49,7 @@ import { AdminWidgetPanelsComponent } from './admin/admin-widget-panels/admin-wi
 import { AdminWidgetPanelEditComponent } from './admin/admin-widget-panel-edit/admin-widget-panel-edit.component';
 import { AdminWidgetsComponent } from './admin/admin-widgets/admin-widgets.component';
 import { AdminWidgetEditComponent } from './admin/admin-widget-edit/admin-widget-edit.component';
+import { ActiveUsersComponent } from './components/active-users/active-users.component';
 import { AdminDesignComponent } from './admin/admin-design/admin-design.component';
 import { AdminReactionsComponent } from './admin/admin-reactions/admin-reactions.component';
 import { PostPageComponent } from './post-page/post-page.component';
@@ -204,6 +205,12 @@ export const routes: Routes = [
     component: ActiveTopicsComponent,
     title: 'Active Topics',
     data: { pageId: 'pun-active-topics' }
+  },
+  {
+    path: 'active-users',
+    component: ActiveUsersComponent,
+    title: 'Active Users',
+    data: { pageId: 'pun-active-users' }
   },
   {
     path: 'character-profile-update/:id',
