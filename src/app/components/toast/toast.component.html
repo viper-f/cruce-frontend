@@ -58,15 +58,39 @@
           } @else if (notification.type === 'account_update' && notification.data) {
             @let accountUpdate = $any(notification.data);
             <span class="toast-text">
-              <ng-container i18n="@@toast.accountUpdate.earned">You have earned</ng-container>
-              <strong> {{ accountUpdate.amount }} </strong>
-              @if (currencyService.settings().icon_url) {
-                <img [src]="currencyService.settings().icon_url" class="currency-icon" alt="" />
+              @if (accountUpdate.income_type_key === 'currency_income_manual_transaction') {
+                <ng-container i18n="@@toast.accountUpdate.manualIncome">You have received</ng-container>
+                <strong> {{ accountUpdate.amount }} </strong>
+                @if (currencyService.settings().icon_url) {
+                  <img [src]="currencyService.settings().icon_url" class="currency-icon" alt="" />
+                } @else {
+                  🪙
+                }
+                @if (accountUpdate.comment) {
+                  <ng-container i18n="@@toast.accountUpdate.manualComment">: {{ accountUpdate.comment }}</ng-container>
+                }
+              } @else if (accountUpdate.income_type_key === 'currency_spend_manual_transaction') {
+                <ng-container i18n="@@toast.accountUpdate.manualSpend">You have spent</ng-container>
+                <strong> {{ accountUpdate.amount }} </strong>
+                @if (currencyService.settings().icon_url) {
+                  <img [src]="currencyService.settings().icon_url" class="currency-icon" alt="" />
+                } @else {
+                  🪙
+                }
+                @if (accountUpdate.comment) {
+                  <ng-container i18n="@@toast.accountUpdate.manualComment">: {{ accountUpdate.comment }}</ng-container>
+                }
               } @else {
-                🪙
+                <ng-container i18n="@@toast.accountUpdate.earned">You have earned</ng-container>
+                <strong> {{ accountUpdate.amount }} </strong>
+                @if (currencyService.settings().icon_url) {
+                  <img [src]="currencyService.settings().icon_url" class="currency-icon" alt="" />
+                } @else {
+                  🪙
+                }
+                <ng-container i18n="@@toast.accountUpdate.for">for your</ng-container>&nbsp;
+                <a [routerLink]="['/viewtopic', accountUpdate.topic_id]" [queryParams]="{ post_id: accountUpdate.post_id }" (click)="remove(notification.id)" i18n="@@toast.accountUpdate.post">post</a>.
               }
-              <ng-container i18n="@@toast.accountUpdate.for">for your</ng-container>&nbsp;
-              <a [routerLink]="['/viewtopic', accountUpdate.topic_id]" [queryParams]="{ post_id: accountUpdate.post_id }" (click)="remove(notification.id)" i18n="@@toast.accountUpdate.post">post</a>.
               <ng-container i18n="@@toast.accountUpdate.newTotal"> Your new total amount is</ng-container>
               <strong> {{ accountUpdate.total_amount }}</strong>
               @if (currencyService.settings().icon_url) {

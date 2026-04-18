@@ -56,7 +56,9 @@ export interface NotificationAccountUpdate {
   total_amount: number;
   post_id: number;
   topic_id: number;
+  comment?: string;
 }
+
 
 export interface NotificationReaction {
   post_id: number;
