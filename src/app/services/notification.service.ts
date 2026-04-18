@@ -72,6 +72,9 @@ private systemNotificationsSignal = signal<NotificationData[]>([]);
   private lastMsgId: number | null = null;
   private seenPostMsgIds = new Set<number>();
 
+  // Toast notifications queued while the tab is hidden
+  private pendingToasts: NotificationData[] = [];
+
   // Auto-dismissal trigger maps
   private mentionPostTriggers = new Map<number, NotificationData>();  // post_id → notification
   private gameTopicTriggers = new Map<number, NotificationData>();    // topic_id → notification
@@ -80,6 +83,13 @@ private systemNotificationsSignal = signal<NotificationData[]>([]);
   constructor() {
     const baseUrl = environment.wsUrl;
     this.url = baseUrl.replace(/^http/, 'ws') + '/ws';
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && this.pendingToasts.length > 0) {
+        this.pendingToasts.forEach(n => this.notificationSubject.next(n));
+        this.pendingToasts = [];
+      }
+    });
   }
 
   public loadUnreadNotifications(): void {
@@ -333,7 +343,11 @@ private systemNotificationsSignal = signal<NotificationData[]>([]);
         }
 
         if (!notifSetting?.disable_toast) {
-          this.notificationSubject.next(notificationData);
+          if (document.visibilityState === 'hidden') {
+            this.pendingToasts.push(notificationData);
+          } else {
+            this.notificationSubject.next(notificationData);
+          }
         }
         break;
       case 'topic_viewers_update':

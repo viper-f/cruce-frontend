@@ -46,7 +46,7 @@ export class ToastComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe((event: NotificationData) => {
         setTimeout(() => { this.notifications = [...this.notifications, event]; });
-        setTimeout(() => this.remove(event.id), 10000);
+        setTimeout(() => this.autoRemove(event), 10000);
       });
   }
 
@@ -55,11 +55,20 @@ export class ToastComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  // Called when the user manually closes a toast — always dismisses from the header too
   remove(toastId: number) {
     const notification = this.notifications.find(n => n.id === toastId);
     if (notification) {
       this.notificationService.dismissNotification(notification);
     }
     this.notifications = this.notifications.filter(n => n.id !== toastId);
+  }
+
+  // Called when a toast auto-dismisses — only dismisses account_update from the header
+  private autoRemove(event: NotificationData) {
+    if (event.type === 'account_update') {
+      this.notificationService.dismissNotification(event);
+    }
+    this.notifications = this.notifications.filter(n => n.id !== event.id);
   }
 }
