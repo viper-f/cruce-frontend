@@ -2,24 +2,48 @@ import {Component, computed, inject, OnInit, signal} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CharacterService } from '../services/character.service';
+import { FactionService } from '../services/faction.service';
 import { Faction } from '../models/Faction';
+import { FactionCreateModalComponent } from '../components/faction-create-modal/faction-create-modal.component';
+import { ClaimCreateModalComponent } from '../components/claim-create-modal/claim-create-modal.component';
 
 @Component({
   selector: 'app-character-list',
   imports: [
     RouterLink,
-    FormsModule
+    FormsModule,
+    FactionCreateModalComponent,
+    ClaimCreateModalComponent,
   ],
   templateUrl: './character-list.component.html',
   standalone: true,
 })
 export class CharacterListComponent implements OnInit {
   characterService = inject(CharacterService);
+  factionService = inject(FactionService);
   characterList = this.characterService.characterList;
 
   showCharacters = signal(true);
   showImportantRoles = signal(true);
   showWantedCharacters = signal(true);
+
+  showAddFactionModal = signal(false);
+  showAddClaimModal = signal(false);
+
+  openAddFactionModal() {
+    this.showAddFactionModal.set(true);
+  }
+
+  onFactionModalClose() {
+    this.showAddFactionModal.set(false);
+  }
+
+  onFactionCreated(faction: Faction) {
+    this.factionService.createPendingFaction(faction).subscribe({
+      next: () => this.characterService.loadCharacterList(),
+      error: (err) => console.error('Failed to create faction', err)
+    });
+  }
 
   groupedCharacterList = computed(() => {
     const list = this.characterList();

@@ -1200,6 +1200,28 @@ app-root.dark .active-user .timestamp {
 .level-1 { margin-left: 0; }
 .level-2 { margin-left: 20px; }
 
+.category.faction-pending {
+  border-color: #c8a84b;
+  background-color: #fffbef;
+}
+
+.category.faction-pending .maintitle {
+  background-color: #7a5c1e;
+}
+
+.faction-block.faction-pending {
+  border-left: 3px solid #c8a84b;
+  padding-left: 8px;
+  background-color: #fffbef;
+}
+
+.faction-pending-note {
+  font-size: 0.85em;
+  font-style: italic;
+  color: #a07820;
+  margin: 4px 0 0 0;
+}
+
 .character-group {
   list-style: none;
   padding: 0;

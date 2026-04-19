@@ -3,6 +3,11 @@
     <h1><span i18n="@@characterList.title">Character List</span></h1>
   </div>
 
+  <div class="character-list-actions">
+    <button type="button" class="button" (click)="openAddFactionModal()" i18n="@@characterList.addFaction">Add faction</button>
+    <button type="button" class="button" (click)="showAddClaimModal.set(true)" i18n="@@characterList.addClaim">Add claim</button>
+  </div>
+
   <div class="character-list-filters">
     <label>
       <input type="checkbox" [ngModel]="showCharacters()" (ngModelChange)="showCharacters.set($event)" />
@@ -20,9 +25,12 @@
 
   <div class="character-tree">
     @for (group of filteredGroupedCharacterList(); track $index) {
-      <div class="category">
+      <div class="category" [class.faction-pending]="group[0].faction_status === 2">
         <div class="maintitle">
           <h2 class="faction-title"><span>{{ group[0].name }}</span></h2>
+          @if (group[0].faction_status === 2) {
+            <p class="faction-pending-note" i18n="@@characterList.pendingFactionNote">Pending faction — visible to you because you have character claims here.</p>
+          }
         </div>
 
         <div class="main-content">
@@ -44,11 +52,14 @@
           }
 
           @for (faction of group.slice(1); track faction.id) {
-            <div class="faction-block" [class.level-1]="faction.level === 1" [class.level-2]="faction.level >= 2">
+            <div class="faction-block" [class.level-1]="faction.level === 1" [class.level-2]="faction.level >= 2" [class.faction-pending]="faction.faction_status === 2">
               @switch (faction.level) {
                 @case (1) { <h3 class="faction-title">{{ faction.name }}</h3> }
                 @case (2) { <h4 class="faction-title">{{ faction.name }}</h4> }
                 @default { <h5 class="faction-title">{{ faction.name }}</h5> }
+              }
+              @if (faction.faction_status === 2) {
+                <p class="faction-pending-note" i18n="@@characterList.pendingFactionNote">Pending faction — visible to you because you have character claims here.</p>
               }
 
               @if (faction.characters && faction.characters.length > 0) {
@@ -74,3 +85,17 @@
     }
   </div>
 </div>
+
+@if (showAddClaimModal()) {
+  <app-claim-create-modal
+    (close)="showAddClaimModal.set(false)">
+  </app-claim-create-modal>
+}
+
+@if (showAddFactionModal()) {
+  <app-faction-create-modal
+    [parentId]="null"
+    (close)="onFactionModalClose()"
+    (created)="onFactionCreated($event)">
+  </app-faction-create-modal>
+}
