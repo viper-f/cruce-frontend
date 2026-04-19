@@ -239,6 +239,8 @@
   <div class="main-footer"></div>
 </div>
 
+<app-breadcrumbs [items]="breadcrumbs"></app-breadcrumbs>
+
 @if (reactionPickerPostId() !== null) {
   <div class="reaction-picker-backdrop" (click)="closeReactionPicker()"></div>
 }
