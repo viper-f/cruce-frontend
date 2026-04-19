@@ -112,6 +112,7 @@ export class CharacterListComponent implements OnInit {
 
   ngOnInit() {
     this.characterService.loadCharacterList();
+    this.settingsService.loadSettings();
   }
 
 }
