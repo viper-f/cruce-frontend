@@ -44,6 +44,7 @@ import { RecoveryCodesComponent } from './recovery-codes/recovery-codes.componen
 import { SettingsRestorationCodesComponent } from './settings-restoration-codes/settings-restoration-codes.component';
 import { RestorePasswordComponent } from './restore-password/restore-password.component';
 import { adminGuard } from './guards/admin.guard';
+import { privateKeyGuard } from './guards/private-key.guard';
 import { CharacterFieldListComponent } from './character-field-list/character-field-list.component';
 import { AdminWidgetPanelsComponent } from './admin/admin-widget-panels/admin-widget-panels.component';
 import { AdminWidgetPanelEditComponent } from './admin/admin-widget-panel-edit/admin-widget-panel-edit.component';
@@ -96,6 +97,7 @@ export const routes: Routes = [
   {
     path: 'direct-chat',
     component: DirectChatComponent,
+    canActivate: [privateKeyGuard],
     data: { pageId: 'pun-direct-chat' }
   },
   {
