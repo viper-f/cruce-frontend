@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { UserService } from '../../services/user.service';
 import { AdditionalNavlinkService } from '../../services/additional-navlink.service';
 import { AdditionalNavlink, AdditionalNavlinkType } from '../../models/AdditionalNavlink';
 
@@ -13,11 +14,13 @@ import { AdditionalNavlink, AdditionalNavlinkType } from '../../models/Additiona
 })
 export class NavlinksComponent {
   protected authService = inject(AuthService);
+  private userService = inject(UserService);
   private additionalNavlinkService = inject(AdditionalNavlinkService);
   private router = inject(Router);
 
   public isAuthenticated = this.authService.isAuthenticated;
   public currentUser = this.authService.currentUser;
+  public hasPrivateKey = this.userService.privateKey;
   public additionalNavlinks = this.additionalNavlinkService.navlinks;
 
   logout(event: Event) {
