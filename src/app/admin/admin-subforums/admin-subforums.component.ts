@@ -1,7 +1,6 @@
-import { Component, effect, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CategoryService } from '../../services/category.service';
 import { ApiService } from '../../services/api.service';
 import { Category } from '../../models/Category';
 import { Subforum } from '../../models/Subforum';
@@ -31,7 +30,6 @@ interface NewCategory {
   styleUrl: './admin-subforums.component.css'
 })
 export class AdminSubforumsComponent implements OnInit {
-  private categoryService = inject(CategoryService);
   private apiService = inject(ApiService);
 
   categories: Category[] = [];
@@ -45,20 +43,23 @@ export class AdminSubforumsComponent implements OnInit {
 
   private tempIdCounter = 0;
 
-  constructor() {
-    effect(() => {
-      const copy: Category[] = JSON.parse(JSON.stringify(this.categoryService.homeCategories()));
-      for (const cat of copy) {
-        for (const sub of cat.subforums) {
-          sub.category_id = cat.id;
-        }
-      }
-      this.categories = copy;
-    });
+  ngOnInit() {
+    this.loadAdminCategories();
   }
 
-  ngOnInit() {
-    this.categoryService.loadHomeCategories();
+  private loadAdminCategories() {
+    this.apiService.get<Category[]>('admin/home').subscribe({
+      next: (data) => {
+        const copy: Category[] = JSON.parse(JSON.stringify(data));
+        for (const cat of copy) {
+          for (const sub of cat.subforums) {
+            sub.category_id = cat.id;
+          }
+        }
+        this.categories = copy;
+      },
+      error: (err) => console.error('Failed to load admin categories', err)
+    });
   }
 
   getUpdateState(key: string): ActionState {
@@ -88,7 +89,7 @@ export class AdminSubforumsComponent implements OnInit {
     this.apiService.get(`category/delete/${id}`).subscribe({
       next: () => {
         this.flashDeleteState(key, 'success');
-        this.categoryService.loadHomeCategories();
+        this.loadAdminCategories();
       },
       error: () => this.flashDeleteState(key, 'error')
     });
@@ -115,7 +116,7 @@ export class AdminSubforumsComponent implements OnInit {
     this.apiService.get(`subforum/delete/${id}`).subscribe({
       next: () => {
         this.flashDeleteState(key, 'success');
-        this.categoryService.loadHomeCategories();
+        this.loadAdminCategories();
       },
       error: () => this.flashDeleteState(key, 'error')
     });
@@ -145,7 +146,7 @@ export class AdminSubforumsComponent implements OnInit {
     this.apiService.post('subforum/create', body).subscribe({
       next: () => {
         this.setCreateState(_tempId, 'success');
-        this.categoryService.loadHomeCategories();
+        this.loadAdminCategories();
         setTimeout(() => this.removeNewSubforum(categoryId, _tempId), 1500);
       },
       error: () => this.flashCreateState(_tempId, 'error')
@@ -170,7 +171,7 @@ export class AdminSubforumsComponent implements OnInit {
     this.apiService.post('category/create', body).subscribe({
       next: () => {
         this.setCreateState(_tempId, 'success');
-        this.categoryService.loadHomeCategories();
+        this.loadAdminCategories();
         setTimeout(() => this.removeNewCategory(_tempId), 1500);
       },
       error: () => this.flashCreateState(_tempId, 'error')
