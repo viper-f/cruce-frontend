@@ -3,6 +3,8 @@ import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CharacterService } from '../services/character.service';
 import { FactionService } from '../services/faction.service';
+import { GlobalSettingsService } from '../services/global-settings.service';
+import { AuthService } from '../services/auth.service';
 import { Faction } from '../models/Faction';
 import { FactionCreateModalComponent } from '../components/faction-create-modal/faction-create-modal.component';
 import { ClaimCreateModalComponent } from '../components/claim-create-modal/claim-create-modal.component';
@@ -21,7 +23,23 @@ import { ClaimCreateModalComponent } from '../components/claim-create-modal/clai
 export class CharacterListComponent implements OnInit {
   characterService = inject(CharacterService);
   factionService = inject(FactionService);
+  private settingsService = inject(GlobalSettingsService);
+  private authService = inject(AuthService);
   characterList = this.characterService.characterList;
+
+  canAddFaction = computed(() => {
+    const isGuest = !this.authService.isAuthenticated();
+    return isGuest
+      ? this.settingsService.isEnabled('allow_guests_create_factions')
+      : this.settingsService.isEnabled('allow_users_create_factions');
+  });
+
+  canAddClaim = computed(() => {
+    const isGuest = !this.authService.isAuthenticated();
+    return isGuest
+      ? this.settingsService.isEnabled('allow_guests_create_claims')
+      : this.settingsService.isEnabled('allow_users_create_claims');
+  });
 
   showCharacters = signal(true);
   showImportantRoles = signal(true);

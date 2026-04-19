@@ -3,10 +3,16 @@
     <h1><span i18n="@@characterList.title">Character List</span></h1>
   </div>
 
-  <div class="character-list-actions">
-    <button type="button" class="button" (click)="openAddFactionModal()" i18n="@@characterList.addFaction">Add faction</button>
-    <button type="button" class="button" (click)="showAddClaimModal.set(true)" i18n="@@characterList.addClaim">Add claim</button>
-  </div>
+  @if (canAddFaction() || canAddClaim()) {
+    <div class="character-list-actions">
+      @if (canAddFaction()) {
+        <button type="button" class="button" (click)="openAddFactionModal()" i18n="@@characterList.addFaction">Add faction</button>
+      }
+      @if (canAddClaim()) {
+        <button type="button" class="button" (click)="showAddClaimModal.set(true)" i18n="@@characterList.addClaim">Add claim</button>
+      }
+    </div>
+  }
 
   <div class="character-list-filters">
     <label>
