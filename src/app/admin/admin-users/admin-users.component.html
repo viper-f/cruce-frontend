@@ -13,6 +13,7 @@
       <th i18n="@@adminUsers.colLastVisit">Last Visit</th>
       <th i18n="@@adminUsers.colCharacters">Characters</th>
       <th i18n="@@adminUsers.colLastGamePost">Last Game Post</th>
+      <th i18n="@@adminUsers.colRoles">Roles</th>
       <th i18n="@@adminUsers.colBan">Ban</th>
     </tr>
   </thead>
@@ -33,12 +34,33 @@
         <td>{{ user.date_last_visit ? (user.date_last_visit | date:'dd.MM.yyyy') : '—' }}</td>
         <td>{{ user.character_count }}</td>
         <td>{{ user.last_game_post_date ? (user.last_game_post_date | date:'dd.MM.yyyy') : '—' }}</td>
+        <td><button (click)="openRolesModal(user)" i18n="@@adminUsers.editRoles">Roles</button></td>
         <td><button disabled i18n="@@adminUsers.ban">Ban</button></td>
       </tr>
     } @empty {
       <tr>
-        <td colspan="7" i18n="@@adminUsers.empty">No users found.</td>
+        <td colspan="9" i18n="@@adminUsers.empty">No users found.</td>
       </tr>
     }
   </tbody>
 </table>
+
+@if (rolesModalUser() !== null) {
+  <div class="modal-overlay" (click)="closeRolesModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h2 i18n="@@adminUsers.rolesModalTitle">Edit Roles — {{ rolesModalUser()!.username }}</h2>
+      <div class="roles-list">
+        @for (role of allRoles(); track role.id) {
+          <label class="role-item">
+            <input type="checkbox" [checked]="isRoleSelected(role.id)" (change)="toggleRole(role.id)">
+            {{ role.name }}
+          </label>
+        }
+      </div>
+      <div class="buttons" style="margin-top: 15px; text-align: right;">
+        <button class="button" (click)="saveRoles()" i18n="@@common.save">Save</button>
+        <button class="button" (click)="closeRolesModal()" i18n="@@common.cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+}
