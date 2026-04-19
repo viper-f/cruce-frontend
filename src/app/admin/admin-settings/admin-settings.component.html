@@ -5,7 +5,7 @@
     <fieldset>
       @for (setting of settings(); track setting.setting_name) {
         <div class="field-row">
-          <label [for]="setting.setting_name">{{ setting.setting_name }}</label>
+          <label [for]="setting.setting_name">{{ settingLabels[setting.setting_name] ?? setting.setting_name }}</label>
           <input [id]="setting.setting_name" type="text" [(ngModel)]="setting.setting_value" [name]="setting.setting_name" />
         </div>
       }

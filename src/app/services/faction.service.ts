@@ -1,4 +1,5 @@
 import { Injectable, signal, inject, effect } from '@angular/core';
+import { HttpParams } from '@angular/common/http';
 import { ApiService } from './api.service';
 import { Faction } from '../models/Faction';
 import { Observable } from 'rxjs';
@@ -19,8 +20,9 @@ export class FactionService {
     });
   }
 
-  getFactionChildren(id: number): Observable<Faction[]> {
-    return this.apiService.get<Faction[]>(`faction-children/${id}/get`);
+  getFactionChildren(id: number, includePending = false): Observable<Faction[]> {
+    const params = includePending ? new HttpParams().set('include_pending', 'true') : undefined;
+    return this.apiService.get<Faction[]>(`faction-children/${id}/get`, params);
   }
 
   loadFactionChildren(id: number): void {
@@ -88,5 +90,9 @@ export class FactionService {
 
   createFaction(faction: Faction): Observable<Faction> {
     return this.apiService.post<Faction>('faction/create', faction);
+  }
+
+  createPendingFaction(faction: Faction): Observable<Faction> {
+    return this.apiService.post<Faction>('faction/create-pending', faction);
   }
 }
