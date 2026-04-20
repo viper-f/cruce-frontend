@@ -52,6 +52,9 @@
                   @if (char.wanted_character_id != null) {
                     (<a [routerLink]="['/viewtopic', char.wanted_character_id]" class="character-wanted-link" i18n="@@characterList.wanted">wanted</a>)
                   }
+                  @if (canRevokeChar(char)) {
+                    (<a href="#" class="character-revoke-link" (click)="revokeCharClaim(char, $event)" i18n="@@characterList.revokeClaim">revoke claim</a>)
+                  }
                 </li>
               }
             </ul>

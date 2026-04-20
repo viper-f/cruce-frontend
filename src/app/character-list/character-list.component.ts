@@ -3,9 +3,11 @@ import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CharacterService } from '../services/character.service';
 import { FactionService } from '../services/faction.service';
+import { WantedCharacterService } from '../services/wanted-character.service';
 import { GlobalSettingsService } from '../services/global-settings.service';
 import { AuthService } from '../services/auth.service';
 import { Faction } from '../models/Faction';
+import { CharacterListItem } from '../models/Character';
 import { FactionCreateModalComponent } from '../components/faction-create-modal/faction-create-modal.component';
 import { ClaimCreateModalComponent } from '../components/claim-create-modal/claim-create-modal.component';
 
@@ -23,6 +25,7 @@ import { ClaimCreateModalComponent } from '../components/claim-create-modal/clai
 export class CharacterListComponent implements OnInit {
   characterService = inject(CharacterService);
   factionService = inject(FactionService);
+  private wantedCharacterService = inject(WantedCharacterService);
   private settingsService = inject(GlobalSettingsService);
   private authService = inject(AuthService);
   characterList = this.characterService.characterList;
@@ -54,6 +57,26 @@ export class CharacterListComponent implements OnInit {
 
   onFactionModalClose() {
     this.showAddFactionModal.set(false);
+  }
+
+  canRevokeChar(char: CharacterListItem): boolean {
+    if (!char.claim_record_id) return false;
+    const userId = this.authService.currentUser()?.id;
+    if (userId && userId === char.claim_author_id) return true;
+    if (char.claim_guest_hash) {
+      const cookie = document.cookie.split('; ').find(c => c.startsWith(`claim_hash_${char.claim_guest_hash}=`));
+      return !!cookie;
+    }
+    return false;
+  }
+
+  revokeCharClaim(char: CharacterListItem, event: Event) {
+    event.preventDefault();
+    if (!char.claim_record_id) return;
+    this.wantedCharacterService.revokeClaimRecord(char.claim_record_id).subscribe({
+      next: () => this.characterService.loadCharacterList(),
+      error: (err) => console.error('Failed to revoke claim', err)
+    });
   }
 
   onFactionCreated(faction: Faction) {

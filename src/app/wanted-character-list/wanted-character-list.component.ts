@@ -30,6 +30,7 @@ export class WantedCharacterListComponent implements OnInit {
   private authService = inject(AuthService);
 
   isAuthenticated = this.authService.isAuthenticated;
+  currentUser = this.authService.currentUser;
 
   cardView = signal(true);
   selectedFactions: number[] = [];
@@ -127,6 +128,30 @@ export class WantedCharacterListComponent implements OnInit {
       next: () => this.loadPage(),
       error: (err) => console.error('Failed to claim wanted character', err)
     });
+  }
+
+  revokeClaimRecord(wc: WantedCharacter) {
+    if (!wc.claim_record) return;
+    this.wantedCharacterService.revokeClaimRecord(wc.claim_record.id).subscribe({
+      next: () => this.loadPage(),
+      error: (err) => console.error('Failed to revoke claim', err)
+    });
+  }
+
+  canRevoke(wc: WantedCharacter): boolean {
+    const record = wc.claim_record;
+    if (!record) return false;
+    const userId = this.currentUser()?.id;
+    if (userId && userId === record.claim_author_id) return true;
+    if (record.is_guest && record.guest_hash) {
+      return this.getCookieValue(`claim_hash_${record.guest_hash}`) !== null;
+    }
+    return false;
+  }
+
+  private getCookieValue(name: string): string | null {
+    const match = document.cookie.split('; ').find(c => c.startsWith(name + '='));
+    return match ? match.split('=')[1] : null;
   }
 
   getFields(wc: WantedCharacter): ProcessedField[] {

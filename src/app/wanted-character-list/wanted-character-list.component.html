@@ -35,8 +35,12 @@
               <div class="card-name">
                 <a [routerLink]="['/viewtopic', wc.topic_id]">{{ wc.name }}</a>
                 @if (wc.claim_record) {
-                  <span class="claim-badge" i18n="@@wantedCharacterList.claimedUntil">
-                    Claimed until {{ wc.claim_record.claim_expiration_date | date:'mediumDate' }}
+                  <span class="claim-badge">
+                    @if (wc.claim_record.claim_author_username) {
+                      <ng-container i18n="@@wantedCharacterList.claimedByUntil">Claimed by {{ wc.claim_record.claim_author_username }} until {{ wc.claim_record.claim_expiration_date | date:'mediumDate' }}</ng-container>
+                    } @else {
+                      <ng-container i18n="@@wantedCharacterList.claimedByGuestUntil">Claimed by a guest until {{ wc.claim_record.claim_expiration_date | date:'mediumDate' }}</ng-container>
+                    }
                   </span>
                 }
               </div>
@@ -63,7 +67,11 @@
                   <span (click)="collapseCard(wc.id)">Hide</span>
                 </div>
               }
-              @if (isAuthenticated() && !wc.claim_record) {
+              @if (canRevoke(wc)) {
+                <div class="card-actions">
+                  <button class="button" (click)="revokeClaimRecord(wc)" i18n="@@wantedCharacterList.revoke">Revoke claim</button>
+                </div>
+              } @else if (isAuthenticated() && !wc.claim_record) {
                 <div class="card-actions">
                   <button class="button" (click)="claimWantedCharacter(wc)" i18n="@@wantedCharacterList.claim">Claim</button>
                 </div>

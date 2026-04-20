@@ -23,6 +23,10 @@ export interface CharacterListItem {
   name: string;
   is_claim: boolean;
   wanted_character_id: number | null;
+  claim_record_id: number | null;
+  claim_author_id: number | null;
+  claim_author_username: string | null;
+  claim_guest_hash: string | null;
 }
 
 export interface CharacterEpisode {
