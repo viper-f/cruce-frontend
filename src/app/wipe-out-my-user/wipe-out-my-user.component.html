@@ -9,17 +9,18 @@
         <fieldset class="wipe-warning-box">
           <legend i18n="@@wipeOutMyUser.warningTitle">⚠ Permanent account deletion</legend>
 
-          <p i18n="@@wipeOutMyUser.warningBody">
-            This action will <strong>permanently and irreversibly</strong> delete your account and all associated non-game data, including your direct messages, settings, and personal information.
+          <p>
+            <ng-container i18n="@@wipeOutMyUser.warningBody1">This action will </ng-container><strong i18n="@@wipeOutMyUser.warningBodyBold">permanently and irreversibly</strong><ng-container i18n="@@wipeOutMyUser.warningBody2"> delete your account and all associated non-game data, including your direct messages, settings, and personal information.</ng-container>
           </p>
-          <p i18n="@@wipeOutMyUser.warningNoUndo">
-            <strong>This cannot be undone.</strong> Once deleted, your account cannot be restored.
+          <p>
+            <strong i18n="@@wipeOutMyUser.warningNoUndoBold">This cannot be undone.</strong>
+            <ng-container i18n="@@wipeOutMyUser.warningNoUndoRest"> Once deleted, your account cannot be restored.</ng-container>
           </p>
-          <p i18n="@@wipeOutMyUser.anonymizationNote">
-            In accordance with our privacy policy, game-related assets — including game posts, character sheets, and wanted character topics — will not be deleted but will be <strong>anonymized</strong>: all links to your account will be removed.
+          <p>
+            <ng-container i18n="@@wipeOutMyUser.anonymizationNote1">In accordance with our privacy policy, game-related assets — including game posts, character sheets, and wanted character topics — will not be deleted but will be </ng-container><strong i18n="@@wipeOutMyUser.anonymizationNoteBold">anonymized</strong><ng-container i18n="@@wipeOutMyUser.anonymizationNote2">: all links to your account will be removed.</ng-container>
           </p>
-          <p i18n="@@wipeOutMyUser.gdprNote">
-            This feature is provided in compliance with the <strong>General Data Protection Regulation (GDPR)</strong>, which grants you the right to erasure ("right to be forgotten").
+          <p>
+            <ng-container i18n="@@wipeOutMyUser.gdprNote1">This feature is provided in compliance with the </ng-container><strong i18n="@@wipeOutMyUser.gdprNoteBold">General Data Protection Regulation (GDPR)</strong><ng-container i18n="@@wipeOutMyUser.gdprNote2">, which grants you the right to erasure ("right to be forgotten").</ng-container>
           </p>
         </fieldset>
 
@@ -70,8 +71,8 @@
   <div class="modal-overlay">
     <div class="modal-content">
       <h2 i18n="@@wipeOutMyUser.confirmTitle">Are you absolutely sure?</h2>
-      <p i18n="@@wipeOutMyUser.confirmBody">
-        Your account and all non-game personal data will be <strong>permanently deleted</strong>. This action is <strong>irreversible</strong>.
+      <p>
+        <ng-container i18n="@@wipeOutMyUser.confirmBody1">Your account and all non-game personal data will be </ng-container><strong i18n="@@wipeOutMyUser.confirmBodyBold1">permanently deleted</strong><ng-container i18n="@@wipeOutMyUser.confirmBody2">. This action is </ng-container><strong i18n="@@wipeOutMyUser.confirmBodyBold2">irreversible</strong><ng-container i18n="@@wipeOutMyUser.confirmBody3">.</ng-container>
       </p>
       <div class="buttons">
         <button type="button" class="button btn-wipe" (click)="confirmWipe()" i18n="@@wipeOutMyUser.confirmWipe">Yes, delete everything</button>
