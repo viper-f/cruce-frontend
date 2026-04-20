@@ -1,7 +1,7 @@
 @if (post(); as p) {
   <div id="pun-main" class="main">
     <div class="main-content">
-      <div class="page-content" [innerHTML]="p.content_html | safeHtml"></div>
+      <div class="page-content" appRouterLinks [innerHTML]="p.content_html | safeHtml"></div>
     </div>
   </div>
 }

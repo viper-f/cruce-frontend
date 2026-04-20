@@ -7,10 +7,11 @@ import { CharacterProfileComponent } from '../components/character-profile/chara
 import { EpisodeHeaderComponent } from '../components/episode-header/episode-header.component';
 import { CharacterSheetHeaderComponent } from '../components/character-sheet-header/character-sheet-header.component';
 import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
+import { RouterLinksDirective } from '../directives/router-links.directive';
 
 @Component({
   selector: 'app-preview',
-  imports: [CommonModule, CharacterProfileComponent, EpisodeHeaderComponent, CharacterSheetHeaderComponent, SafeHtmlPipe],
+  imports: [CommonModule, CharacterProfileComponent, EpisodeHeaderComponent, CharacterSheetHeaderComponent, SafeHtmlPipe, RouterLinksDirective],
   standalone: true,
   templateUrl: './preview.component.html',
 })

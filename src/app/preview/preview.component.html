@@ -27,7 +27,7 @@
             <app-character-profile [post]="post"></app-character-profile>
             <div class="post-body">
               <div class="post-box">
-                <div class="post-content" [innerHTML]="post.content_html | safeHtml"></div>
+                <div class="post-content" appRouterLinks [innerHTML]="post.content_html | safeHtml"></div>
               </div>
             </div>
             <div class="clearer"></div>

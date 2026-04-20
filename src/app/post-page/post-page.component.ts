@@ -3,11 +3,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { TopicService } from '../services/topic.service';
 import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
+import { RouterLinksDirective } from '../directives/router-links.directive';
 
 @Component({
   selector: 'app-post-page',
   standalone: true,
-  imports: [SafeHtmlPipe],
+  imports: [SafeHtmlPipe, RouterLinksDirective],
   templateUrl: './post-page.component.html',
 })
 export class PostPageComponent implements OnInit, OnDestroy {

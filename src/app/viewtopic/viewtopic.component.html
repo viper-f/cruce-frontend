@@ -104,7 +104,7 @@
                 </div>
               </form>
             } @else {
-              <div class="post-content" [innerHTML]="post.content_html | safeHtml"></div>
+              <div class="post-content" appRouterLinks [innerHTML]="post.content_html | safeHtml"></div>
             }
           </div>
           <div class="post-reactions">
