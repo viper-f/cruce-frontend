@@ -43,6 +43,7 @@ import { MaskListComponent } from './mask-list/mask-list.component';
 import { RecoveryCodesComponent } from './recovery-codes/recovery-codes.component';
 import { SettingsRestorationCodesComponent } from './settings-restoration-codes/settings-restoration-codes.component';
 import { RestorePasswordComponent } from './restore-password/restore-password.component';
+import { WipeOutMyUserComponent } from './wipe-out-my-user/wipe-out-my-user.component';
 import { adminGuard } from './guards/admin.guard';
 import { privateKeyGuard } from './guards/private-key.guard';
 import { CharacterFieldListComponent } from './character-field-list/character-field-list.component';
@@ -76,6 +77,12 @@ export const routes: Routes = [
     component: RestorePasswordComponent,
     title: 'Restore Password',
     data: { pageId: 'pun-restore-password' }
+  },
+  {
+    path: 'wipe-out-my-user',
+    component: WipeOutMyUserComponent,
+    title: 'Delete My Account',
+    data: { pageId: 'pun-wipe-out-my-user' }
   },
   {
     path: 'register',

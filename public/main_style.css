@@ -1799,6 +1799,31 @@ span.mention {
   background-color: #a93226;
 }
 
+.button.btn-wipe {
+  background-color: #7b0000;
+  border-color: #5a0000;
+  color: #fff;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+}
+
+.button.btn-wipe:hover:not(:disabled) {
+  background-color: #5a0000;
+}
+
+.wipe-warning-box {
+  border: 2px solid #7b0000;
+  background-color: #fff5f5;
+  padding: 15px 20px;
+  margin-bottom: 20px;
+}
+
+.wipe-warning-box legend {
+  color: #7b0000;
+  font-weight: bold;
+  padding: 0 6px;
+}
+
 .modal-overlay {
   position: fixed;
   top: 0;

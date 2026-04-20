@@ -1,9 +1,10 @@
 import { Component, computed, inject, LOCALE_ID } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { BoardService } from '../../services/board.service';
 
 @Component({
   selector: '[app-footer]',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './footer.component.html',
   standalone: true,
 })
