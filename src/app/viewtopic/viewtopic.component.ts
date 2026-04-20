@@ -578,10 +578,7 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
   }
 
   addReaction(postId: number, reactionId: number) {
-    this.apiService.post<PostReaction[]>('post-reaction/create', { post_id: postId, reaction_id: reactionId }).subscribe({
-      next: (reactions) => {
-        this.topicService.updatePostReactions(postId, reactions);
-      },
+    this.apiService.post<void>('post-reaction/create', { post_id: postId, reaction_id: reactionId }).subscribe({
       error: (err) => console.error('Failed to add reaction', err)
     });
     this.reactionPickerPostId.set(null);
