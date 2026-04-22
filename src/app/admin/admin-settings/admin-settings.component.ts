@@ -16,6 +16,7 @@ const SETTING_LABELS: Record<string, string> = {
   imgbb_api_key: $localize`:@@adminSettings.imgbb_api_key:ImgBB API key`,
   posts_per_page: $localize`:@@adminSettings.posts_per_page:Posts per page`,
   site_name: $localize`:@@adminSettings.site_name:Site name`,
+  visual_navlinks_after_header_panel: $localize`:@@adminSettings.visual_navlinks_after_header_panel:Render navlinks after header panel`,
 };
 
 @Component({

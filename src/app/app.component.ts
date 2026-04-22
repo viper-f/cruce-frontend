@@ -35,6 +35,7 @@ export class AppComponent implements OnInit {
   headerPanelHtml = signal<SafeHtml>('');
 
   title = computed(() => this.boardService.board().site_name || 'Cuento');
+  navlinksAfterHeader = computed(() => this.boardService.board().visual_navlinks_after_header_panel === 'y');
 
   @HostBinding('class')
   get designClass(): string {

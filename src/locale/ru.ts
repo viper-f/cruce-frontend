@@ -201,6 +201,7 @@ export const TRANSLATIONS_RU = {
   "adminSettings.imgbb_api_key": "API-ключ ImgBB",
   "adminSettings.posts_per_page": "Сообщений на странице",
   "adminSettings.site_name": "Название сайта",
+  "adminSettings.visual_navlinks_after_header_panel": "Рендерить навигацию после панели шапки",
   "admin.users": "Пользователи",
   "admin.createUser": "Создать пользователя",
   "admin.createUserSuccess": "Пользователь успешно создан.",

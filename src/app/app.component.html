@@ -9,9 +9,15 @@
       </div>
     </div>
 
-    <div id="pun-navlinks" class="section" app-navlinks></div>
+    @if (!navlinksAfterHeader()) {
+      <div id="pun-navlinks" class="section" app-navlinks></div>
+    }
 
     <div id="header-widget-panel" [innerHTML]="headerPanelHtml()"></div>
+
+    @if (navlinksAfterHeader()) {
+      <div id="pun-navlinks" class="section" app-navlinks></div>
+    }
 
     <div id="pun-status" class="section">
       <div class="container">

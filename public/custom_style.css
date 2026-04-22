@@ -1,238 +1,295 @@
+/* ================================================================
+   THEME — Dark teal / atmospheric
+================================================================ */
+
+/* ---- Page background ---------------------------------------- */
 html {
-  /* A rich, deep navy-to-midnight blue */
-  background-color: #0a192f;
-  background-image: radial-gradient(circle, #112240 0%, #020c1b 100%);
-  background-attachment: fixed;
+  background-color: #1a2c2a;
+  background-image: none;
   margin: 0;
   padding: 0;
 }
 
-.title-site h1 a {
-  color: #fcfaf2;
-  font-size: 2rem;
-}
-
-/* Add this to the body to layer the pattern over the blue gradient */
 body::before {
-  content: "";
-  position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  z-index: -1; /* Keep it behind the forum */
-  pointer-events: none;
-  opacity: 0.15; /* Adjust this to make the pattern more or less subtle */
-
-  /* Elegant Diamond Pattern */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M30 0l30 30-30 30L0 30z' fill='%23ffffff' fill-opacity='0.1'/%3E%3C/svg%3E");
-  background-size: 60px 60px;
+  display: none;
 }
 
-#pun-title {
-  margin: 0;
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 122px;
-  line-height: 80px;
-
-  /* Lighter, rich sapphire blue with a subtle metallic sheen */
-  background: linear-gradient(180deg, #1b3a6d 0%, #12284c 100%);
-
-  /* Royal Bottom Border:
-     A combination of a solid gold line and a decorative 'glow'
-  */
-  border-bottom: 4px solid #c2a67a;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3), 0 2px 0 #9c7d58;
-
-  /* Center the text within the 122px height */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2;
-}
-
-#pun-navlinks {
-  position: relative;
-  top: 82px;
-}
-
-/* Styling the Title Text (usually an H1 inside #pun-title) */
-#pun-title h1 {
-  color: #fcfaf2;
-  font-family: 'Georgia', serif;
-  font-variant: small-caps;
-  letter-spacing: 3px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  margin: 0;
-}
-
-/* Optional: Add a subtle 'silk' stripe to the header for extra texture */
-#pun-title::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 -2px 0 rgba(255, 255, 255, 0.05);
-}
-
+/* ---- Forum wrapper ------------------------------------------ */
 #pun {
-  /* Center the forum and add a shadow */
-  max-width: 1100px; /* Or your preferred width */
-  margin: 40px auto;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-}
-
-/* Target the main forum wrap */
-#pun {
-  border: 1px solid #c2a67a;
-  background-color: #fcfaf2; /* Base parchment color */
-  padding: 10px;
-  /* Subtle inner shadow to mimic paper depth */
-  box-shadow: inset 0 0 100px rgba(181, 153, 110, 0.15);
+  max-width: 980px;
+  margin: 0 auto;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0 10px 20px;
 }
 
 #pun-main {
   position: relative;
 }
 
-/* The Category Wrapper */
-.category {
-  margin-bottom: 25px;
-  background: #fffdf7;
-  /* This creates a gold/bronze outer frame effect */
-  border: 1px solid #9c7d58;
-  box-shadow:
-    0 0 0 3px #fcfaf2,      /* Spacer (matches paper color) */
-    0 0 0 4px #c2a67a,      /* Thin secondary frame */
-    0 4px 15px rgba(0,0,0,0.1); /* Soft shadow for lift */
-  position: relative;
-}
-
-/* The Category Header (Title Bar) */
-.category h2 {
-  /*background: linear-gradient(to right, #0a192f, #112240);*/
-  border-bottom: 2px solid #9c7d58;
-  color: #fcfaf2 !important;
-  text-shadow: 1px 1px 2px #000;
-  padding: 8px 15px;
-  font-family: 'Georgia', serif;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  /* Double line divider at the bottom of the title */
-  border-bottom: 3px double #9c7d58;
-
-  border-top: 1px solid #c2a67a; /* Gold top "cap" */
-  background: #12284c; /* Using the deep blue for consistency */
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-
-/* Decorative brackets on corners */
-.category::before,
-.category::after {
-  content: "";
+/* ---- Header (green placeholder instead of image) ------------ */
+#pun-title {
+  margin: 0;
   position: absolute;
-  width: 20px;
-  height: 20px;
-  border: 2px solid #9c7d58;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 220px;
+  background-color: #26684a;
+  background-image: linear-gradient(160deg, #1a5038 0%, #2e7a58 45%, #183c2c 100%);
+  border-bottom: 3px solid rgba(0, 0, 0, 0.35);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  z-index: 2;
+}
+
+#pun-title h1 {
+  color: #e4f0ea;
+  font-family: 'Georgia', serif;
+  font-size: 2em;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  margin: 0;
+  padding: 22px 30px;
+}
+
+.title-site h1 a {
+  color: #e4f0ea;
+  font-size: 2rem;
+  font-family: 'Georgia', serif;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+#pun-title::after {
+  display: none;
+}
+
+/* ---- Navigation bar ----------------------------------------- */
+#pun-navlinks {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 220px;
+  height: 40px;
+  background: #0e1a1a;
+  border: none;
+  border-bottom: 1px solid #1e2e2e;
+  padding: 0;
+  margin: 0;
   z-index: 10;
 }
 
-/* Top Left Bracket */
-.category::before {
-  top: -6px;
-  left: -6px;
-  border-right: none;
-  border-bottom: none;
-}
-
-/* Bottom Right Bracket */
-.category::after {
-  bottom: -6px;
-  right: -6px;
-  border-left: none;
-  border-top: none;
-}
-
-/* Standard PunBB Table Cells */
-.pun table td,
-.pun table th {
-  border-color: rgba(156, 125, 88, 0.2) !important;
-}
-
-/* Row Hover effect - subtle paper highlight */
-.pun tr:hover td {
-  background-color: rgba(244, 236, 216, 0.4) !important;
-}
-
-/* Link styling to match the aesthetic */
-.pun a {
-  color: #7a5d3b;
-  text-decoration: none;
-  transition: 0.3s;
-}
-
-.pun a:hover {
-  color: #3d2f21;
-  text-decoration: underline;
-}
-
-.punbb .container {
-  border: none!important;
-}
-
-.punbb td {
-  border: none!important;
-}
-
-.punbb .post h3 {
-  border: none!important;
-}
-
-#pun-statistics .main-content {
+#pun-navlinks .container {
+  height: 40px;
+  max-width: 980px;
+  margin: 0 auto;
   display: flex;
-  justify-content: space-between;
-}
-
-.linkst {
-  margin-top: 1rem;
-}
-
-#pun-navlinks + div {
-  margin-top: 95px!important;
-}
-
-#pun-navlinks {
-  padding: 20px 0;
-  border-bottom: 1px double #d1bc9b;
-  margin-bottom: 20px;
-  height: 55px!important;
+  align-items: center;
+  justify-content: center;
+  position: static;
+  left: auto;
 }
 
 #pun-navlinks ul {
   display: flex;
   justify-content: center;
-  gap: 25px;
+  gap: 0;
+  margin: 0;
+  padding: 0;
 }
 
-#pun-navlinks a {
+#pun-navlinks li a {
   font-family: 'Georgia', serif;
-  font-weight: bold;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: #4a3b2a !important;
+  font-weight: normal;
+  font-size: 12px;
+  letter-spacing: 0.4px;
+  color: #c4d8d2 !important;
+  text-decoration: none;
+  padding: 0 16px;
+  height: 40px;
+  line-height: 40px;
+  display: block;
+}
+
+#pun-navlinks li a:hover {
+  color: #ffffff !important;
   text-decoration: none;
 }
 
-#pun-navlinks a:hover {
-  color: #1b3a6d !important; /* Pulls the blue from the header down */
+/* Push content below header + nav */
+#pun-navlinks + div {
+  margin-top: 278px !important;
 }
 
-#pun-footer .container {
+/* ---- User links (quick-nav pills) --------------------------- */
+#pun-ulinks {
+  margin-top: 0;
+  margin-bottom: 14px;
+}
+
+#pun-ulinks, #pun-ulinks .container {
+  border: none !important;
+  background: transparent !important;
+}
+
+#pun-ulinks .container {
+  padding: 0;
   text-align: center;
+}
+
+#pun-ulinks li {
+  display: inline-block;
+  margin: 2px 3px;
+  float: none;
+}
+
+#pun-ulinks li a {
+  display: inline-block;
+  padding: 3px 12px;
+  background: #253e4a;
+  color: #96bfcc !important;
+  border-radius: 14px;
+  font-size: 10px;
+  text-decoration: none;
+  margin-top: 0;
+  transition: background 0.2s;
+}
+
+#pun-ulinks li a:hover {
+  background: #354e5c;
+  color: #cce8f4 !important;
+  text-decoration: none;
+}
+
+/* ---- Category blocks ---------------------------------------- */
+.category {
+  margin-bottom: 16px;
+  background: #f2f6f8;
+  border: none;
+  border-radius: 14px;
+  box-shadow: 0 3px 16px rgba(0, 0, 0, 0.28);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Remove bracket decorations */
+.category::before,
+.category::after {
+  display: none;
+}
+
+/* Category header title bar */
+.category h2 {
+  background: #1e3845;
+  color: #cce0ea !important;
+  text-align: center;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  padding: 10px 20px;
+  font-family: 'Georgia', serif;
+  font-style: italic;
+  font-weight: normal;
+  text-transform: none;
+  letter-spacing: 2px;
+  font-size: 1.05em;
+  border: none;
+  box-shadow: none;
+}
+
+/* ---- Forum row left accent bar ----------------------------- */
+.punbb div.icon {
+  width: 4px;
+  min-height: 36px;
+  height: 100%;
+  background: #4a8db5;
+  border-radius: 2px;
+  margin-right: 14px;
+  margin-top: 0;
+  margin-bottom: 0;
+  float: left;
+  border: none;
+}
+
+/* ---- Table cells ------------------------------------------- */
+.pun table td,
+.pun table th {
+  border-color: rgba(160, 200, 220, 0.2) !important;
+}
+
+/* Row hover */
+.pun tr:hover td {
+  background-color: rgba(74, 141, 181, 0.07) !important;
+}
+
+/* ---- Links -------------------------------------------------- */
+.pun a {
+  color: #4a8db5;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.pun a:hover {
+  color: #2a6090;
+  text-decoration: underline;
+}
+
+.punbb .container {
+  border: none !important;
+}
+
+.punbb td {
+  border: none !important;
+}
+
+.punbb .post h3 {
+  border: none !important;
+}
+
+/* ---- Statistics --------------------------------------------- */
+#pun-statistics .main-content {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* ---- Linkst ------------------------------------------------- */
+.linkst {
+  margin-top: 1rem;
+}
+
+/* ---- Footer ------------------------------------------------- */
+#pun-footer .container,
+#pun-footer-links .container {
+  text-align: center;
+  color: #7a9aaa;
+}
+
+#pun-footer-links a,
+#pun-footer .container a {
+  color: #7a9aaa !important;
+}
+
+#pun-footer-links a:hover,
+#pun-footer .container a:hover {
+  color: #aaccda !important;
+  text-decoration: underline;
+}
+
+/* ---- Mobile: reduce header height --------------------------- */
+@media screen and (max-width: 540px) {
+  #pun-title {
+    height: 140px !important;
+  }
+  #pun-navlinks {
+    top: 140px !important;
+  }
+  #pun-navlinks + div {
+    margin-top: 198px !important;
+  }
 }
 
 /* Episode Header Styles */
@@ -418,7 +475,7 @@ body::before {
 }
 
 .pa-author a {
-  color: #1b3a6d;
+  color: #1e3845;
   text-decoration: none;
 }
 
@@ -543,7 +600,7 @@ body::before {
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  background: #1b3a6d;
+  background: #1e3845;
   color: #fcfaf2;
   display: flex;
   align-items: center;
@@ -588,7 +645,7 @@ body::before {
 
 .message.altstyle .message-box {
   background: #12284c;
-  border-color: #1b3a6d;
+  border-color: #1e3845;
   border-radius: 12px 0 12px 12px;
 }
 
@@ -1171,7 +1228,7 @@ app-root.dark .active-user .timestamp {
 }
 
 .maintitle {
-  background-color: #1b3a6d;
+  background-color: #1e3845;
   color: #fcfaf2;
   padding: 10px;
 }
@@ -1192,7 +1249,7 @@ app-root.dark .active-user .timestamp {
 .faction-title {
   margin-top: 10px;
   margin-bottom: 5px;
-  color: #1b3a6d;
+  color: #1e3845;
   border-bottom: 1px solid #ccc;
   padding-bottom: 2px;
 }
@@ -1432,8 +1489,8 @@ app-number-field-display span {
 
 /* === user-list.component === */
 table th {
-  background-color: #1b3a6d;
-  color: #fcfaf2;
+  background-color: #1e3845;
+  color: #cce0ea;
   font-weight: bold;
 }
 
@@ -1561,7 +1618,7 @@ tr.altstyle td {
 
 .char-name-title {
   font-size: 2em;
-  color: #1b3a6d;
+  color: #1e3845;
   border-bottom: 1px solid #d1bc9b;
 }
 
@@ -1582,7 +1639,7 @@ tr.altstyle td {
 }
 
 .char-biography h3 {
-  color: #1b3a6d;
+  color: #1e3845;
   border-bottom: 1px solid #d1bc9b;
 }
 
@@ -1598,8 +1655,8 @@ tr.altstyle td {
 }
 
 .char-activity-table th {
-  background: #1b3a6d;
-  color: #fcfaf2;
+  background: #1e3845;
+  color: #cce0ea;
 }
 
 .char-group-path {
@@ -1617,7 +1674,7 @@ tr.altstyle td {
 
 .main-group {
   font-weight: 600;
-  color: #1b3a6d;
+  color: #1e3845;
 }
 
 .group-separator {
@@ -1794,9 +1851,9 @@ tr.altstyle td {
 }
 
 .spoiler-modal-actions button:first-child {
-  background: #1b3a6d;
+  background: #1e3845;
   color: #fff;
-  border-color: #1b3a6d;
+  border-color: #1e3845;
 }
 
 /* === post-form.component === */
@@ -1969,9 +2026,9 @@ tr.altstyle td {
 
 :host ::ng-deep .punbb .main .category th,
 .user-profile-th {
-  background-color: #1b3a6d;
-  color: #fcfaf2;
-  border-bottom: 2px solid #c2a67a;
+  background-color: #1e3845;
+  color: #cce0ea;
+  border-bottom: 2px solid #3a6a7a;
   font-weight: bold;
   text-transform: uppercase;
   font-size: 0.9em !important;
@@ -1987,12 +2044,13 @@ tr.altstyle td {
 
 .tclcon a {
   font-weight: bold;
-  color: #7a5d3b;
+  color: #1e2e38;
   text-decoration: none;
 }
 
 .tclcon a:hover {
-  text-decoration: underline;
+  color: #4a8db5;
+  text-decoration: none;
 }
 
 .edit-link {
