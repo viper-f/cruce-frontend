@@ -1,73 +1,11 @@
-name: Deploy Cuento Frontend
+name: Deploy Cuento Frontend (dev)
 
 on:
-  push:
-    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  disabled:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build Angular app
-        # This creates the static files in the /dist folder
-        run: npm run build -- --configuration production
-
-      - name: Clear old files (preserving specific styles)
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.DROPLET_IP }}
-          username: root
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            # Remove everything except the protected files and folders
-            find /var/www/frontend -mindepth 1 \
-              ! -name 'favicon*' \
-              ! -name 'main_style*' \
-              ! -name 'custom_style*' \
-              ! -path '/var/www/frontend/reactions' \
-              ! -path '/var/www/frontend/reactions/*' \
-              -delete
-
-            # Create reactions folder if it does not exist yet
-            mkdir -p /var/www/frontend/reactions
-
-      - name: Deploy to Temporary Staging
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.DROPLET_IP }}
-          username: root
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "dist/cuento-frontend/browser/*"
-          target: "/tmp/frontend_staging"
-          strip_components: 3
-          overwrite: true
-
-      - name: Selective Move and Cleanup
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.DROPLET_IP }}
-          username: root
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            # 1. Move all files from staging to target 
-            # 'n' flag (no-clobber) ensures we do NOT overwrite existing files
-            cp -rn /tmp/frontend_staging/* /var/www/frontend/
-            
-            # 2. Fix Permissions (keeping your specific 765 requirement)
-            chown -R www-data:www-data /var/www/frontend
-            chmod -R 775 /var/www/frontend
-            
-            # 3. Clean up staging
-            rm -rf /tmp/frontend_staging
+      - name: Disabled
+        run: echo "Dev pipeline is disabled in this fork. Use the release branch."
