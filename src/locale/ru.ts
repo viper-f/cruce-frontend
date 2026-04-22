@@ -20,7 +20,7 @@ export const TRANSLATIONS_RU = {
   "viewforum.replies": "Ответов",
   "viewforum.views": "Просмотров",
   "viewforum.lastPost": "Последнее сообщение",
-  "viewforum.by": " от",
+  "viewforum.by": "от ",
   "viewtopic.pages": "Страницы",
   "viewtopic.reply": "Ответить",
   "viewtopic.share": "Поделиться",
