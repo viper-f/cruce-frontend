@@ -49,6 +49,11 @@
                   } @else {
                     <a [routerLink]="['/character', char.id]" class="character-link">{{ char.name }}</a>
                   }
+                  @if (char.is_claim && char.claim_author_username && char.claim_expiration_date) {
+                    <span class="character-claim-info">
+                      — <ng-container i18n="@@characterList.claimedBy">claimed by</ng-container> {{ char.claim_author_username }} <ng-container i18n="@@characterList.claimedUntil">until</ng-container> {{ char.claim_expiration_date | date:'yyyy-MM-dd' }}
+                    </span>
+                  }
                   @if (char.wanted_character_id != null) {
                     (<a [routerLink]="['/viewtopic', char.wanted_character_id]" class="character-wanted-link" i18n="@@characterList.wanted">wanted</a>)
                   }
@@ -80,8 +85,16 @@
                       } @else {
                         <a [routerLink]="['/character', char.id]" class="character-link">{{ char.name }}</a>
                       }
+                      @if (char.is_claim && char.claim_author_username && char.claim_expiration_date) {
+                        <span class="character-claim-info">
+                          — <ng-container i18n="@@characterList.claimedBy">claimed by</ng-container> {{ char.claim_author_username }} <ng-container i18n="@@characterList.claimedUntil">until</ng-container> {{ char.claim_expiration_date | date:'yyyy-MM-dd' }}
+                        </span>
+                      }
                       @if (char.wanted_character_id != null) {
                         (<a [routerLink]="['/viewtopic', char.wanted_character_id]" class="character-wanted-link" i18n="@@characterList.wanted">wanted</a>)
+                      }
+                      @if (canRevokeChar(char)) {
+                        (<a href="#" class="character-revoke-link" (click)="revokeCharClaim(char, $event)" i18n="@@characterList.revokeClaim">revoke claim</a>)
                       }
                     </li>
                   }

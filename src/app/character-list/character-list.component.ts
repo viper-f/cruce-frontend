@@ -1,4 +1,5 @@
 import {Component, computed, inject, OnInit, signal} from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CharacterService } from '../services/character.service';
@@ -16,6 +17,7 @@ import { ClaimCreateModalComponent } from '../components/claim-create-modal/clai
   imports: [
     RouterLink,
     FormsModule,
+    DatePipe,
     FactionCreateModalComponent,
     ClaimCreateModalComponent,
   ],

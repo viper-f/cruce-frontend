@@ -27,6 +27,7 @@ export interface CharacterListItem {
   claim_author_id: number | null;
   claim_author_username: string | null;
   claim_guest_hash: string | null;
+  claim_expiration_date: string | null;
 }
 
 export interface CharacterEpisode {

@@ -73,9 +73,9 @@
             <td class="tc3"></td> <!-- Views not in model yet -->
             <td class="tcr">
               @if (topic.last_post_id) {
-                <a [routerLink]="['/viewtopic', topic.id]" [queryParams]="{ post_id: topic.last_post_id }">{{topic.date_last_post}}</a>
+                <a [routerLink]="['/viewtopic', topic.id]" [queryParams]="{ post_id: topic.last_post_id }">{{topic.date_last_post_localized}}</a>
               } @else {
-                <a routerLink="/viewtopic/{{topic.id}}">{{topic.date_last_post}}</a>
+                <a routerLink="/viewtopic/{{topic.id}}">{{topic.date_last_post_localized}}</a>
               }
               <span class="byuser">by {{topic.last_post_author_username}}</span>
             </td>

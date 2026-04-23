@@ -427,6 +427,8 @@ export const TRANSLATIONS_RU = {
   "characterList.filter.wantedCharacters": "Разыскиваемые персонажи",
   "characterList.wanted": "разыскивается",
   "characterList.revokeClaim": "отозвать заявку",
+  "characterList.claimedBy": "заявлено пользователем",
+  "characterList.claimedUntil": "до",
   "characterList.addFaction": "Добавить фракцию",
   "characterList.addClaim": "Добавить заявку",
   "characterList.pendingFactionNote": "Фракция на рассмотрении — видна вам, так как в ней есть ваши заявки на персонажей.",
