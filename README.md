@@ -1,4 +1,4 @@
-# Cuento Frontend.
+# Cuento Frontend
 
 The official frontend for the Cuento role-playing forum platform, designed to provide a modern, responsive, and feature-rich user experience. This application is built with Angular and is styled to emulate the classic, lightweight feel of forum software like PunBB/MyBB while leveraging modern web technologies.
 
