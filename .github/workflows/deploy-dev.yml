@@ -1,4 +1,4 @@
-name: Deploy Cuento Frontend (dev)
+name: Dev pipeline (disabled in fork)
 
 on:
   workflow_dispatch:
