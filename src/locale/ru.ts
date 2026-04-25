@@ -423,7 +423,7 @@ export const TRANSLATIONS_RU = {
   "topicCommander.loading": "Загрузка...",
   "topicCommander.noTopics": "Нет тем",
   "characterList.filter.characters": "Персонажи",
-  "characterList.filter.importantRoles": "Важные роли",
+  "characterList.filter.importantRoles": "Канонические персонажи",
   "characterList.filter.wantedCharacters": "Разыскиваемые персонажи",
   "characterList.wanted": "разыскивается",
   "characterList.revokeClaim": "отозвать заявку",

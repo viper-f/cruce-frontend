@@ -66,7 +66,7 @@ export class AdminAdditionalNavlinksComponent implements OnInit {
         error: (err) => console.error('Failed to create navlink', err)
       });
     } else {
-      this.apiService.put<AdditionalNavlink>(`admin/additional-navlink/${link.id}`, link).subscribe({
+      this.apiService.post<AdditionalNavlink>(`admin/additional-navlink/update/${link.id}`, link).subscribe({
         error: (err) => console.error('Failed to update navlink', err)
       });
     }
@@ -77,7 +77,7 @@ export class AdminAdditionalNavlinksComponent implements OnInit {
       this.navlinks.update(list => list.filter(l => l !== link));
       return;
     }
-    this.apiService.delete(`admin/additional-navlink/${link.id}`).subscribe({
+    this.apiService.get(`admin/additional-navlink/delete/${link.id}`).subscribe({
       next: () => this.navlinks.update(list => list.filter(l => l !== link)),
       error: (err) => console.error('Failed to delete navlink', err)
     });
