@@ -14,6 +14,6 @@ export class FooterComponent {
 
   siteName = computed(() => this.boardService.board().site_name || 'Cuento');
   privacyPolicyUrl = this.locale === 'ru-RU'
-    ? 'https://docs.cuento.ca/ru/privacy-policy.html'
-    : 'https://docs.cuento.ca/privacy-policy.html';
+    ? 'https://cuento.ca/ru/docs/privacy-policy/'
+    : 'https://cuento.ca/docs/privacy-policy/';
 }
