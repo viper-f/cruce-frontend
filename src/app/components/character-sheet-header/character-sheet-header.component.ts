@@ -76,7 +76,7 @@ export class CharacterSheetHeaderComponent implements OnInit, OnChanges {
       this.characterService.acceptCharacter(this.character.id).subscribe({
         next: () => {
           if (this.character) {
-            this.character.character_status = 1;
+            this.character.character_status = 0;
           }
         },
         error: (err) => console.error('Failed to accept character', err)
