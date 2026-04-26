@@ -93,20 +93,6 @@
         </table>
 
         <div class="buttons">
-          <div class="conl">
-            @if (subforum()?.permissions?.subforum_create_general_topic) {
-              <a routerLink="/topic-create" [queryParams]="{fid: subforum()?.id}" class="button"><span i18n="@@topiccreate.generic">Standard</span></a>
-            }
-            @if (subforum()?.permissions?.subforum_create_episode_topic) {
-              <a routerLink="/episode-create" [queryParams]="{fid: subforum()?.id}" class="button"><span i18n="@@topiccreate.episode">Game</span></a>
-            }
-            @if (subforum()?.permissions?.subforum_create_character_topic) {
-              <a routerLink="/character-create" [queryParams]="{fid: subforum()?.id}" class="button"><span i18n="@@topiccreate.character">Character</span></a>
-            }
-            @if (subforum()?.permissions?.subforum_create_wanted_character_topic) {
-              <a routerLink="/wanted-character-create" [queryParams]="{fid: subforum()?.id}" class="button"><span i18n="@@topiccreate.wantedCharacter">Wanted character</span></a>
-            }
-          </div>
           <p class="conr">
             @if (totalPages() > 1) {
               <span><ng-container i18n="@@viewforum.pages">Pages</ng-container>:
