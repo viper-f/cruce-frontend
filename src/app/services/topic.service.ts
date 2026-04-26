@@ -168,7 +168,7 @@ export class TopicService {
   }
 
   updateLocalPost(updatedPost: Post) {
-    this.postsSignal.update(posts => posts.map(p => p.id === updatedPost.id ? this.normalizePost(updatedPost) : p));
+    this.postsSignal.update(posts => posts.map(p => p.id === updatedPost.id ? this.normalizePost({ can_edit: p.can_edit, ...updatedPost }) : p));
   }
 
   updatePostReactions(postId: number, reactions: Post['reactions']) {

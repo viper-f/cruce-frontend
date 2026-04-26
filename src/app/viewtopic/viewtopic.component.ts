@@ -455,7 +455,7 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
     if (!title || !this.id()) return;
 
     const payload = {
-      title: title
+      name: title
     };
 
     this.topicService.updateTopic(this.id()!, payload).subscribe({
