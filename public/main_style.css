@@ -1946,6 +1946,12 @@ span.mention {
   border: 1px solid #f5c6cb;
 }
 
+.status-declined {
+  background-color: #e2e3e5;
+  color: #383d41;
+  border: 1px solid #d6d8db;
+}
+
 .character-sheet-factions h3,
 .character-sheet-custom-fields h3 {
   font-size: 1.2em;
