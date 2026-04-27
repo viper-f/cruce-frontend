@@ -88,6 +88,10 @@ export class FactionService {
     return this.apiService.post<Faction>(`faction/update/${id}`, { faction_status });
   }
 
+  deleteFaction(id: number): Observable<void> {
+    return this.apiService.get<void>(`faction/delete/${id}`);
+  }
+
   createFaction(faction: Faction): Observable<Faction> {
     return this.apiService.post<Faction>('faction/create', faction);
   }

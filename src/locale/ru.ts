@@ -290,6 +290,8 @@ export const TRANSLATIONS_RU = {
   "faction.pendingTitle": "Ожидающие подтверждения",
   "faction.approve": "Принять",
   "faction.decline": "Отклонить",
+  "faction.delete": "Удалить",
+  "faction.deleteError": "Невозможно удалить фракцию, так как у неё есть дочерние фракции или прикреплённые персонажи.",
   "faction.name": "Название",
   "faction.level": "Уровень",
   "faction.description": "Описание",

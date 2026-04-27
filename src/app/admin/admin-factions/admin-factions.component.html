@@ -74,9 +74,21 @@
           }
           @if (!isNew(faction)) {
             <button type="button" (click)="addChild(faction)" i18n="@@faction.addChild">Add Child</button>
+            <button type="button" class="btn-decline" (click)="deleteFaction(faction)" i18n="@@faction.delete">Delete</button>
           }
         </div>
       </fieldset>
     </form>
   }
 </div>
+
+@if (showDeleteErrorModal) {
+  <div class="modal-overlay">
+    <div class="modal">
+      <p i18n="@@faction.deleteError">This faction cannot be deleted because it has child factions or characters assigned to it.</p>
+      <div class="modal-actions">
+        <button type="button" class="btn-primary" (click)="showDeleteErrorModal = false" i18n="@@common.close">Close</button>
+      </div>
+    </div>
+  </div>
+}
