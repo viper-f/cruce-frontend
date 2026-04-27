@@ -1,0 +1,111 @@
+<div class="reactions-container">
+  <h2 i18n="@@admin.smiles">Smiles</h2>
+
+  <!-- Categories -->
+  <section class="reactions-section">
+    <h3 i18n="@@admin.smiles.categories">Categories</h3>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th i18n="@@admin.smiles.categoryName">Name</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (category of categories(); track category.id) {
+          <tr>
+            <td>
+              @if (editingCategory?.id === category.id) {
+                <input type="text" [(ngModel)]="editingCategory!.name" />
+              } @else {
+                {{ category.name }}
+              }
+            </td>
+            <td class="actions-cell">
+              @if (editingCategory?.id === category.id) {
+                <button type="button" class="btn-primary" (click)="saveCategory()" i18n="@@common.save">Save</button>
+                <button type="button" (click)="cancelEditCategory()" i18n="@@common.cancel">Cancel</button>
+              } @else {
+                <button type="button" (click)="startEditCategory(category)" i18n="@@common.edit">Edit</button>
+                <button type="button" class="btn-decline" (click)="deleteCategory(category)" i18n="@@common.delete">Delete</button>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <div class="upload-row" style="margin-top: 12px;">
+      <input type="text" [(ngModel)]="newCategoryName" placeholder="New category name" i18n-placeholder="@@admin.smiles.newCategoryPlaceholder" />
+      <button type="button" class="btn-primary" (click)="createCategory()" i18n="@@admin.smiles.addCategory">Add Category</button>
+    </div>
+  </section>
+
+  <!-- Smiles list -->
+  <section class="reactions-section">
+    <h3 i18n="@@admin.smiles.list">Smiles</h3>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th i18n="@@admin.reactions.image">Image</th>
+          <th i18n="@@admin.smiles.textForm">Text form</th>
+          <th i18n="@@admin.smiles.category">Category</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (smile of smiles(); track smile.id) {
+          <tr>
+            <td><img [src]="'/smiles/' + smile.url" class="reaction-preview" alt="" /></td>
+            <td>{{ smile.text_form }}</td>
+            <td>
+              <select
+                [ngModel]="smileCategorySelection[smile.id]"
+                (ngModelChange)="onSmileCategoryChange(smile, $event)"
+              >
+                <option [ngValue]="null" i18n="@@admin.smiles.noCategory">— None —</option>
+                @for (category of categories(); track category.id) {
+                  <option [ngValue]="category.id">{{ category.name }}</option>
+                }
+              </select>
+            </td>
+            <td>
+              <button type="button" class="btn-decline" (click)="deleteSmile(smile)" i18n="@@common.delete">Delete</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Upload -->
+  <section class="reactions-section">
+    <h3 i18n="@@admin.smiles.upload">Upload new smile</h3>
+    <div class="upload-row">
+      <input type="text" [(ngModel)]="newSmileTextForm" placeholder="Text form (optional)" i18n-placeholder="@@admin.smiles.textFormPlaceholder" />
+      <select [(ngModel)]="newSmileCategoryId">
+        <option [ngValue]="null" i18n="@@admin.smiles.noCategory">— None —</option>
+        @for (category of categories(); track category.id) {
+          <option [ngValue]="category.id">{{ category.name }}</option>
+        }
+      </select>
+      <label class="upload-label">
+        <input
+          type="file"
+          accept="image/*"
+          class="file-input"
+          (change)="onFileSelected($event)"
+          [disabled]="uploadState() === 'loading'"
+        />
+        <span class="btn-upload" [class]="'btn-upload--' + uploadState()">
+          @switch (uploadState()) {
+            @case ('loading') { <span class="spinner"></span> }
+            @case ('success') { <span i18n="@@common.uploaded">Uploaded</span> }
+            @case ('error') { <span i18n="@@common.uploadFailed">Failed</span> }
+            @default { <span i18n="@@admin.smiles.uploadButton">Upload smile</span> }
+          }
+        </span>
+      </label>
+    </div>
+  </section>
+</div>

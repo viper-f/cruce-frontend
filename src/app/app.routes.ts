@@ -54,6 +54,7 @@ import { AdminWidgetEditComponent } from './admin/admin-widget-edit/admin-widget
 import { ActiveUsersComponent } from './active-users/active-users.component';
 import { AdminDesignComponent } from './admin/admin-design/admin-design.component';
 import { AdminReactionsComponent } from './admin/admin-reactions/admin-reactions.component';
+import { AdminSmilesComponent } from './admin/admin-smiles/admin-smiles.component';
 import { PostPageComponent } from './post-page/post-page.component';
 import { NotFoundComponent } from './error-pages/not-found/not-found.component';
 import { ForbiddenComponent } from './error-pages/forbidden/forbidden.component';
@@ -358,6 +359,11 @@ export const routes: Routes = [
         path: 'reactions',
         component: AdminReactionsComponent,
         title: 'Admin - Reactions'
+      },
+      {
+        path: 'smiles',
+        component: AdminSmilesComponent,
+        title: 'Admin - Smiles'
       }
     ]
   },
