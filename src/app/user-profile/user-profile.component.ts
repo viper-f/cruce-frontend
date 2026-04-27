@@ -24,6 +24,9 @@ export class UserProfileComponent implements OnInit {
   userProfile = this.userService.userProfile;
   currentUser = this.authService.currentUser;
 
+  activeCharacters = computed(() => (this.userProfile()?.characters ?? []).filter(c => c.character_status === 0));
+  otherCharacters = computed(() => (this.userProfile()?.characters ?? []).filter(c => c.character_status !== 0));
+
   isOwnProfile = computed(() => {
     const profile = this.userProfile();
     const current = this.currentUser();
@@ -42,6 +45,26 @@ export class UserProfileComponent implements OnInit {
           }
         }
       });
+    }
+  }
+
+  statusLabel(status: number): string {
+    switch (status) {
+      case 0: return $localize`:@@common.statusActive:Active`;
+      case 1: return $localize`:@@common.statusInactive:Inactive`;
+      case 2: return $localize`:@@common.statusPending:Pending`;
+      case 3: return $localize`:@@common.statusDeclined:Declined`;
+      default: return String(status);
+    }
+  }
+
+  statusClass(status: number): string {
+    switch (status) {
+      case 0: return 'status-badge status-active';
+      case 1: return 'status-badge status-inactive';
+      case 2: return 'status-badge status-pending';
+      case 3: return 'status-badge status-declined';
+      default: return 'status-badge';
     }
   }
 

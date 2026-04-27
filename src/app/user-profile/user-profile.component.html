@@ -35,49 +35,97 @@
 
   <div class="category character-section">
     <div class="main-content">
-      <table cellspacing="0">
-        <thead>
-          <tr>
-            <th scope="col" i18n="@@userprofile.charName">Character Name</th>
-            <th scope="col" i18n="@@userprofile.factions">Factions</th>
-            <th scope="col" i18n="@@userprofile.episodes">Episodes</th>
-            <th scope="col" i18n="@@userprofile.posts">Posts</th>
-            <th scope="col" i18n="@@userprofile.lastPost">Last Post</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (char of profile.characters; track char.id; let isEven = $even) {
-            <tr [class.altstyle]="isEven">
-              <td>
-                <div class="intd">
-                  <div class="tclcon">
-                    <a [routerLink]="['/character', char.id]">{{ char.name }}</a>
-                    @if (isOwnProfile()) {
-                      <a [routerLink]="['/character-profile-update', char.id]" class="edit-link" title="Edit profile" i18n-title="@@userprofile.editProfile"><i class="bi bi-pencil-square"></i></a>
-                    }
-                  </div>
-                </div>
-              </td>
-              <td>
-                @for (faction of char.factions; track faction.id; let last = $last) {
-                  {{ faction.name }}@if(!last){, }
-                }
-              </td>
-              <td>{{ char.total_episodes }}</td>
-              <td>{{ char.total_posts }}</td>
-              <td>{{ char.last_post_date | date }}</td>
-            </tr>
-          } @empty {
+      <details open>
+        <summary i18n="@@userprofile.activeCharacters">Active Characters</summary>
+        <table cellspacing="0">
+          <thead>
             <tr>
-              <td colspan="5">
-                <div class="intd">
-                  <p i18n="@@userprofile.noCharacters">This user has no characters yet.</p>
-                </div>
-              </td>
+              <th scope="col" i18n="@@userprofile.charStatus">Status</th>
+              <th scope="col" i18n="@@userprofile.charName">Character Name</th>
+              <th scope="col" i18n="@@userprofile.factions">Factions</th>
+              <th scope="col" i18n="@@userprofile.episodes">Episodes</th>
+              <th scope="col" i18n="@@userprofile.posts">Posts</th>
+              <th scope="col" i18n="@@userprofile.lastPost">Last Post</th>
             </tr>
-          }
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            @for (char of activeCharacters(); track char.id; let isEven = $even) {
+              <tr [class.altstyle]="isEven">
+                <td><span [class]="statusClass(char.character_status)">{{ statusLabel(char.character_status) }}</span></td>
+                <td>
+                  <div class="intd">
+                    <div class="tclcon">
+                      <a [routerLink]="['/character', char.id]">{{ char.name }}</a>
+                      @if (isOwnProfile()) {
+                        <a [routerLink]="['/character-profile-update', char.id]" class="edit-link" title="Edit profile" i18n-title="@@userprofile.editProfile"><i class="bi bi-pencil-square"></i></a>
+                      }
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  @for (faction of char.factions; track faction.id; let last = $last) {
+                    {{ faction.name }}@if(!last){, }
+                  }
+                </td>
+                <td>{{ char.total_episodes }}</td>
+                <td>{{ char.total_posts }}</td>
+                <td>{{ char.last_post_date | date }}</td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6">
+                  <div class="intd">
+                    <p i18n="@@userprofile.noCharacters">This user has no characters yet.</p>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </details>
+
+      @if (otherCharacters().length > 0) {
+        <details>
+          <summary i18n="@@userprofile.otherCharacters">Other Characters</summary>
+          <table cellspacing="0">
+            <thead>
+              <tr>
+                <th scope="col" i18n="@@userprofile.charStatus">Status</th>
+                <th scope="col" i18n="@@userprofile.charName">Character Name</th>
+                <th scope="col" i18n="@@userprofile.factions">Factions</th>
+                <th scope="col" i18n="@@userprofile.episodes">Episodes</th>
+                <th scope="col" i18n="@@userprofile.posts">Posts</th>
+                <th scope="col" i18n="@@userprofile.lastPost">Last Post</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (char of otherCharacters(); track char.id; let isEven = $even) {
+                <tr [class.altstyle]="isEven">
+                  <td><span [class]="statusClass(char.character_status)">{{ statusLabel(char.character_status) }}</span></td>
+                  <td>
+                    <div class="intd">
+                      <div class="tclcon">
+                        <a [routerLink]="['/character', char.id]">{{ char.name }}</a>
+                        @if (isOwnProfile()) {
+                          <a [routerLink]="['/character-profile-update', char.id]" class="edit-link" title="Edit profile" i18n-title="@@userprofile.editProfile"><i class="bi bi-pencil-square"></i></a>
+                        }
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    @for (faction of char.factions; track faction.id; let last = $last) {
+                      {{ faction.name }}@if(!last){, }
+                    }
+                  </td>
+                  <td>{{ char.total_episodes }}</td>
+                  <td>{{ char.total_posts }}</td>
+                  <td>{{ char.last_post_date | date }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </details>
+      }
     </div>
   </div>
 </div>
