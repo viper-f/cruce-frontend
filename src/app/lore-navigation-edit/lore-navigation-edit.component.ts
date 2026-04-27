@@ -79,6 +79,7 @@ export class LoreNavigationEditComponent implements OnInit, OnDestroy {
     if (!state) return;
 
     const payload: LorePage = {
+      topic_id: this.topicId(),
       post_id: row.id,
       name: state.name,
       order: state.order,

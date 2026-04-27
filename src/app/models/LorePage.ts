@@ -1,4 +1,5 @@
 export interface LorePage {
+  topic_id: number;
   post_id: number;
   name: string;
   is_hidden: boolean;
