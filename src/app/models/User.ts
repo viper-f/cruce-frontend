@@ -48,6 +48,7 @@ export interface UserProfileResponse {
 export interface CharacterProfileListItem {
   id: number;
   name: string;
+  character_status: number;
   total_episodes: number;
   total_posts: number;
   last_post_date: string | null;
