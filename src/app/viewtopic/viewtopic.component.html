@@ -72,6 +72,9 @@
       <app-wanted-character-header [wantedCharacter]="topic().wanted_character"></app-wanted-character-header>
     }
   }
+  @if(isLore()) {
+    <app-lore-topic-header [topicId]="id()!"></app-lore-topic-header>
+  }
   @if(isCharacter() && topic().character != null) {
     @if (editingTopic()) {
       <app-character-create

@@ -68,7 +68,12 @@
                 </div>
                 <div class="tclcon">
                   <h3>
-                    <a routerLink="/viewtopic/{{topic.id}}">{{topic.name}}</a>
+                    @if (topic.type === 4 && topic.first_post_id) {
+                      <a [routerLink]="['/lore', topic.id, 'page', topic.first_post_id]">{{topic.name}}</a>
+                      (<a routerLink="/viewtopic/{{topic.id}}" i18n="@@viewforum.topicView">topic view</a>)
+                    } @else {
+                      <a routerLink="/viewtopic/{{topic.id}}">{{topic.name}}</a>
+                    }
                     @if (topic.is_sticky) {
                       <span class="status-badge status-sticky" i18n="@@viewforum.sticky">Sticky</span>
                     }

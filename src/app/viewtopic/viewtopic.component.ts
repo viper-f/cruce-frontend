@@ -27,6 +27,7 @@ import { WantedCharacterCreateComponent } from '../wanted-character-create/wante
 import { WantedCharacterService } from '../services/wanted-character.service';
 import { EpisodeService } from '../services/episode.service';
 import { PreviewService } from '../services/preview.service';
+import { LoreTopicHeaderComponent } from '../components/lore-topic-header/lore-topic-header.component';
 
 function coerceToPage(value: unknown): number {
   const num = numberAttribute(value, 1);
@@ -49,6 +50,7 @@ function coerceToPage(value: unknown): number {
     EpisodeCreateComponent,
     CharacterCreateComponent,
     WantedCharacterCreateComponent,
+    LoreTopicHeaderComponent,
     RouterLinksDirective,
   ],
   templateUrl: './viewtopic.component.html',
@@ -242,6 +244,7 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
   isGeneral() { return this.topic().type === TopicType.general; }
   isCharacter() { return this.topic().type === TopicType.character; }
   isWantedCharacter() { return this.topic().type === TopicType.wanted_character; }
+  isLore() { return this.topic().type === TopicType.lore; }
 
   ngOnInit() {
     this.pageLoadedSubscription = this.topicService.pageLoaded$.subscribe(pageState => {

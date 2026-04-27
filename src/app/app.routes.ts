@@ -56,6 +56,8 @@ import { AdminDesignComponent } from './admin/admin-design/admin-design.componen
 import { AdminReactionsComponent } from './admin/admin-reactions/admin-reactions.component';
 import { AdminSmilesComponent } from './admin/admin-smiles/admin-smiles.component';
 import { PostPageComponent } from './post-page/post-page.component';
+import { LorePageComponent } from './lore-page/lore-page.component';
+import { LoreNavigationEditComponent } from './lore-navigation-edit/lore-navigation-edit.component';
 import { NotFoundComponent } from './error-pages/not-found/not-found.component';
 import { ForbiddenComponent } from './error-pages/forbidden/forbidden.component';
 import { ServerErrorComponent } from './error-pages/server-error/server-error.component';
@@ -371,6 +373,16 @@ export const routes: Routes = [
     path: 'post-page/:id',
     component: PostPageComponent,
     data: { pageId: 'pun-post-page' }
+  },
+  {
+    path: 'lore/:topicId/page/:postId',
+    component: LorePageComponent,
+    data: { pageId: 'pun-lore-page' }
+  },
+  {
+    path: 'lore/:id/navigation-edit',
+    component: LoreNavigationEditComponent,
+    data: { pageId: 'pun-lore-navigation-edit' }
   },
   {
     path: '403',

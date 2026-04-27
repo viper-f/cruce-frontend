@@ -1,0 +1,52 @@
+<div id="pun-main" class="main">
+  <div class="main-header">
+    <h1 i18n="@@loreNavEdit.title">Edit Navigation</h1>
+  </div>
+
+  <div class="main-content">
+    <table cellspacing="0" class="data-table">
+      <thead>
+        <tr>
+          <th i18n="@@loreNavEdit.date">Date</th>
+          <th i18n="@@loreNavEdit.name">Page Name</th>
+          <th i18n="@@loreNavEdit.order">Order</th>
+          <th i18n="@@loreNavEdit.hidden">Hidden</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of rows(); track row.id) {
+          <tr>
+            <td>{{ row.date_created | date:'dd.MM.yy HH:mm' }}</td>
+
+            @if (isEditing(row)) {
+              <td><input type="text" [(ngModel)]="editingMap[row.id].name" /></td>
+              <td><input type="number" [(ngModel)]="editingMap[row.id].order" style="width: 60px;" /></td>
+              <td><input type="checkbox" [(ngModel)]="editingMap[row.id].is_hidden" /></td>
+              <td class="actions-cell">
+                <button type="button" class="btn-primary" (click)="save(row)" i18n="@@common.save">Save</button>
+                <button type="button" (click)="cancelEdit(row)" i18n="@@common.cancel">Cancel</button>
+              </td>
+            } @else {
+              <td>{{ row.lore_page?.name ?? '—' }}</td>
+              <td>{{ row.lore_page?.order ?? '—' }}</td>
+              <td>
+                @if (row.lore_page) {
+                  {{ row.lore_page.is_hidden ? '✓' : '' }}
+                }
+              </td>
+              <td class="actions-cell">
+                @if (row.lore_page) {
+                  <button type="button" (click)="startEdit(row)" i18n="@@common.edit">Edit</button>
+                  <button type="button" class="btn-decline" (click)="delete(row)" i18n="@@common.delete">Delete</button>
+                } @else {
+                  <button type="button" (click)="startEdit(row)" i18n="@@loreNavEdit.createLink">Create link</button>
+                }
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

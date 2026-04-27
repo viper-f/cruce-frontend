@@ -16,6 +16,7 @@ export interface Topic {
   post_number: number;
   last_post_author_user_id: number|null;
   last_post_author_username: string|null;
+  first_post_id?: number | null;
   last_post_id?: number | null;
   last_viewed_id?: number | null;
   type: TopicType;
@@ -34,7 +35,8 @@ export enum TopicType {
   general = 0,
   episode = 1,
   character = 2,
-  wanted_character = 3
+  wanted_character = 3,
+  lore = 4
 }
 
 export enum TopicStatus {
