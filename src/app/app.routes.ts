@@ -129,6 +129,12 @@ export const routes: Routes = [
     data: { pageId: 'pun-create-topic' }
   },
   {
+    path: 'lore-topic-create',
+    component: TopicCreateComponent,
+    title: 'Create Lore Topic',
+    data: { pageId: 'pun-create-topic', createEndpoint: 'lore-topic/create' }
+  },
+  {
     path: 'episode-create',
 
     component: EpisodeCreateComponent,

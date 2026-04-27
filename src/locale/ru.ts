@@ -69,6 +69,7 @@ export const TRANSLATIONS_RU = {
   "topiccreate.episode": "Создать эпизод",
   "topiccreate.character": "Создать анкету персонажа",
   "topiccreate.wantedCharacter": "Добавить нужного персонажа",
+  "topiccreate.lore": "Создать лор-тему",
   "loreTopic.editNavigation": "Редактировать навигацию",
   "loreNavEdit.title": "Редактирование навигации",
   "loreNavEdit.date": "Дата",

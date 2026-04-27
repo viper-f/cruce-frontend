@@ -160,8 +160,8 @@ export class TopicService {
     return this.apiService.post(`post/update/${id}`, data);
   }
 
-  createTopic(data: CreateTopicRequest) {
-    return this.apiService.post('topic/create', data);
+  createTopic(data: CreateTopicRequest, endpoint = 'topic/create') {
+    return this.apiService.post(endpoint, data);
   }
 
   previewTopic(data: any) {

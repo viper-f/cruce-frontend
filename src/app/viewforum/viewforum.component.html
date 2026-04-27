@@ -41,6 +41,9 @@
             @if (subforum()?.permissions?.subforum_create_wanted_character_topic) {
               <a routerLink="/wanted-character-create" [queryParams]="{fid: subforum()?.id}" class="button"><span i18n="@@topiccreate.wantedCharacter">Create wanted character</span></a>
             }
+            @if (subforum()?.permissions?.subforum_create_lore_topic) {
+              <a routerLink="/lore-topic-create" [queryParams]="{fid: subforum()?.id}" class="button"><span i18n="@@topiccreate.lore">Create lore topic</span></a>
+            }
           </div>
           <div class="clearer"></div>
         </div>

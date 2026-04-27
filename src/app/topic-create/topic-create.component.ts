@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, Input, OnInit, ViewChild } from '@angular/core';
 import { LongTextFieldComponent } from '../components/long-text-field/long-text-field.component';
 import { CharacterProfileComponent } from '../components/character-profile/character-profile.component';
 import { AuthService } from '../services/auth.service';
@@ -15,6 +15,8 @@ import { PreviewService } from '../services/preview.service';
   standalone: true,
 })
 export class TopicCreateComponent implements OnInit {
+  @Input() createEndpoint = 'topic/create';
+
   private authService = inject(AuthService);
   private topicService = inject(TopicService);
   private previewService = inject(PreviewService);
@@ -36,6 +38,12 @@ export class TopicCreateComponent implements OnInit {
       this.restoredContent = previewState.formPayload.content;
       this.previewService.clear();
     }
+
+    this.route.data.subscribe(data => {
+      if (data['createEndpoint']) {
+        this.createEndpoint = data['createEndpoint'];
+      }
+    });
 
     this.route.queryParams.subscribe(params => {
       if (params['fid']) {
@@ -96,7 +104,7 @@ export class TopicCreateComponent implements OnInit {
       return;
     }
 
-    this.topicService.createTopic(request).subscribe({
+    this.topicService.createTopic(request, this.createEndpoint).subscribe({
       next: (response: any) => {
         console.log('Topic created successfully', response);
         // Assuming response contains the new topic ID, redirect to it

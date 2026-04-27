@@ -13,7 +13,7 @@
       <div id="pun-navlinks" class="section" app-navlinks></div>
     }
 
-    <div id="header-widget-panel" [innerHTML]="headerPanelHtml()"></div>
+    <div id="header-widget-panel" appRouterLinks [innerHTML]="headerPanelHtml()"></div>
 
     @if (navlinksAfterHeader()) {
       <div id="pun-navlinks" class="section" app-navlinks></div>

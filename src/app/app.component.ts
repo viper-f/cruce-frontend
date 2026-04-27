@@ -14,10 +14,11 @@ import {NotificationsComponent} from './components/notifications/notifications.c
 import {NotificationService} from './services/notification.service';
 import {ApiService} from './services/api.service';
 import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
+import { RouterLinksDirective } from './directives/router-links.directive';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, FooterComponent, NavlinksComponent, ToastComponent, NotificationsComponent, ScrollNavComponent],
+  imports: [RouterOutlet, FooterComponent, NavlinksComponent, ToastComponent, NotificationsComponent, ScrollNavComponent, RouterLinksDirective],
   templateUrl: './app.component.html',
   standalone: true,
 })
