@@ -454,8 +454,10 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
 
     if (!title || !this.id()) return;
 
+    const stickyCheckbox = form.querySelector('input[name="is_sticky_first_post"]') as HTMLInputElement;
     const payload = {
-      name: title
+      name: title,
+      is_sticky_first_post: stickyCheckbox?.checked ?? false
     };
 
     this.topicService.updateTopic(this.id()!, payload).subscribe({

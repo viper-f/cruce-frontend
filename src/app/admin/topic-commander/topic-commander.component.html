@@ -5,6 +5,8 @@
     <div class="nc-toolbar-half">
       <button class="nc-btn" [class.nc-btn--active]="hasSelection(left)" [disabled]="!hasSelection(left)" (click)="closeTopics(left)" i18n="@@topicCommander.close">Close</button>
       <button class="nc-btn" [class.nc-btn--active]="hasSelection(left)" [disabled]="!hasSelection(left)" (click)="openTopics(left)" i18n="@@topicCommander.open">Open</button>
+      <button class="nc-btn" [class.nc-btn--active]="hasSelection(left)" [disabled]="!hasSelection(left)" (click)="makeStickyTopics(left)" i18n="@@topicCommander.makeSticky">Sticky</button>
+      <button class="nc-btn" [class.nc-btn--active]="hasSelection(left)" [disabled]="!hasSelection(left)" (click)="removeStickyTopics(left)" i18n="@@topicCommander.removeSticky">Unsticky</button>
       <button class="nc-btn" [class.nc-btn--active]="hasSelection(left)" [disabled]="!hasSelection(left)" (click)="deleteTopics(left)" i18n="@@topicCommander.delete">Delete</button>
       <button class="nc-btn" [class.nc-btn--active]="canMoveLeftToRight()" [disabled]="!canMoveLeftToRight()" (click)="moveTopics(left, right)" i18n="@@topicCommander.moveRight">Move &rarr;</button>
     </div>
@@ -12,6 +14,8 @@
       <button class="nc-btn" [class.nc-btn--active]="canMoveRightToLeft()" [disabled]="!canMoveRightToLeft()" (click)="moveTopics(right, left)" i18n="@@topicCommander.moveLeft">&larr; Move</button>
       <button class="nc-btn" [class.nc-btn--active]="hasSelection(right)" [disabled]="!hasSelection(right)" (click)="closeTopics(right)" i18n="@@topicCommander.close">Close</button>
       <button class="nc-btn" [class.nc-btn--active]="hasSelection(right)" [disabled]="!hasSelection(right)" (click)="openTopics(right)" i18n="@@topicCommander.open">Open</button>
+      <button class="nc-btn" [class.nc-btn--active]="hasSelection(right)" [disabled]="!hasSelection(right)" (click)="makeStickyTopics(right)" i18n="@@topicCommander.makeSticky">Sticky</button>
+      <button class="nc-btn" [class.nc-btn--active]="hasSelection(right)" [disabled]="!hasSelection(right)" (click)="removeStickyTopics(right)" i18n="@@topicCommander.removeSticky">Unsticky</button>
       <button class="nc-btn" [class.nc-btn--active]="hasSelection(right)" [disabled]="!hasSelection(right)" (click)="deleteTopics(right)" i18n="@@topicCommander.delete">Delete</button>
     </div>
   </div>

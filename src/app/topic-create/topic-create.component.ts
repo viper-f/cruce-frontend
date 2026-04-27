@@ -54,6 +54,7 @@ export class TopicCreateComponent implements OnInit {
     const formData = new FormData(form);
     const title = formData.get('req_subject') as string;
     const content = this.messageField.messageField.nativeElement.value;
+    const isStickyFirstPost = (form.querySelector('input[name="is_sticky_first_post"]') as HTMLInputElement)?.checked ?? false;
 
     if (!title || !content || !this.subforumId) {
       console.error('Missing required fields');
@@ -65,7 +66,8 @@ export class TopicCreateComponent implements OnInit {
       title: title,
       content: content,
       use_character_profile: this.selectedCharacterId !== null,
-      character_profile_id: this.selectedCharacterId
+      character_profile_id: this.selectedCharacterId,
+      is_sticky_first_post: isStickyFirstPost
     };
 
     const isPreview = ((event as SubmitEvent).submitter as HTMLInputElement | null)?.name === 'preview';

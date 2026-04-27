@@ -33,8 +33,12 @@
 
   @if (editingTopic() && isGeneral()) {
     <div style="clear: both; display: flex; gap: 10px; align-items: center; margin: 1em 0;">
-      <form (submit)="onUpdateTopic($event)" style="flex: 1; display: flex; gap: 10px; align-items: center;">
+      <form (submit)="onUpdateTopic($event)" style="flex: 1; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
         <input type="text" name="title" [value]="topic().name" style="flex: 1; font-size: 1.2em; padding: 5px;">
+        <label style="display: flex; align-items: center; gap: 4px; white-space: nowrap;">
+          <input type="checkbox" name="is_sticky_first_post" [checked]="topic().is_sticky_first_post">
+          <ng-container i18n="@@topiccreate.stickyFirstPost">Stick the first post</ng-container>
+        </label>
         <button type="submit" class="button" i18n="@@common.save">Save</button>
         @if (topic().status === 1) {
           <button type="button" class="button btn-activate" (click)="activateTopic()" i18n="@@common.activate">Activate</button>
@@ -86,7 +90,13 @@
       <span class="post-meta">{{ post.date_created_localized }}</span>
       <strong class="post-number">
         <span class="post-link-btn" (click)="copyPostLink(post.id)" title="Copy link" i18n-title="@@viewtopic.copyLink"><i class="bi bi-link-45deg"></i></span>
-        #{{ (pageNumber() - 1) * postsPerPage() + i + 1 }}
+        @if (topic().is_sticky_first_post && pageNumber() > 1 && i === 0) {
+          #1
+        } @else if (topic().is_sticky_first_post && pageNumber() > 1) {
+          #{{ (pageNumber() - 1) * postsPerPage() + i }}
+        } @else {
+          #{{ (pageNumber() - 1) * postsPerPage() + i + 1 }}
+        }
       </strong>
     </h3>
     <div class="container">

@@ -69,6 +69,9 @@
                 <div class="tclcon">
                   <h3>
                     <a routerLink="/viewtopic/{{topic.id}}">{{topic.name}}</a>
+                    @if (topic.is_sticky) {
+                      <span class="status-badge status-sticky" i18n="@@viewforum.sticky">Sticky</span>
+                    }
                     @if (topic.status === 1) {
                       <span class="status-badge status-inactive" i18n="@@common.statusInactive">Inactive</span>
                     }

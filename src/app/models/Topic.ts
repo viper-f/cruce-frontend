@@ -23,6 +23,8 @@ export interface Topic {
   episode: Episode|null;
   character: Character|null;
   wanted_character: WantedCharacter|null;
+  is_sticky?: boolean;
+  is_sticky_first_post?: boolean;
   can_edit?: boolean;
   not_viewed?: boolean;
   permissions?: SubforumPermissions | null;
@@ -47,4 +49,5 @@ export interface CreateTopicRequest {
   content: string;
   use_character_profile: boolean;
   character_profile_id: number | null;
+  is_sticky_first_post?: boolean;
 }

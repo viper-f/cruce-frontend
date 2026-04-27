@@ -132,6 +132,22 @@ export class TopicCommanderComponent implements OnInit {
     });
   }
 
+  makeStickyTopics(panel: PanelState) {
+    const topicIds = Array.from(panel.selectedTopicIds);
+    this.apiService.post('topics/bulk-update', { topic_ids: topicIds, is_sticky: true }).subscribe({
+      next: () => this.openSubforum(panel, panel.openSubforum!),
+      error: (err) => console.error('Failed to make topics sticky', err)
+    });
+  }
+
+  removeStickyTopics(panel: PanelState) {
+    const topicIds = Array.from(panel.selectedTopicIds);
+    this.apiService.post('topics/bulk-update', { topic_ids: topicIds, is_sticky: false }).subscribe({
+      next: () => this.openSubforum(panel, panel.openSubforum!),
+      error: (err) => console.error('Failed to remove sticky from topics', err)
+    });
+  }
+
   deleteTopics(panel: PanelState) {
     const topicIds = Array.from(panel.selectedTopicIds);
     console.log(`[MOCK] Deleting topics ${topicIds.join(', ')}`);

@@ -1952,6 +1952,12 @@ span.mention {
   border: 1px solid #d6d8db;
 }
 
+.status-sticky {
+  background-color: #cce5ff;
+  color: #004085;
+  border: 1px solid #b8daff;
+}
+
 .character-sheet-factions h3,
 .character-sheet-custom-fields h3 {
   font-size: 1.2em;
