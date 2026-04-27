@@ -42,6 +42,7 @@
             >
               <span class="nc-checkbox">{{ left.selectedTopicIds.has(topic.id) ? '[x]' : '[ ]' }}</span>
               <span class="nc-topic-name">{{ topic.name }}</span>
+              <span class="nc-topic-status" [class.nc-status--inactive]="topic.status === 1">{{ topic.status === 0 ? 'A' : 'C' }}</span>
               <span class="nc-topic-meta">{{ topic.post_number }}</span>
             </div>
           }
@@ -88,6 +89,7 @@
             >
               <span class="nc-checkbox">{{ right.selectedTopicIds.has(topic.id) ? '[x]' : '[ ]' }}</span>
               <span class="nc-topic-name">{{ topic.name }}</span>
+              <span class="nc-topic-status" [class.nc-status--inactive]="topic.status === 1">{{ topic.status === 0 ? 'A' : 'C' }}</span>
               <span class="nc-topic-meta">{{ topic.post_number }}</span>
             </div>
           }

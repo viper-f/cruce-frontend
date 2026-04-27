@@ -69,6 +69,9 @@
                 <div class="tclcon">
                   <h3>
                     <a routerLink="/viewtopic/{{topic.id}}">{{topic.name}}</a>
+                    @if (topic.status === 1) {
+                      <span class="status-badge status-inactive" i18n="@@common.statusInactive">Inactive</span>
+                    }
                     @if (topic.not_viewed && topic.last_viewed_id) {
                       <a [routerLink]="['/viewtopic', topic.id]" [queryParams]="{ post_id: topic.last_viewed_id }" class="new-posts-link">[new posts]</a>
                     }

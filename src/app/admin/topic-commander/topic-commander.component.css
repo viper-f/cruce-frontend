@@ -145,3 +145,17 @@
   font-size: 0.8rem;
   flex-shrink: 0;
 }
+
+.nc-topic-status {
+  flex-shrink: 0;
+  font-size: 0.7rem;
+  padding: 0 3px;
+  border: 1px solid #4caf50;
+  color: #4caf50;
+  border-radius: 2px;
+}
+
+.nc-topic-status.nc-status--inactive {
+  border-color: #999;
+  color: #999;
+}
