@@ -4,7 +4,7 @@ import { CategoryService } from '../../services/category.service';
 import { ApiService } from '../../services/api.service';
 import { Category } from '../../models/Category';
 import { Subforum } from '../../models/Subforum';
-import { Topic } from '../../models/Topic';
+import { Topic, TopicStatus } from '../../models/Topic';
 
 interface PanelState {
   view: 'subforums' | 'topics';
@@ -118,14 +118,18 @@ export class TopicCommanderComponent implements OnInit {
 
   closeTopics(panel: PanelState) {
     const topicIds = Array.from(panel.selectedTopicIds);
-    console.log(`[MOCK] Closing topics ${topicIds.join(', ')}`);
-    // TODO: this.apiService.post('topic/close', { topic_ids: topicIds }).subscribe(...)
+    this.apiService.post('topics/bulk-update', { topic_ids: topicIds, status: TopicStatus.inactive }).subscribe({
+      next: () => this.openSubforum(panel, panel.openSubforum!),
+      error: (err) => console.error('Failed to close topics', err)
+    });
   }
 
   openTopics(panel: PanelState) {
     const topicIds = Array.from(panel.selectedTopicIds);
-    console.log(`[MOCK] Opening topics ${topicIds.join(', ')}`);
-    // TODO: this.apiService.post('topic/open', { topic_ids: topicIds }).subscribe(...)
+    this.apiService.post('topics/bulk-update', { topic_ids: topicIds, status: TopicStatus.active }).subscribe({
+      next: () => this.openSubforum(panel, panel.openSubforum!),
+      error: (err) => console.error('Failed to open topics', err)
+    });
   }
 
   deleteTopics(panel: PanelState) {
