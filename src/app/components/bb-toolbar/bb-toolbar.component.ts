@@ -52,7 +52,6 @@ export class BbToolbarComponent {
     const selectedText = text.substring(start, end);
     textarea.value = text.substring(0, start) + openTag + selectedText + closeTag + text.substring(end);
 
-    this.activeArea = null;
     textarea.focus();
     const newPos = start + openTag.length + selectedText.length;
     textarea.setSelectionRange(newPos, newPos);
