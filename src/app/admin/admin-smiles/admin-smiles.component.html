@@ -56,7 +56,7 @@
       <tbody>
         @for (smile of smiles(); track smile.id) {
           <tr>
-            <td><img [src]="'/smiles/' + smile.url" class="reaction-preview" alt="" /></td>
+            <td><img [src]="smile.url" class="reaction-preview" alt="" /></td>
             <td>{{ smile.text_form }}</td>
             <td>
               <select

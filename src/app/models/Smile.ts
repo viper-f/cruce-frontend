@@ -9,3 +9,9 @@ export interface Smile {
   url: string;
   category: SmileCategory | null;
 }
+
+export interface SmileCategoryWithSmiles {
+  id: number;
+  name: string;
+  smiles: Smile[];
+}

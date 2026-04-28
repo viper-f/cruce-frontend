@@ -57,6 +57,28 @@
       </table>
     </div>
   }
+  @if (activeArea === 'smile') {
+    <div class="container" id="smile-area">
+      @for (category of smileCategories(); track category.id) {
+        <div class="smile-category">
+          @if (category.name) {
+            <div class="smile-category-name">{{ category.name }}</div>
+          }
+          <div class="smile-list">
+            @for (smile of category.smiles; track smile.id) {
+              <img
+                [src]="smile.url"
+                [title]="smile.text_form"
+                class="smile-icon"
+                (click)="insertSmile(smile.url)"
+                alt=""
+              />
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
 </div>
 
 @if (showSpoilerModal) {

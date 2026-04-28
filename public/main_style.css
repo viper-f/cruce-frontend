@@ -2822,6 +2822,41 @@ app-number-field-display:host {
   cursor: pointer;
 }
 
+#smile-area {
+  max-height: 260px;
+  overflow-y: auto;
+  min-width: 280px;
+}
+
+.smile-category {
+  margin-bottom: 8px;
+}
+
+.smile-category-name {
+  font-size: 11px;
+  font-weight: bold;
+  margin-bottom: 4px;
+  padding-bottom: 2px;
+  border-bottom: 1px solid #ccc;
+}
+
+.smile-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.smile-icon {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  object-fit: contain;
+}
+
+.smile-icon:hover {
+  opacity: 0.75;
+}
+
 /* === post-form.component === */
 .post-editor-form-container {
   display: flex;
