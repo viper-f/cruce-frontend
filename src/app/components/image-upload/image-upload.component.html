@@ -1,20 +1,19 @@
-<div class="modal-overlay" (click)="close.emit()">
-  <div class="modal-content" (click)="$event.stopPropagation()">
-    <h2 i18n="@@imageUpload.title">Upload Images</h2>
+<div class="image-upload-panel">
+  <h3 i18n="@@imageUpload.title">Upload Images</h3>
 
-    <div class="mode-toggle">
-      <button type="button" [class.active]="mode === 'upload'" (click)="mode = 'upload'" i18n="@@imageUpload.modeUpload">Upload</button>
-      <button type="button" [class.active]="mode === 'link'" (click)="mode = 'link'" i18n="@@imageUpload.modeLink">Direct link</button>
+  <div class="mode-toggle">
+    <button type="button" [class.active]="mode === 'upload'" (click)="mode = 'upload'" i18n="@@imageUpload.modeUpload">Upload</button>
+    <button type="button" [class.active]="mode === 'link'" (click)="mode = 'link'" i18n="@@imageUpload.modeLink">Direct link</button>
+  </div>
+
+  @if (mode === 'link') {
+    <div class="link-mode">
+      <input type="url" [(ngModel)]="directLink" placeholder="https://..." />
+      <button type="button" class="button btn-primary" (click)="insertDirectLink()" i18n="@@imageUpload.insertLink">Insert</button>
     </div>
+  }
 
-    @if (mode === 'link') {
-      <div class="link-mode">
-        <input type="url" [(ngModel)]="directLink" placeholder="https://..." />
-        <button type="button" class="button btn-primary" (click)="insertDirectLink()" i18n="@@imageUpload.insertLink">Insert</button>
-      </div>
-    }
-
-    @if (mode === 'upload') {
+  @if (mode === 'upload') {
     <div class="entries">
       @for (entry of entries(); track entry.id) {
         <div class="entry">
@@ -54,14 +53,13 @@
         <button type="button" class="button btn-primary" (click)="upload()" [disabled]="!hasFilesToUpload" i18n="@@imageUpload.upload">Upload</button>
       </div>
     </div>
-    }
+  }
 
-    @if (mode === 'link') {
-      <div class="actions">
-        <div class="actions-right">
-          <button type="button" class="button" (click)="close.emit()" i18n="@@imageUpload.cancel">Cancel</button>
-        </div>
+  @if (mode === 'link') {
+    <div class="actions">
+      <div class="actions-right">
+        <button type="button" class="button" (click)="close.emit()" i18n="@@imageUpload.cancel">Cancel</button>
       </div>
-    }
-  </div>
+    </div>
+  }
 </div>

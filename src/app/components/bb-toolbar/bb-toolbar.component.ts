@@ -18,7 +18,6 @@ export class BbToolbarComponent {
   @Input() showImageUpload = true;
 
   activeArea: string | null = null;
-  showImageUploadModal = false;
   showSpoilerModal = false;
   private spoilerSelStart = 0;
   private spoilerSelEnd = 0;
@@ -84,7 +83,6 @@ export class BbToolbarComponent {
     textarea.value = text.substring(0, start) + tag + text.substring(start);
     textarea.focus();
     textarea.setSelectionRange(start + tag.length, start + tag.length);
-    this.showImageUploadModal = false;
   }
 
   insertSmile(url: string) {
@@ -95,6 +93,5 @@ export class BbToolbarComponent {
     textarea.value = text.substring(0, start) + tag + text.substring(start);
     textarea.focus();
     textarea.setSelectionRange(start + tag.length, start + tag.length);
-    this.activeArea = null;
   }
 }

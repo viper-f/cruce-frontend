@@ -17,7 +17,7 @@
       <td title="Color" i18n-title="@@postform.color" (click)="toggleArea('color')"><i class="bi bi-palette"></i></td>
       <td title="Smile" i18n-title="@@postform.smile" (click)="toggleArea('smile')"><i class="bi bi-emoji-smile"></i></td>
       @if (showImageUpload) {
-        <td title="Upload image" i18n-title="@@postform.uploadImage" (click)="showImageUploadModal = true"><i class="bi bi-image"></i></td>
+        <td title="Upload image" i18n-title="@@postform.uploadImage" (click)="toggleArea('image')"><i class="bi bi-image"></i></td>
       }
       @if (showSpoiler) {
         <td title="Spoiler" (click)="openSpoilerModal()"><i class="bi bi-eye-slash"></i></td>
@@ -79,6 +79,14 @@
       }
     </div>
   }
+  @if (activeArea === 'image') {
+    <div class="container" id="image-upload-area">
+      <app-image-upload
+        (close)="activeArea = null"
+        (insert)="onInsertImage($event)">
+      </app-image-upload>
+    </div>
+  }
 </div>
 
 @if (showSpoilerModal) {
@@ -92,11 +100,4 @@
       </div>
     </div>
   </div>
-}
-
-@if (showImageUploadModal) {
-  <app-image-upload
-    (close)="showImageUploadModal = false"
-    (insert)="onInsertImage($event)">
-  </app-image-upload>
 }

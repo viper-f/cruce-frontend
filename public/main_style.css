@@ -2665,6 +2665,18 @@ app-number-field-display:host {
 }
 
 /* === image-upload.component === */
+.image-upload-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 340px;
+}
+
+.image-upload-panel h3 {
+  margin: 0;
+  font-size: 14px;
+}
+
 .entries {
   display: flex;
   flex-direction: column;
