@@ -168,6 +168,10 @@ export class CharacterService {
     return this.apiService.post<{ character_status: number, topic_status: number }>(`character/deactivate/${id}`, null);
   }
 
+  pendingCharacter(id: number) {
+    return this.apiService.post(`character/pending/${id}`, {});
+  }
+
   private wantedCharacterTemplateSignal = signal<FieldTemplate[]>([]);
   readonly wantedCharacterTemplate = this.wantedCharacterTemplateSignal.asReadonly();
 

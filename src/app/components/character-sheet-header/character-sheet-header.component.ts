@@ -110,6 +110,19 @@ export class CharacterSheetHeaderComponent implements OnInit, OnChanges {
     }
   }
 
+  moveToPending() {
+    if (this.character) {
+      this.characterService.pendingCharacter(this.character.id).subscribe({
+        next: () => {
+          if (this.character) {
+            this.character.character_status = 2;
+          }
+        },
+        error: (err) => console.error('Failed to move character to pending', err)
+      });
+    }
+  }
+
   deactivateCharacter() {
     if (this.character) {
       this.characterService.deactivateCharacter(this.character.id).subscribe({

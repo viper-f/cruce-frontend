@@ -73,6 +73,13 @@
 @if (isAdmin() && character.character_status === 1) {
   <div class="admin-actions">
     <button class="button" (click)="activateCharacter()" i18n="@@character.activate">Activate character</button>
+    <button class="button" (click)="moveToPending()" i18n="@@character.moveToPending">Move to pending</button>
+  </div>
+}
+
+@if (isAdmin() && character.character_status === 3) {
+  <div class="admin-actions">
+    <button class="button" (click)="moveToPending()" i18n="@@character.moveToPending">Move to pending</button>
   </div>
 }
 }

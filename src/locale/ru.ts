@@ -301,6 +301,7 @@ export const TRANSLATIONS_RU = {
   "character.decline": "Отклонить",
   "character.deactivate": "Деактивировать персонажа",
   "character.activate": "Активировать персонажа",
+  "character.moveToPending": "Вернуть на рассмотрение",
   "faction.pendingTitle": "Ожидающие подтверждения",
   "faction.approve": "Принять",
   "faction.decline": "Отклонить",
