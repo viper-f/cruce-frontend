@@ -25,7 +25,7 @@
                   <div class="icon"></div>
                   <div class="tclcon">
                     <h3><a routerLink="/viewforum/{{subforum.id}}">{{subforum.name}}</a></h3>
-                    <div class="forumdesc" [innerHTML]="subforum.description_html ?? subforum.description"></div>
+                    <div class="forumdesc" appRouterLinks [innerHTML]="subforum.description_html ?? subforum.description"></div>
                   </div>
                 </div>
               </td>

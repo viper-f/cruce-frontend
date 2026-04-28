@@ -4,6 +4,7 @@ import {Title} from '@angular/platform-browser';
 import {BoardService} from '../services/board.service';
 import {CategoryService} from '../services/category.service';
 import {CurrentlyActiveComponent} from '../components/currently-active/currently-active.component';
+import { RouterLinksDirective } from '../directives/router-links.directive';
 
 @Component({
   selector: 'app-home',
@@ -11,7 +12,8 @@ import {CurrentlyActiveComponent} from '../components/currently-active/currently
   templateUrl: './home.component.html',
   imports: [
     RouterLink,
-    CurrentlyActiveComponent
+    CurrentlyActiveComponent,
+    RouterLinksDirective
   ]
 })
 export class HomeComponent implements OnInit {
