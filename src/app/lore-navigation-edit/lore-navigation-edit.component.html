@@ -15,14 +15,14 @@
         </tr>
       </thead>
       <tbody>
-        @for (row of rows(); track row.id) {
+        @for (row of rows(); track row.id; let i = $index) {
           <tr>
             <td>{{ row.date_created | date:'dd.MM.yy HH:mm' }}</td>
 
             @if (isEditing(row)) {
               <td><input type="text" [(ngModel)]="editingMap[row.id].name" /></td>
-              <td><input type="number" [(ngModel)]="editingMap[row.id].order" style="width: 60px;" /></td>
-              <td><input type="checkbox" [(ngModel)]="editingMap[row.id].is_hidden" /></td>
+              <td><input type="number" [(ngModel)]="editingMap[row.id].order" style="width: 60px;" [disabled]="i === 0" /></td>
+              <td><input type="checkbox" [(ngModel)]="editingMap[row.id].is_hidden" [disabled]="i === 0" /></td>
               <td class="actions-cell">
                 <button type="button" class="btn-primary" (click)="save(row)" i18n="@@common.save">Save</button>
                 <button type="button" (click)="cancelEdit(row)" i18n="@@common.cancel">Cancel</button>
