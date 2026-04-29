@@ -3,6 +3,12 @@
     <h1 i18n="@@userlist.title">User List</h1>
   </div>
   <div class="main-content">
+    <div class="userlist-filters">
+      <label>
+        <input type="checkbox" [checked]="showArchived()" (change)="showArchived.set(!showArchived())">
+        <ng-container i18n="@@userlist.showArchived">Show archived users</ng-container>
+      </label>
+    </div>
     <table cellspacing="0">
       <thead>
         <tr>
@@ -11,7 +17,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (user of userList(); track user.id; let isEven = $even) {
+        @for (user of filteredUserList(); track user.id; let isEven = $even) {
           <tr [class.altstyle]="isEven">
             <td>
               <a [routerLink]="['/profile', user.id]">{{ user.username }}</a>

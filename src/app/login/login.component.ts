@@ -17,6 +17,7 @@ export class LoginComponent {
 
 
   isLoading = signal(false);
+  archivedReason = signal<string | null>(null);
 
   loginForm = this.fb.group({
     username: ['', [Validators.required]],
@@ -42,7 +43,12 @@ export class LoginComponent {
             this.userService.loadAndDecryptPrivateKey(hashedPassword).subscribe();
           });
         },
-        error: () => this.isLoading.set(false)
+        error: (err) => {
+          this.isLoading.set(false);
+          if (err.status === 403) {
+            this.archivedReason.set(err.error?.reason ?? null);
+          }
+        }
       });
     }
   }

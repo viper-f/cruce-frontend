@@ -25,7 +25,7 @@
         <td>
           @switch (user.user_status) {
             @case (0) { <span i18n="@@adminUsers.statusActive">Active</span> }
-            @case (1) { <span i18n="@@adminUsers.statusInactive">Inactive</span> }
+            @case (1) { <span i18n="@@adminUsers.statusArchived">Archived</span> }
             @case (2) { <span i18n="@@adminUsers.statusPending">Pending</span> }
             @default { {{ user.user_status }} }
           }
@@ -35,7 +35,13 @@
         <td>{{ user.character_count }}</td>
         <td>{{ user.last_game_post_date ? (user.last_game_post_date | date:'dd.MM.yyyy') : '—' }}</td>
         <td><button (click)="openRolesModal(user)" i18n="@@adminUsers.editRoles">Roles</button></td>
-        <td><button disabled i18n="@@adminUsers.ban">Ban</button></td>
+        <td>
+          @if (user.user_status === 1) {
+            <a [routerLink]="['/admin/user/reactivate', user.id]" class="button" i18n="@@adminUsers.reactivate">Reactivate</a>
+          } @else {
+            <button (click)="openBanModal(user)" i18n="@@adminUsers.ban">Ban</button>
+          }
+        </td>
       </tr>
     } @empty {
       <tr>
@@ -44,6 +50,24 @@
     }
   </tbody>
 </table>
+
+@if (banModalUser(); as user) {
+  <div class="modal-overlay" (click)="closeBanModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h2 i18n="@@adminUsers.banModalTitle">Ban — {{ user.username }}</h2>
+      <div>
+        <label>
+          <span i18n="@@adminUsers.banReason">Reason (optional)</span>
+          <textarea [value]="banReason()" (input)="banReason.set($any($event.target).value)" maxlength="512" rows="4" style="width: 100%;"></textarea>
+        </label>
+      </div>
+      <div class="buttons" style="margin-top: 15px; text-align: right;">
+        <button class="button" (click)="submitBan()" i18n="@@adminUsers.banConfirm">Ban</button>
+        <button class="button" (click)="closeBanModal()" i18n="@@common.cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+}
 
 @if (rolesModalUser() !== null) {
   <div class="modal-overlay" (click)="closeRolesModal()">

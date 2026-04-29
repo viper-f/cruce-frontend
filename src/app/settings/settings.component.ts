@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
 import { ApiService } from '../services/api.service';
@@ -74,13 +75,14 @@ const IANA_TIMEZONES = [
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule, ImageFieldComponent],
+  imports: [CommonModule, FormsModule, RouterLink, ImageFieldComponent],
   templateUrl: './settings.component.html',
 })
 export class SettingsComponent implements OnInit {
   private authService = inject(AuthService);
   private userService = inject(UserService);
   private apiService = inject(ApiService);
+  private router = inject(Router);
 
   language: string = 'en-US';
   timezone: string = 'UTC+00:00';
@@ -89,6 +91,8 @@ export class SettingsComponent implements OnInit {
   fontSize: number = 1.0;
   avatarUrl = '';
   saveState = signal<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+  showArchiveModal = signal(false);
 
   notificationSettings = signal<UserNotificationSetting[]>([]);
   notifSaveState = signal<'idle' | 'loading' | 'success' | 'error'>('idle');
@@ -166,6 +170,21 @@ export class SettingsComponent implements OnInit {
         this.notifSaveState.set('error');
         setTimeout(() => this.notifSaveState.set('idle'), 3000);
       }
+    });
+  }
+
+  openArchiveModal() {
+    this.showArchiveModal.set(true);
+  }
+
+  closeArchiveModal() {
+    this.showArchiveModal.set(false);
+  }
+
+  confirmArchive() {
+    this.userService.archiveAccount().subscribe({
+      next: () => this.router.navigate(['/']),
+      error: (err) => console.error('Failed to archive account', err)
     });
   }
 

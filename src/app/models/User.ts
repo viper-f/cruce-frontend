@@ -37,6 +37,9 @@ export interface UserProfile {
 export interface UserProfileResponse {
   user_id: number;
   username: string;
+  user_status: number;
+  archive_date: string | null;
+  archive_reason: string | null;
   registration_date: string;
   avatar: string;
   characters: CharacterProfileListItem[];
@@ -72,5 +75,6 @@ export interface UpdateSettingsResponse {
 export interface UserListItem {
   id: number;
   username: string;
+  user_status: number;
   characters: CharacterShort[];
 }

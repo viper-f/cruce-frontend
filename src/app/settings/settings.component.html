@@ -168,5 +168,32 @@
         </div>
       </fieldset>
     </div>
+    <div class="container">
+      <fieldset>
+        <legend i18n="@@settings.recoveryCodes">Recovery Codes</legend>
+        <div class="fs-box">
+          <a routerLink="/restoration-codes" class="button" i18n="@@settings.generateRecoveryCodes">Generate new recovery codes</a>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend i18n="@@settings.dangerZone">Danger Zone</legend>
+        <div class="fs-box">
+          <button type="button" class="button button-danger" (click)="openArchiveModal()" i18n="@@settings.archiveAccount">Archive account</button>
+        </div>
+      </fieldset>
+    </div>
   </div>
 </div>
+
+@if (showArchiveModal()) {
+  <div class="modal-overlay" (click)="closeArchiveModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h2 i18n="@@settings.archiveModalTitle">Archive your account?</h2>
+      <p i18n="@@settings.archiveModalBody">Archiving your account will make it inaccessible and will mark all your currently active characters as disabled. Your personal messages will not be deleted or anonymized. To do that, use the <a routerLink="/wipe-out-my-user" i18n="@@settings.archiveModalLink">Delete My Account</a> link in the footer.</p>
+      <div class="buttons" style="margin-top: 15px; text-align: right;">
+        <button class="button button-danger" (click)="confirmArchive()" i18n="@@settings.archiveConfirm">Archive account</button>
+        <button class="button" (click)="closeArchiveModal()" i18n="@@common.cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+}
