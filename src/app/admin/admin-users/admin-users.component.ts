@@ -33,6 +33,9 @@ export class AdminUsersComponent implements OnInit {
   rolesModalUser = signal<AdminUserListItem | null>(null);
   selectedRoleIds = signal<Set<number>>(new Set());
 
+  banModalUser = signal<AdminUserListItem | null>(null);
+  banReason = signal<string>('');
+
   ngOnInit() {
     this.apiService.get<AdminUserListItem[]>('admin/user-list').subscribe({
       next: (data) => this.users.set(data),
@@ -69,6 +72,25 @@ export class AdminUsersComponent implements OnInit {
 
   isRoleSelected(roleId: number): boolean {
     return this.selectedRoleIds().has(roleId);
+  }
+
+  openBanModal(user: AdminUserListItem) {
+    this.banReason.set('');
+    this.banModalUser.set(user);
+  }
+
+  closeBanModal() {
+    this.banModalUser.set(null);
+  }
+
+  submitBan() {
+    const user = this.banModalUser();
+    if (!user) return;
+    const body = { reason: this.banReason() };
+    this.apiService.post(`admin/user/ban/${user.id}`, body).subscribe({
+      next: () => this.closeBanModal(),
+      error: (err) => console.error('Failed to ban user', err)
+    });
   }
 
   saveRoles() {
