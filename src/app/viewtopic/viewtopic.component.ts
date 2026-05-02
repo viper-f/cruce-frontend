@@ -28,6 +28,7 @@ import { WantedCharacterService } from '../services/wanted-character.service';
 import { EpisodeService } from '../services/episode.service';
 import { PreviewService } from '../services/preview.service';
 import { LoreTopicHeaderComponent } from '../components/lore-topic-header/lore-topic-header.component';
+import { UserInfoComponent } from '../components/user-info/user-info.component';
 
 function coerceToPage(value: unknown): number {
   const num = numberAttribute(value, 1);
@@ -52,6 +53,7 @@ function coerceToPage(value: unknown): number {
     WantedCharacterCreateComponent,
     LoreTopicHeaderComponent,
     RouterLinksDirective,
+    UserInfoComponent,
   ],
   templateUrl: './viewtopic.component.html',
   standalone: true,

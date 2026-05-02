@@ -87,6 +87,25 @@
     }
   }
 
+  @if (isCharacter() && topic().character?.user_info) {
+    <div class="category">
+      <div class="main-content">
+        <div class="main-item">
+          <app-user-info [userInfo]="topic().character!.user_info!" />
+        </div>
+      </div>
+    </div>
+  }
+  @if (isWantedCharacter() && topic().wanted_character?.user_info) {
+    <div class="category">
+      <div class="main-content">
+        <div class="main-item">
+          <app-user-info [userInfo]="topic().wanted_character!.user_info!" />
+        </div>
+      </div>
+    </div>
+  }
+
   @for(post of posts(); track (post.id || $index); let i = $index; let isEven = $even) {
   <div id="{{post.id}}" class="post" [class.altstyle]="isEven">
     <h3>
