@@ -2234,3 +2234,41 @@ tr.altstyle td {
 .scroll-nav-btn:hover {
   opacity: 1;
 }
+
+/* === user-info.component === */
+.user-info-block {
+  border-left: 3px solid #4a8db5;
+  background-color: rgba(74, 141, 181, 0.07);
+}
+
+.user-info-icon {
+  color: #4a8db5;
+}
+
+.user-info-username {
+  color: #2a6090;
+}
+
+.user-info-username:hover {
+  color: #4a8db5;
+}
+
+.user-info-stat {
+  color: #444;
+}
+
+.user-info-stat i {
+  color: #4a8db5;
+}
+
+.stat-label {
+  color: #666;
+}
+
+.stat-value {
+  color: #333;
+}
+
+.stat-none {
+  color: #999;
+}

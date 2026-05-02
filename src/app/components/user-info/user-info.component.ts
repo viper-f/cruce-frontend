@@ -8,7 +8,6 @@ import { UserInfo } from '../../models/User';
   standalone: true,
   imports: [CommonModule, DatePipe, RouterLink],
   templateUrl: './user-info.component.html',
-  styleUrl: './user-info.component.css',
 })
 export class UserInfoComponent {
   @Input({ required: true }) userInfo!: UserInfo;

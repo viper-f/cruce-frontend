@@ -3409,3 +3409,70 @@ app-number-field-display:host {
   inset: 0;
   z-index: 100;
 }
+
+/* === user-info.component === */
+.user-info-block {
+  border-radius: 0 6px 6px 0;
+  padding: 10px 14px;
+  font-size: 0.9em;
+}
+
+.user-info-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.user-info-icon {
+  font-size: 1.1em;
+  flex-shrink: 0;
+}
+
+.user-info-username {
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 1.05em;
+}
+
+.user-info-username:hover {
+  text-decoration: underline;
+}
+
+.user-info-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 16px;
+}
+
+.user-info-stat {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  line-height: 1.4;
+}
+
+.user-info-stat i {
+  font-size: 0.85em;
+  flex-shrink: 0;
+  position: relative;
+  top: 1px;
+}
+
+.stat-label {
+  white-space: nowrap;
+}
+
+.stat-label::after {
+  content: ':';
+}
+
+.stat-value {
+  font-weight: 500;
+}
+
+.pa-user-info,
+.card-user-info {
+  margin-top: 10px;
+}
