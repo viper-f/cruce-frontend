@@ -17,6 +17,7 @@ export interface Character {
   factions: Faction[] | null;
   episodes: CharacterEpisode[];
   claim_record: ClaimRecord | null;
+  user_info?: UserInfo | null;
 }
 
 export interface CharacterListItem {
@@ -64,7 +65,6 @@ export interface CharacterProfile {
   custom_fields: CustomFieldsData;
   is_mask: boolean | null;
   mask_name: string | null;
-  user_info?: UserInfo | null;
 }
 
 export interface CreateCharacterRequest {

@@ -12,11 +12,10 @@ import { CurrencyService } from '../../services/currency.service';
 import { NumberFieldDisplayComponent } from '../number-field-display/number-field-display.component';
 import { ImageFieldDisplayComponent } from '../image-field-display/image-field-display.component';
 import { CroppedImageFieldDisplayComponent } from '../cropped-image-field-display/cropped-image-field-display.component';
-import { UserInfoComponent } from '../user-info/user-info.component';
 
 @Component({
   selector: 'app-character-profile',
-  imports: [CommonModule, ShortTextFieldDisplayComponent, LongTextFieldDisplayComponent, NumberFieldDisplayComponent, ImageFieldDisplayComponent, CroppedImageFieldDisplayComponent, FormsModule, UserInfoComponent],
+  imports: [CommonModule, ShortTextFieldDisplayComponent, LongTextFieldDisplayComponent, NumberFieldDisplayComponent, ImageFieldDisplayComponent, CroppedImageFieldDisplayComponent, FormsModule],
   templateUrl: './character-profile.component.html',
   standalone: true,
 })
