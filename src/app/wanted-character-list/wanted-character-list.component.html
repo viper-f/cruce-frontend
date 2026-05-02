@@ -76,6 +76,11 @@
                   <button class="button" (click)="claimWantedCharacter(wc)" i18n="@@wantedCharacterList.claim">Claim</button>
                 </div>
               }
+              @if (wc.user_info) {
+                <div class="card-user-info">
+                  <app-user-info [userInfo]="wc.user_info" />
+                </div>
+              }
             </div>
           }
         </div>

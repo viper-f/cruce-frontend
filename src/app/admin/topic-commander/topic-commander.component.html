@@ -1,3 +1,32 @@
+@if (deleteModal.visible) {
+  <div class="nc-modal-overlay">
+    <div class="nc-modal">
+      <div class="nc-modal-title" i18n="@@topicCommander.deleteModal.title">CONFIRM DELETE</div>
+      <div class="nc-modal-body">
+        <p i18n="@@topicCommander.deleteModal.count">{{ deleteModal.totalCount }} topic(s) will be permanently deleted.</p>
+        <p class="nc-modal-warning" i18n="@@topicCommander.deleteModal.warning">This action cannot be undone.</p>
+        @if (deleteModal.characterTopics.length > 0 || deleteModal.wantedTopics.length > 0) {
+          <div class="nc-modal-consequences">
+            <p i18n="@@topicCommander.deleteModal.linkedEntities">The following linked entities will also be deleted:</p>
+            <ul>
+              @for (t of deleteModal.characterTopics; track t.id) {
+                <li><ng-container i18n="@@topicCommander.deleteModal.characterSheet">Character sheet</ng-container>: {{ t.name }}</li>
+              }
+              @for (t of deleteModal.wantedTopics; track t.id) {
+                <li><ng-container i18n="@@topicCommander.deleteModal.wantedCharacter">Wanted character</ng-container>: {{ t.name }}</li>
+              }
+            </ul>
+          </div>
+        }
+      </div>
+      <div class="nc-modal-actions">
+        <button class="nc-btn nc-btn--active" (click)="cancelDelete()" i18n="@@topicCommander.deleteModal.cancel">Cancel</button>
+        <button class="nc-btn nc-btn--active nc-btn--danger" (click)="confirmDelete()" i18n="@@topicCommander.deleteModal.confirm">Delete</button>
+      </div>
+    </div>
+  </div>
+}
+
 <div class="nc-shell">
   <div class="nc-titlebar" i18n="@@topicCommander.title">Topic Commander</div>
 

@@ -69,4 +69,9 @@
       }
     }
   </ul>
+  @if (isCharacter && post?.character_profile?.user_info) {
+    <div class="pa-user-info">
+      <app-user-info [userInfo]="post!.character_profile!.user_info!" />
+    </div>
+  }
 </div>

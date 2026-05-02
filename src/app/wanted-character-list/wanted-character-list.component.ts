@@ -10,6 +10,7 @@ import { Faction } from '../models/Faction';
 import { CustomFieldsData, CustomFieldValue } from '../models/Character';
 import { FieldTemplate } from '../models/FieldTemplate';
 import { FieldDisplayComponent } from '../components/field-display/field-display.component';
+import { UserInfoComponent } from '../components/user-info/user-info.component';
 
 interface ProcessedField {
   fieldName: string;
@@ -21,7 +22,7 @@ interface ProcessedField {
 @Component({
   selector: 'app-wanted-character-list',
   standalone: true,
-  imports: [RouterLink, CommonModule, FormsModule, FieldDisplayComponent],
+  imports: [RouterLink, CommonModule, FormsModule, FieldDisplayComponent, UserInfoComponent],
   templateUrl: './wanted-character-list.component.html',
 })
 export class WantedCharacterListComponent implements OnInit {

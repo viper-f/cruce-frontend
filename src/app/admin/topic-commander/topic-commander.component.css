@@ -159,3 +159,87 @@
   border-color: #999;
   color: #999;
 }
+
+/* Delete confirmation modal */
+.nc-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.nc-modal {
+  font-family: monospace;
+  font-size: 0.875rem;
+  background: #fff;
+  border: 2px solid #888;
+  min-width: 340px;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+}
+
+.nc-modal-title {
+  text-align: center;
+  padding: 3px 10px;
+  border-bottom: 1px solid #888;
+  font-weight: bold;
+  letter-spacing: 0.08em;
+  background: #c00;
+  color: #fff;
+}
+
+.nc-modal-body {
+  padding: 14px 16px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.nc-modal-body p {
+  margin: 0;
+}
+
+.nc-modal-warning {
+  font-weight: bold;
+}
+
+.nc-modal-consequences {
+  margin-top: 4px;
+  border-left: 2px solid #c00;
+  padding-left: 10px;
+}
+
+.nc-modal-consequences p {
+  margin-bottom: 4px;
+}
+
+.nc-modal-consequences ul {
+  margin: 0;
+  padding-left: 16px;
+}
+
+.nc-modal-consequences li {
+  margin-bottom: 2px;
+}
+
+.nc-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 8px 10px;
+  border-top: 1px solid #888;
+}
+
+.nc-btn--danger {
+  border-color: #c00;
+  color: #c00;
+}
+
+.nc-btn--danger:hover {
+  background-color: #c00;
+  color: #fff;
+}

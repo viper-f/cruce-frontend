@@ -78,3 +78,15 @@ export interface UserListItem {
   user_status: number;
   characters: CharacterShort[];
 }
+
+export type UserStatus = 0 | 1 | 2 | 3;
+
+export interface UserInfo {
+  user_id: number;
+  username: string;
+  user_status: UserStatus;
+  date_registered: string;
+  date_last_visit: string | null;
+  total_posts: number;
+  active_characters: number;
+}

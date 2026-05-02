@@ -34,6 +34,7 @@ export class AppComponent implements OnInit {
   private sanitizer = inject(DomSanitizer);
 
   headerPanelHtml = signal<SafeHtml>('');
+  footerPanelHtml = signal<SafeHtml>('');
 
   title = computed(() => this.boardService.board().site_name || 'Cuento');
   navlinksAfterHeader = computed(() => this.boardService.board().visual_navlinks_after_header_panel === 'y');
@@ -88,10 +89,14 @@ export class AppComponent implements OnInit {
       }
     });
     this.loadHeaderPanel();
+    this.loadFooterPanel();
 
     this.notificationService.panelReload$.subscribe(event => {
       if (event.panel_name === 'header') {
         this.loadHeaderPanel();
+      }
+      if (event.panel_name === 'footer') {
+        this.loadFooterPanel();
       }
     });
 
@@ -100,6 +105,7 @@ export class AppComponent implements OnInit {
         this.notificationService.loadUnreadNotifications();
         this.notificationService.sendPageChange(this.currentPageType, this.currentPageNumId);
         this.loadHeaderPanel();
+        this.loadFooterPanel();
       }
     });
   }
@@ -109,6 +115,16 @@ export class AppComponent implements OnInit {
       next: html => {
         this.headerPanelHtml.set(this.sanitizer.bypassSecurityTrustHtml(html));
         afterNextRender(() => this.processHeaderPanel(), { injector: this.injector });
+      },
+      error: () => {}
+    });
+  }
+
+  private loadFooterPanel() {
+    this.apiService.getText('panel/footer/content').subscribe({
+      next: html => {
+        this.footerPanelHtml.set(this.sanitizer.bypassSecurityTrustHtml(html));
+        afterNextRender(() => this.processFooterPanel(), { injector: this.injector });
       },
       error: () => {}
     });
@@ -181,6 +197,7 @@ export class AppComponent implements OnInit {
   }
 
   private widgetRefreshIntervals: ReturnType<typeof setInterval>[] = [];
+  private footerWidgetRefreshIntervals: ReturnType<typeof setInterval>[] = [];
 
   private processHeaderPanel() {
     this.widgetRefreshIntervals.forEach(id => clearInterval(id));
@@ -209,6 +226,36 @@ export class AppComponent implements OnInit {
         });
       }, intervalSeconds * 1000);
       this.widgetRefreshIntervals.push(id);
+    });
+  }
+
+  private processFooterPanel() {
+    this.footerWidgetRefreshIntervals.forEach(id => clearInterval(id));
+    this.footerWidgetRefreshIntervals = [];
+
+    const panel = document.getElementById('footer-widget-panel');
+    if (!panel) return;
+
+    panel.querySelectorAll<HTMLElement>('[data-is-link="true"]').forEach(widget => {
+      this.attachWidgetLinks(widget);
+    });
+
+    panel.querySelectorAll<HTMLElement>('[data-refresh-interval][data-widget-id]').forEach(widget => {
+      const intervalSeconds = +(widget.getAttribute('data-refresh-interval') ?? 0);
+      const widgetId = widget.getAttribute('data-widget-id');
+      if (!intervalSeconds || !widgetId) return;
+
+      const isLink = widget.getAttribute('data-is-link') === 'true';
+      const id = setInterval(() => {
+        this.apiService.getText(`widget/${widgetId}/render?innerOnly=true`).subscribe({
+          next: html => {
+            widget.innerHTML = html;
+            if (isLink) this.attachWidgetLinks(widget);
+          },
+          error: () => {}
+        });
+      }, intervalSeconds * 1000);
+      this.footerWidgetRefreshIntervals.push(id);
     });
   }
 
