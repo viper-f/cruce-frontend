@@ -48,25 +48,29 @@ export class AdminAdditionalNavlinksComponent implements OnInit {
   }
 
   hasRole(link: AdditionalNavlink, roleId: number): boolean {
-    return link.roles.includes(roleId);
+    return link.roles.some((r: any) => (typeof r === 'object' ? r.id : r) === roleId);
   }
 
   toggleRole(link: AdditionalNavlink, roleId: number, checked: boolean) {
     if (checked) {
       link.roles = [...link.roles, roleId];
     } else {
-      link.roles = link.roles.filter(r => r !== roleId);
+      link.roles = link.roles.filter((r: any) => (typeof r === 'object' ? r.id : r) !== roleId);
     }
   }
 
   save(link: AdditionalNavlink) {
+    const payload = {
+      ...link,
+      roles: link.roles.map((r: any) => typeof r === 'object' ? r.id : r)
+    };
     if (this.isNew(link)) {
-      this.apiService.post<AdditionalNavlink>('admin/additional-navlink/create', link).subscribe({
+      this.apiService.post<AdditionalNavlink>('admin/additional-navlink/create', payload).subscribe({
         next: (created) => this.navlinks.update(list => list.map(l => l === link ? created : l)),
         error: (err) => console.error('Failed to create navlink', err)
       });
     } else {
-      this.apiService.post<AdditionalNavlink>(`admin/additional-navlink/update/${link.id}`, link).subscribe({
+      this.apiService.post<AdditionalNavlink>(`admin/additional-navlink/update/${link.id}`, payload).subscribe({
         error: (err) => console.error('Failed to update navlink', err)
       });
     }
