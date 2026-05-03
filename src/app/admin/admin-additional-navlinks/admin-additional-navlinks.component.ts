@@ -22,10 +22,7 @@ export class AdminAdditionalNavlinksComponent implements OnInit {
 
   ngOnInit() {
     this.apiService.get<AdditionalNavlink[]>('admin/additional-navlink/list').subscribe({
-      next: (data) => this.navlinks.set(data.map(link => ({
-        ...link,
-        roles: link.roles.filter((r: any) => typeof r === 'number')
-      }))),
+      next: (data) => this.navlinks.set(data),
       error: (err) => console.error('Failed to load navlinks', err)
     });
     this.apiService.get<{ id: number; name: string }[]>('admin/role/list').subscribe({
@@ -50,21 +47,23 @@ export class AdminAdditionalNavlinksComponent implements OnInit {
     return link.id < 0;
   }
 
-  hasRole(link: AdditionalNavlink, roleId: number): boolean {
-    return link.roles.some((r: any) => (typeof r === 'object' ? r.id : r) === roleId);
+  hasRole(link: AdditionalNavlink, roleName: string): boolean {
+    return (link.roles as any[]).includes(roleName);
   }
 
-  toggleRole(link: AdditionalNavlink, roleId: number, checked: boolean) {
-    const normalized = link.roles.filter((r: any) => typeof r === 'number');
-    const newRoles = checked ? [...normalized, roleId] : normalized.filter(r => r !== roleId);
+  toggleRole(link: AdditionalNavlink, roleName: string, checked: boolean) {
+    const current = link.roles as any[];
+    const newRoles = checked ? [...current, roleName] : current.filter(r => r !== roleName);
     this.navlinks.update(list => list.map(l => l === link ? { ...l, roles: newRoles } : l));
   }
 
   save(link: AdditionalNavlink) {
-    const payload = {
-      ...link,
-      roles: link.roles.map((r: any) => typeof r === 'object' ? r.id : r).filter((r: any) => typeof r === 'number')
-    };
+    const roleIds = (link.roles as any[])
+      .map(name => this.allRoles().find(r => r.name === name)?.id)
+      .filter(id => id !== undefined) as number[];
+
+    const payload = { ...link, roles: roleIds };
+
     if (this.isNew(link)) {
       this.apiService.post<AdditionalNavlink>('admin/additional-navlink/create', payload).subscribe({
         next: (created) => this.navlinks.update(list => list.map(l => l === link ? created : l)),
