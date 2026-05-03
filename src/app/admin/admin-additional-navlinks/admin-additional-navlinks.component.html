@@ -51,8 +51,8 @@
               <label class="role-option">
                 <input
                   type="checkbox"
-                  [checked]="hasRole(link, role.id)"
-                  (change)="toggleRole(link, role.id, $any($event.target).checked)"
+                  [ngModel]="hasRole(link, role.id)"
+                  (ngModelChange)="toggleRole(link, role.id, $event)"
                   [name]="'role-' + link.id + '-' + role.id"
                 />
                 {{ role.name }}
