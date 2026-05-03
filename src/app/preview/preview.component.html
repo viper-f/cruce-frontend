@@ -2,6 +2,9 @@
   <div class="preview-banner">
     <span i18n="@@preview.notice">This is a preview. The content has not been saved.</span>
     <button class="button" (click)="returnToEdit()" i18n="@@preview.returnToEdit">Return to edit</button>
+    @if (state()?.formType === 'topic') {
+      <button class="button submit" (click)="submitTopic()" i18n="@@preview.post">Post</button>
+    }
   </div>
 
   <div id="pun-main" class="main">
@@ -40,6 +43,7 @@
       <div class="preview-post-banner">
         <span i18n="@@preview.postNotice">Preview — this post has not been saved yet.</span>
         <button class="button" (click)="returnToEdit()" i18n="@@preview.returnToEdit">Return to edit</button>
+        <button class="button submit" (click)="submitPost()" i18n="@@preview.post">Post</button>
       </div>
       <div class="post preview-post">
         <h3>
