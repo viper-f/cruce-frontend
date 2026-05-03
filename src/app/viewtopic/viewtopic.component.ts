@@ -426,6 +426,10 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
       character_profile_id: characterProfileId
     };
 
+    if (!this.authService.isAuthenticated()) {
+      payload.guest_name = this.guestName;
+    }
+
     this.topicService.previewTopic(payload).subscribe({
       next: (previewPost: any) => {
         this.previewService.set({

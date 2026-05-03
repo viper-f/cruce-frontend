@@ -95,7 +95,7 @@ export class TopicCreateComponent implements OnInit {
             } as Topic,
             posts: [post],
             returnUrl: this.router.url,
-            formPayload: { ...request }
+            formPayload: { ...request, createEndpoint: this.createEndpoint }
           });
           this.router.navigate(['/preview']);
         },
