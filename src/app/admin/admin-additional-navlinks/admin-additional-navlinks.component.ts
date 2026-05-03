@@ -22,7 +22,10 @@ export class AdminAdditionalNavlinksComponent implements OnInit {
 
   ngOnInit() {
     this.apiService.get<AdditionalNavlink[]>('admin/additional-navlink/list').subscribe({
-      next: (data) => this.navlinks.set(data),
+      next: (data) => this.navlinks.set(data.map(link => ({
+        ...link,
+        roles: link.roles.filter((r: any) => typeof r === 'number')
+      }))),
       error: (err) => console.error('Failed to load navlinks', err)
     });
     this.apiService.get<{ id: number; name: string }[]>('admin/role/list').subscribe({
@@ -52,17 +55,15 @@ export class AdminAdditionalNavlinksComponent implements OnInit {
   }
 
   toggleRole(link: AdditionalNavlink, roleId: number, checked: boolean) {
-    if (checked) {
-      link.roles = [...link.roles, roleId];
-    } else {
-      link.roles = link.roles.filter((r: any) => (typeof r === 'object' ? r.id : r) !== roleId);
-    }
+    const normalized = link.roles.filter((r: any) => typeof r === 'number');
+    const newRoles = checked ? [...normalized, roleId] : normalized.filter(r => r !== roleId);
+    this.navlinks.update(list => list.map(l => l === link ? { ...l, roles: newRoles } : l));
   }
 
   save(link: AdditionalNavlink) {
     const payload = {
       ...link,
-      roles: link.roles.map((r: any) => typeof r === 'object' ? r.id : r)
+      roles: link.roles.map((r: any) => typeof r === 'object' ? r.id : r).filter((r: any) => typeof r === 'number')
     };
     if (this.isNew(link)) {
       this.apiService.post<AdditionalNavlink>('admin/additional-navlink/create', payload).subscribe({
