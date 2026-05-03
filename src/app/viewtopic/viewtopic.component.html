@@ -73,6 +73,15 @@
     }
   }
   @if(isLore()) {
+    @if (editingTopic()) {
+      <div style="clear: both; display: flex; gap: 10px; align-items: center; margin: 1em 0;">
+        <form (submit)="onUpdateLoreTopic($event)" style="flex: 1; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+          <input type="text" name="title" [value]="topic().name" style="flex: 1; font-size: 1.2em; padding: 5px;">
+          <button type="submit" class="button" i18n="@@common.save">Save</button>
+          <button type="button" class="button" (click)="cancelEditTopic()" i18n="@@common.cancel">Cancel</button>
+        </form>
+      </div>
+    }
     <app-lore-topic-header [topicId]="id()!"></app-lore-topic-header>
   }
   @if(isCharacter() && topic().character != null) {
