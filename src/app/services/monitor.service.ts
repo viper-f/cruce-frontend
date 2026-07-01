@@ -2,6 +2,11 @@ import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class MonitorService {
+  constructor() {
+    const nr = (window as any).newrelic;
+    if (nr) nr.consent(true);
+  }
+
   track(action: string, attributes: Record<string, unknown> = {}): void {
     const nr = (window as any).newrelic;
     if (nr) nr.addPageAction(action, attributes);
