@@ -55,7 +55,7 @@ console.log('[build] New Relic tokens substituted in index.html');
 const ngArgs = process.argv.slice(2).join(' ');
 let exitCode = 0;
 try {
-  execSync(`ng build ${ngArgs}`, { stdio: 'inherit' });
+  execSync(`npx ng build ${ngArgs}`, { stdio: 'inherit' });
 } catch {
   exitCode = 1;
 } finally {
