@@ -64,3 +64,5 @@ jobs:
             chown -R www-data:www-data /var/www/frontend
             chmod -R 775 /var/www/frontend
             rm -rf /tmp/frontend_staging
+            grep -v '^PROJECT_NAME=' /etc/environment > /tmp/env.tmp && mv /tmp/env.tmp /etc/environment || true
+            echo 'PROJECT_NAME=cruce' >> /etc/environment
