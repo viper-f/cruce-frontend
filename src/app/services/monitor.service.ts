@@ -4,7 +4,9 @@ import { Injectable } from '@angular/core';
 export class MonitorService {
   constructor() {
     const nr = (window as any).newrelic;
-    if (nr) nr.consent(true);
+    if (!nr) return;
+    nr.consent(true);
+    nr.setCustomAttribute('domainName', window.location.hostname);
   }
 
   track(action: string, attributes: Record<string, unknown> = {}): void {
