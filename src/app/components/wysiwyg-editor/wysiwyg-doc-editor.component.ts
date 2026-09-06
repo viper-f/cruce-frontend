@@ -40,6 +40,8 @@ const ORIGIN: DocRange = { anchor: { path: [0], offset: 0 }, focus: { path: [0],
       (focus)="onFocus()"
       (blur)="onBlur()"
       (beforeinput)="onBeforeInput($event)"
+      (compositionstart)="onCompositionStart()"
+      (compositionend)="onCompositionEnd($event)"
       (cut)="onCut($event)"
       (paste)="onPaste($event)"
       (dragover)="onDragOver($event)"
@@ -75,6 +77,8 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
   private lastOpTime = 0;
   private static readonly GROUP_MS = 500;
 
+  private preCompositionCursor: DocRange | null = null;
+
   onInput: () => void = () => {};
 
   constructor() {
@@ -94,9 +98,51 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
   onFocus(): void { this.focused = true; this.updateActiveState(); }
   onBlur():  void { this.focused = false; }
 
+  // ─── IME composition ──────────────────────────────────────────────────────────
+
+  onCompositionStart(): void {
+    // Snapshot the cursor so compositionend knows the insertion point regardless
+    // of how the browser moves the selection during candidate display.
+    this.preCompositionCursor = { ...this.cursor };
+  }
+
+  onCompositionEnd(event: CompositionEvent): void {
+    const savedCursor = this.preCompositionCursor;
+    this.preCompositionCursor = null;
+    if (!savedCursor) return;
+
+    // The browser already committed composition text into the DOM. Apply the
+    // same change to the model so they stay in sync, then re-render.
+    const text = event.data ?? '';
+
+    const base = isCollapsed(savedCursor)
+      ? this.doc
+      : modelDeleteRange(this.doc, savedCursor).doc;
+    const pt = isCollapsed(savedCursor)
+      ? savedCursor.anchor
+      : modelDeleteRange(this.doc, savedCursor).cursor;
+
+    if (text) {
+      const marks = this.pendingMarks ?? getMarksAtPoint(base, pt);
+      this.pendingMarks = null;
+      this.commitOp(modelInsertText(base, pt, text, marks), 'insert');
+      this.onInput();
+    } else {
+      // Composition cancelled (Escape) — model is already correct; re-render
+      // to remove any candidate text the browser left in the DOM.
+      this.doc = base;
+      this.cursor = { anchor: pt, focus: pt };
+      this.render();
+      applyDocRange(this.cursor, this.editorEl.nativeElement);
+    }
+  }
+
   // ─── beforeinput ─────────────────────────────────────────────────────────────
 
   onBeforeInput(event: InputEvent): void {
+    // During IME composition the browser manages candidate text in the DOM.
+    // Preventing default here would break that; compositionend handles the commit.
+    if (event.isComposing) return;
     event.preventDefault();
 
     const range = this.cursor;
