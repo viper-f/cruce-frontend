@@ -276,16 +276,29 @@ export class WysiwygDocEditorComponent implements OnDestroy {
       case 'justifyRight':  this.execAlignment(range, 'right'); break;
 
       case 'foreColor':
-        if (value) this.execInlineMark(range, { type: 'color', value });
+        if (!value) {
+          this.removeMarkExec(range, 'color');
+        } else {
+          this.execInlineMark(range, { type: 'color', value });
+        }
         break;
       case 'fontSize':
-        if (value) {
+        if (!value) {
+          this.removeMarkExec(range, 'size');
+        } else {
           const n = parseInt(value);
           if (!isNaN(n)) this.execInlineMark(range, { type: 'size', value: n });
         }
         break;
       case 'fontName':
-        if (value) this.execInlineMark(range, { type: 'font', value });
+        if (!value) {
+          this.removeMarkExec(range, 'font');
+        } else {
+          this.execInlineMark(range, { type: 'font', value });
+        }
+        break;
+      case 'createLink':
+        if (value) this.execInlineMark(range, { type: 'link', href: value });
         break;
     }
   }
@@ -305,6 +318,16 @@ export class WysiwygDocEditorComponent implements OnDestroy {
       this.updateActiveState();
     } else {
       this.commitOp(applyMark(this.doc, range, mark));
+    }
+  }
+
+  private removeMarkExec(range: DocRange, type: Mark['type']): void {
+    if (isCollapsed(range)) {
+      const current = this.pendingMarks ?? getMarksAtPoint(this.doc, range.anchor);
+      this.pendingMarks = current.filter(m => m.type !== type);
+      this.updateActiveState();
+    } else {
+      this.commitOp(removeMark(this.doc, range, type));
     }
   }
 
@@ -381,12 +404,44 @@ export class WysiwygDocEditorComponent implements OnDestroy {
   }
 
   insertHtmlAtCursor(html: string): void {
-    // Extract text content from arbitrary HTML (e.g. mention spans).
     const div = document.createElement('div');
     div.innerHTML = html;
+
+    const range = readDocRange(this.editorEl.nativeElement);
+    if (!range) return;
+    this.editorEl.nativeElement.focus();
+
+    const base   = isCollapsed(range) ? this.doc : modelDeleteRange(this.doc, range).doc;
+    const cursor = isCollapsed(range) ? range.anchor : modelDeleteRange(this.doc, range).cursor;
+
+    // Single element with no surrounding text nodes — handle structurally.
+    const sole = div.children.length === 1 && div.childNodes.length === 1
+      ? div.children[0] as HTMLElement
+      : null;
+
+    if (sole?.tagName === 'IMG') {
+      const src = sole.getAttribute('src') ?? '';
+      if (src) { this.commitOp(modelInsertImg(base, cursor, src)); return; }
+    }
+
+    if (sole?.tagName === 'A') {
+      const href = sole.getAttribute('href') ?? '';
+      const text = sole.textContent ?? '';
+      if (href && text) {
+        this.commitOp(modelInsertText(base, cursor, text, [{ type: 'link', href }]));
+        this.pendingMarks = null;
+        this.onInput();
+        return;
+      }
+    }
+
+    // Fall back: extract text content (handles mentions and other inline spans).
     const text = div.textContent ?? '';
     if (!text) return;
-    this.insertTextAtCursor(text);
+    const marks = this.pendingMarks ?? getMarksAtPoint(base, cursor);
+    this.commitOp(modelInsertText(base, cursor, text, marks));
+    this.pendingMarks = null;
+    this.onInput();
   }
 
   insertBlockAtCursor(html: string, _cursorSelector?: string): void {
