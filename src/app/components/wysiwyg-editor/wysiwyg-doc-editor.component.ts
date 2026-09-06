@@ -19,7 +19,7 @@ import {
   mergeParagraphWithPrevious as modelMergePrevious,
   applyMark, removeMark, toggleMark,
   getMarksAtPoint,
-  isCollapsed,
+  isCollapsed, pointEq,
   inlineLen,
 } from './wysiwyg-doc-ops';
 
@@ -69,6 +69,12 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
   private focused = false;
   private selectionHandler = () => this.onSelectionChange();
 
+  private undoStack: Array<{ doc: DocModel; cursor: DocRange }> = [];
+  private redoStack: Array<{ doc: DocModel; cursor: DocRange }> = [];
+  private lastOpGroup: 'insert' | 'delete' | 'other' = 'other';
+  private lastOpTime = 0;
+  private static readonly GROUP_MS = 500;
+
   onInput: () => void = () => {};
 
   constructor() {
@@ -97,6 +103,9 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
     const cursor = range.anchor;
 
     switch (event.inputType) {
+      case 'historyUndo': this.undo(); return;
+      case 'historyRedo': this.redo(); return;
+
       case 'insertText': {
         const text = event.data ?? '';
         if (!text) return;
@@ -104,7 +113,7 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
           ? modelInsertText(this.doc, cursor, text, this.pendingMarks ?? getMarksAtPoint(this.doc, cursor))
           : this.deleteAndInsert(range, text);
         this.pendingMarks = null;
-        this.commitOp(result);
+        this.commitOp(result, 'insert');
         this.onInput();
         break;
       }
@@ -131,7 +140,7 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
             anchor: { path: cursor.path, offset: cursor.offset - 1 },
             focus: cursor,
           };
-          this.commitOp(modelDeleteRange(this.doc, delRange));
+          this.commitOp(modelDeleteRange(this.doc, delRange), 'delete');
         } else {
           this.commitOp(modelMergePrevious(this.doc, cursor));
         }
@@ -148,7 +157,7 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
             anchor: cursor,
             focus: { path: cursor.path, offset: cursor.offset + 1 },
           };
-          this.commitOp(modelDeleteRange(this.doc, delRange));
+          this.commitOp(modelDeleteRange(this.doc, delRange), 'delete');
         }
         this.pendingMarks = null;
         this.onInput();
@@ -203,7 +212,12 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
   private onSelectionChange(): void {
     if (!this.focused) return;
     const range = readDocRange(this.editorEl.nativeElement);
-    if (range) this.cursor = range;
+    if (range) {
+      // If the cursor moved and we didn't cause it, break op coalescing so the
+      // next keystroke starts a new undo group.
+      if (!pointEq(range.anchor, this.cursor.anchor)) this.lastOpGroup = 'other';
+      this.cursor = range;
+    }
     this.updateActiveState();
     if (this.pendingMarks && (!range || !isCollapsed(range))) {
       this.pendingMarks = null;
@@ -212,12 +226,51 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
 
   // ─── Commit ───────────────────────────────────────────────────────────────────
 
-  private commitOp(result: OpResult): void {
+  private pushHistory(group: 'insert' | 'delete' | 'other'): void {
+    const now = Date.now();
+    const coalesce = group !== 'other'
+      && group === this.lastOpGroup
+      && now - this.lastOpTime < WysiwygDocEditorComponent.GROUP_MS;
+    if (!coalesce) {
+      this.undoStack.push({ doc: this.doc, cursor: { ...this.cursor } });
+      if (this.undoStack.length > 200) this.undoStack.shift();
+      this.redoStack = [];
+    }
+    this.lastOpGroup = group;
+    this.lastOpTime = now;
+  }
+
+  private commitOp(result: OpResult, group: 'insert' | 'delete' | 'other' = 'other'): void {
+    this.pushHistory(group);
     const prevDoc = this.doc;
     this.doc = result.doc;
     this.cursor = { anchor: result.cursor, focus: result.cursor };
     const cursorHandled = patchDoc(this.editorEl.nativeElement, prevDoc, this.doc, result.cursor);
     if (!cursorHandled) applyDocRange(this.cursor, this.editorEl.nativeElement);
+    this.updateActiveState();
+  }
+
+  private undo(): void {
+    if (this.undoStack.length === 0) return;
+    this.redoStack.push({ doc: this.doc, cursor: { ...this.cursor } });
+    const entry = this.undoStack.pop()!;
+    this.doc = entry.doc;
+    this.cursor = entry.cursor;
+    this.lastOpGroup = 'other';
+    this.render();
+    applyDocRange(this.cursor, this.editorEl.nativeElement);
+    this.updateActiveState();
+  }
+
+  private redo(): void {
+    if (this.redoStack.length === 0) return;
+    this.undoStack.push({ doc: this.doc, cursor: { ...this.cursor } });
+    const entry = this.redoStack.pop()!;
+    this.doc = entry.doc;
+    this.cursor = entry.cursor;
+    this.lastOpGroup = 'other';
+    this.render();
+    applyDocRange(this.cursor, this.editorEl.nativeElement);
     this.updateActiveState();
   }
 
@@ -262,12 +315,18 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
   setValue(bbCode: string): void {
     this.doc = parseBbCode(bbCode);
     this.cursor = { ...ORIGIN };
+    this.undoStack = [];
+    this.redoStack = [];
+    this.lastOpGroup = 'other';
     this.render();
   }
 
   clear(): void {
     this.doc = parseBbCode('');
     this.cursor = { ...ORIGIN };
+    this.undoStack = [];
+    this.redoStack = [];
+    this.lastOpGroup = 'other';
     this.render();
   }
 
@@ -354,6 +413,7 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
   }
 
   private execAlignment(range: DocRange, align: 'left' | 'center' | 'right'): void {
+    this.pushHistory('other');
     const blockIdx = range.anchor.path[0];
     if (blockIdx >= this.doc.children.length) return;
 
@@ -444,6 +504,7 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
   }
 
   insertBlockAtCursor(html: string, _cursorSelector?: string): void {
+    this.pushHistory('other');
     this.editorEl.nativeElement.focus();
     const blockIdx = this.cursor.anchor.path[0];
 
@@ -496,6 +557,7 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
   }
 
   insertBbCodeBlocks(bbCode: string): void {
+    this.pushHistory('other');
     const { children: parsed } = parseBbCode(bbCode);
     if (parsed.length === 0) return;
 
@@ -596,6 +658,7 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
   }
 
   unwrapBlock(containerSelector: string, _contentSelector?: string): void {
+    this.pushHistory('other');
     const blockIdx = this.cursor.anchor.path[0];
     const block = this.doc.children[blockIdx];
 
