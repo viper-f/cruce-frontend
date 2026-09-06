@@ -229,6 +229,25 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
         break;
       }
 
+      case 'insertReplacementText': {
+        // Mobile autocorrect: replace the target range with the suggested text.
+        const targetRanges = (event as InputEvent & { getTargetRanges?(): StaticRange[] }).getTargetRanges?.();
+        const text = event.data ?? event.dataTransfer?.getData('text/plain') ?? '';
+        if (text && targetRanges?.length) {
+          const tr = targetRanges[0];
+          const anchor = domPositionToDocPoint(tr.startContainer, tr.startOffset, this.editorEl.nativeElement);
+          const focus  = domPositionToDocPoint(tr.endContainer,   tr.endOffset,   this.editorEl.nativeElement);
+          if (anchor && focus) {
+            const del = modelDeleteRange(this.doc, { anchor, focus });
+            const marks = getMarksAtPoint(del.doc, del.cursor);
+            this.commitOp(modelInsertText(del.doc, del.cursor, text, marks));
+            this.pendingMarks = null;
+            this.onInput();
+          }
+        }
+        break;
+      }
+
       case 'deleteWordBackward':
       case 'deleteWordForward':
       case 'deleteSoftLineBackward':
