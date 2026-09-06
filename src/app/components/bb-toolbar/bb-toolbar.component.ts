@@ -38,7 +38,6 @@ export class BbToolbarComponent {
     this.activeArea = this.activeArea === area ? null : area;
     if (this.activeArea === 'url') {
       if (this.editor) {
-        this.editor.saveSelection();
         const sel = window.getSelection();
         this.hasUrlSelection = !!sel && !sel.isCollapsed;
       } else if (this.textarea) {
