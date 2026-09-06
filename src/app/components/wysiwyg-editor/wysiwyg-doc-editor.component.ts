@@ -510,8 +510,6 @@ export class WysiwygDocEditorComponent implements OnDestroy {
   }
 
   insertBbCodeBlocks(bbCode: string): void {
-    this.editorEl.nativeElement.focus();
-
     const { children: parsed } = parseBbCode(bbCode);
     if (parsed.length === 0) return;
 
@@ -522,8 +520,11 @@ export class WysiwygDocEditorComponent implements OnDestroy {
       ? [...parsed, { type: 'paragraph', children: [] } as ParagraphNode]
       : parsed;
 
-    const range = readDocRange(this.editorEl.nativeElement);
-    const blockIdx = range ? range.anchor.path[0] : this.doc.children.length - 1;
+    // Use savedCursor (written on blur) rather than reading the DOM after a
+    // programmatic focus() — the browser does not reliably restore the selection
+    // when focus left the editor (e.g. the user clicked a Quote button).
+    const insertAt = this.savedCursor ?? readDocRange(this.editorEl.nativeElement);
+    const blockIdx = insertAt ? insertAt.anchor.path[0] : this.doc.children.length - 1;
 
     const current = this.doc.children[blockIdx];
     const replaceEmpty = current?.type === 'paragraph' && current.children.length === 0;
@@ -536,6 +537,7 @@ export class WysiwygDocEditorComponent implements OnDestroy {
 
     const cursorIdx = before.length + toInsert.length - 1;
     const newCursor: DocPoint = { path: [cursorIdx], offset: 0 };
+    this.editorEl.nativeElement.focus();
     applyDocRange({ anchor: newCursor, focus: newCursor }, this.editorEl.nativeElement);
     this.updateActiveState();
   }
