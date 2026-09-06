@@ -42,6 +42,7 @@ const ORIGIN: DocRange = { anchor: { path: [0], offset: 0 }, focus: { path: [0],
       [attr.aria-label]="ariaLabel"
       (focus)="onFocus()"
       (blur)="onBlur()"
+      (keydown)="onKeyDown($event)"
       (beforeinput)="onBeforeInput($event)"
       (compositionstart)="onCompositionStart()"
       (compositionend)="onCompositionEnd($event)"
@@ -140,6 +141,19 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
       this.render();
       applyDocRange(this.cursor, this.editorEl.nativeElement);
     }
+  }
+
+  // ─── Keyboard shortcuts ───────────────────────────────────────────────────────
+
+  onKeyDown(event: KeyboardEvent): void {
+    if (!event.ctrlKey && !event.metaKey) return;
+    const cmd: Record<string, string> = {
+      b: 'bold', i: 'italic', u: 'underline', s: 'strikeThrough',
+    };
+    const command = cmd[event.key.toLowerCase()];
+    if (!command) return;
+    event.preventDefault();
+    this.exec(command);
   }
 
   // ─── beforeinput ─────────────────────────────────────────────────────────────
