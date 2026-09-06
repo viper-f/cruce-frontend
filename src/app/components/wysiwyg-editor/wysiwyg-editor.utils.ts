@@ -8,6 +8,7 @@ export function htmlToBbCode(html: string): string {
 // Walk the top-level children, inserting a newline before block elements when needed
 function processContainer(el: Element): string {
   let result = '';
+  let prevWasBlock = false;
   for (const child of Array.from(el.childNodes)) {
     const tag = (child as HTMLElement).tagName?.toLowerCase();
     const childEl = child as HTMLElement;
@@ -20,7 +21,16 @@ function processContainer(el: Element): string {
     if (isBlock && result && !result.endsWith('\n')) {
       result += '\n';
     }
+    // A <br> that immediately follows a block element is a Chrome normalization
+    // artifact — the browser inserts it as a stand-alone node between <div>s when
+    // it rewrites flat <br>-based content to paragraph-div format. Skipping it
+    // prevents a single newline from becoming a double newline on each save.
+    if (tag === 'br' && prevWasBlock) {
+      prevWasBlock = false;
+      continue;
+    }
     result += nodeToText(child);
+    prevWasBlock = isBlock;
   }
   return result;
 }
