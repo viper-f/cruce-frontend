@@ -18,9 +18,11 @@ import {
   mergeParagraphWithPrevious as modelMergePrevious,
   applyMark, removeMark, toggleMark,
   getMarksAtPoint,
-  isCollapsed, pointEq,
+  isCollapsed,
   inlineLen,
 } from './wysiwyg-doc-ops';
+
+const ORIGIN: DocRange = { anchor: { path: [0], offset: 0 }, focus: { path: [0], offset: 0 } };
 
 @Component({
   selector: 'app-wysiwyg-doc-editor',
@@ -61,9 +63,9 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
   setActiveFontFamily(family: string | null) { this.activeFontFamily.set(family); }
 
   private doc: DocModel = parseBbCode('');
+  private cursor: DocRange = { ...ORIGIN };
   private pendingMarks: Mark[] | null = null;
   private focused = false;
-  private savedCursor: DocRange | null = null;
   private selectionHandler = () => this.onSelectionChange();
 
   onInput: () => void = () => {};
@@ -83,16 +85,14 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
   get nativeElement(): HTMLDivElement { return this.editorEl.nativeElement; }
 
   onFocus(): void { this.focused = true; this.updateActiveState(); }
-  onBlur():  void { this.focused = false; this.saveSelection(); }
+  onBlur():  void { this.focused = false; }
 
   // ─── beforeinput ─────────────────────────────────────────────────────────────
 
   onBeforeInput(event: InputEvent): void {
     event.preventDefault();
 
-    const range = readDocRange(this.editorEl.nativeElement);
-    if (!range) return;
-
+    const range = this.cursor;
     const cursor = range.anchor;
 
     switch (event.inputType) {
@@ -171,17 +171,15 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
         this.onInput();
         break;
       }
-
     }
   }
 
   // The cut event fires before any DOM changes, so window.getSelection() still
   // holds the full selected text. We write it to the clipboard ourselves and
-  // delete the range from the model; preventing the default stops the browser
-  // from also trying to cut from the (stale after re-render) DOM.
+  // delete the range from the model.
   onCut(event: ClipboardEvent): void {
-    const range = readDocRange(this.editorEl.nativeElement);
-    if (!range || isCollapsed(range)) return;
+    const range = this.cursor;
+    if (isCollapsed(range)) return;
 
     event.preventDefault();
     event.clipboardData?.setData('text/plain', window.getSelection()?.toString() ?? '');
@@ -197,14 +195,17 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
     return modelInsertText(del.doc, del.cursor, text, marks);
   }
 
-  // ─── Selection change ─────────────────────────────────────────────────────────
+  // ─── Selection sync ───────────────────────────────────────────────────────────
 
+  // selectionchange is the only place we read the DOM selection — it keeps
+  // this.cursor authoritative so every op can read from the model, not the DOM.
   private onSelectionChange(): void {
     if (!this.focused) return;
+    const range = readDocRange(this.editorEl.nativeElement);
+    if (range) this.cursor = range;
     this.updateActiveState();
-    if (this.pendingMarks) {
-      const range = readDocRange(this.editorEl.nativeElement);
-      if (!range || !isCollapsed(range)) this.pendingMarks = null;
+    if (this.pendingMarks && (!range || !isCollapsed(range))) {
+      this.pendingMarks = null;
     }
   }
 
@@ -212,8 +213,9 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
 
   private commitOp(result: OpResult): void {
     this.doc = result.doc;
+    this.cursor = { anchor: result.cursor, focus: result.cursor };
     this.render();
-    applyDocRange({ anchor: result.cursor, focus: result.cursor }, this.editorEl.nativeElement);
+    applyDocRange(this.cursor, this.editorEl.nativeElement);
     this.updateActiveState();
   }
 
@@ -222,10 +224,7 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
   }
 
   private updateActiveState(): void {
-    const range = readDocRange(this.editorEl.nativeElement);
-    if (!range) return;
-
-    const marks = this.pendingMarks ?? getMarksAtPoint(this.doc, range.anchor);
+    const marks = this.pendingMarks ?? getMarksAtPoint(this.doc, this.cursor.anchor);
 
     const active = new Set<string>();
     for (const m of marks) {
@@ -235,14 +234,12 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
       if (m.type === 'strike')    active.add('s');
     }
 
-    const block = this.doc.children[range.anchor.path[0]];
+    const block = this.doc.children[this.cursor.anchor.path[0]];
     if (block) {
       if (block.type === 'code')    active.add('code');
       if (block.type === 'quote')   active.add('quote');
       if (block.type === 'spoiler') active.add('spoiler');
-      if (block.type === 'align') {
-        active.add(block.align); // 'left' | 'center' | 'right'
-      }
+      if (block.type === 'align')   active.add(block.align);
     }
 
     this.activeFormats.set(active);
@@ -262,11 +259,13 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
 
   setValue(bbCode: string): void {
     this.doc = parseBbCode(bbCode);
+    this.cursor = { ...ORIGIN };
     this.render();
   }
 
   clear(): void {
     this.doc = parseBbCode('');
+    this.cursor = { ...ORIGIN };
     this.render();
   }
 
@@ -278,8 +277,7 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
 
   exec(command: string, value?: string): void {
     this.editorEl.nativeElement.focus();
-    const range = readDocRange(this.editorEl.nativeElement);
-    if (!range) return;
+    const range = this.cursor;
 
     switch (command) {
       case 'bold':          this.toggleMarkExec(range, { type: 'bold' }); break;
@@ -292,11 +290,8 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
       case 'justifyRight':  this.execAlignment(range, 'right'); break;
 
       case 'foreColor':
-        if (!value) {
-          this.removeMarkExec(range, 'color');
-        } else {
-          this.execInlineMark(range, { type: 'color', value });
-        }
+        if (!value) this.removeMarkExec(range, 'color');
+        else this.execInlineMark(range, { type: 'color', value });
         break;
       case 'fontSize':
         if (!value) {
@@ -307,11 +302,8 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
         }
         break;
       case 'fontName':
-        if (!value) {
-          this.removeMarkExec(range, 'font');
-        } else {
-          this.execInlineMark(range, { type: 'font', value });
-        }
+        if (!value) this.removeMarkExec(range, 'font');
+        else this.execInlineMark(range, { type: 'font', value });
         break;
       case 'createLink':
         if (value) this.execInlineMark(range, { type: 'link', href: value });
@@ -348,19 +340,15 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
   }
 
   private pendingMarksToggled(mark: Mark): Mark[] {
-    const current = this.pendingMarks ?? getMarksAtPoint(this.doc, this.currentCursor() ?? { path: [0], offset: 0 });
+    const current = this.pendingMarks ?? getMarksAtPoint(this.doc, this.cursor.anchor);
     return current.some(m => m.type === mark.type)
       ? current.filter(m => m.type !== mark.type)
       : [...current, mark];
   }
 
   private pendingMarksWithMark(mark: Mark): Mark[] {
-    const current = this.pendingMarks ?? getMarksAtPoint(this.doc, this.currentCursor() ?? { path: [0], offset: 0 });
+    const current = this.pendingMarks ?? getMarksAtPoint(this.doc, this.cursor.anchor);
     return [...current.filter(m => m.type !== mark.type), mark];
-  }
-
-  private currentCursor(): DocPoint | null {
-    return readDocRange(this.editorEl.nativeElement)?.anchor ?? null;
   }
 
   private execAlignment(range: DocRange, align: 'left' | 'center' | 'right'): void {
@@ -384,7 +372,6 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
       }
     } else if (block.type === 'align') {
       if (align === 'left') {
-        // Unwrap to plain paragraphs
         const paraIdx = range.anchor.path[1] ?? 0;
         newChildren = [
           ...this.doc.children.slice(0, blockIdx),
@@ -404,33 +391,27 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
     }
 
     this.doc = { children: newChildren };
+    this.cursor = { anchor: newCursor, focus: newCursor };
     this.render();
-    applyDocRange({ anchor: newCursor, focus: newCursor }, this.editorEl.nativeElement);
+    applyDocRange(this.cursor, this.editorEl.nativeElement);
     this.updateActiveState();
   }
 
-  saveSelection(): void {
-    this.savedCursor = readDocRange(this.editorEl.nativeElement);
-  }
-
+  // Called by post-form before insertTextAtCursor; with cursor tracking this
+  // only needs to ensure the editor div is focused.
   restoreSelection(): void {
-    if (!this.savedCursor) return;
     this.editorEl.nativeElement.focus();
-    applyDocRange(this.savedCursor, this.editorEl.nativeElement);
   }
 
   insertHtmlAtCursor(html: string): void {
     const div = document.createElement('div');
     div.innerHTML = html;
 
-    const range = readDocRange(this.editorEl.nativeElement);
-    if (!range) return;
     this.editorEl.nativeElement.focus();
-
+    const range  = this.cursor;
     const base   = isCollapsed(range) ? this.doc : modelDeleteRange(this.doc, range).doc;
     const cursor = isCollapsed(range) ? range.anchor : modelDeleteRange(this.doc, range).cursor;
 
-    // Single element with no surrounding text nodes — handle structurally.
     const sole = div.children.length === 1 && div.childNodes.length === 1
       ? div.children[0] as HTMLElement
       : null;
@@ -461,11 +442,8 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
   }
 
   insertBlockAtCursor(html: string, _cursorSelector?: string): void {
-    this.restoreSelection();
     this.editorEl.nativeElement.focus();
-
-    const range = readDocRange(this.editorEl.nativeElement);
-    const blockIdx = range ? range.anchor.path[0] : this.doc.children.length - 1;
+    const blockIdx = this.cursor.anchor.path[0];
 
     const newBlocks: BlockNode[] = this.parseHtmlToBlocks(html);
     if (newBlocks.length === 0) return;
@@ -480,14 +458,14 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
     this.doc = { children: [...before, ...newBlocks, ...after] };
     this.render();
 
-    // Cursor inside first inserted block
     const firstIdx = before.length;
     const firstBlock = this.doc.children[firstIdx];
     const newCursor: DocPoint = firstBlock.type === 'quote' || firstBlock.type === 'spoiler'
       ? { path: [firstIdx, 0], offset: 0 }
       : { path: [firstIdx], offset: 0 };
 
-    applyDocRange({ anchor: newCursor, focus: newCursor }, this.editorEl.nativeElement);
+    this.cursor = { anchor: newCursor, focus: newCursor };
+    applyDocRange(this.cursor, this.editorEl.nativeElement);
     this.updateActiveState();
   }
 
@@ -506,7 +484,6 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
         const title = child.querySelector('.wysiwyg-spoiler-header')?.textContent?.trim() ?? 'Spoiler';
         blocks.push({ type: 'spoiler', title, children: [{ type: 'paragraph', children: [] }] });
       } else if (child.tagName === 'DIV') {
-        // Trailing empty paragraph that toolbar appends after block
         if (!child.className || child.className === '') {
           blocks.push({ type: 'paragraph', children: [] });
         }
@@ -520,19 +497,12 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
     const { children: parsed } = parseBbCode(bbCode);
     if (parsed.length === 0) return;
 
-    // Ensure the inserted content ends with a plain paragraph so the cursor
-    // has somewhere to land after the block.
     const last = parsed[parsed.length - 1];
     const toInsert: BlockNode[] = last.type !== 'paragraph'
       ? [...parsed, { type: 'paragraph', children: [] } as ParagraphNode]
       : parsed;
 
-    // Use savedCursor (written on blur) rather than reading the DOM after a
-    // programmatic focus() — the browser does not reliably restore the selection
-    // when focus left the editor (e.g. the user clicked a Quote button).
-    const insertAt = this.savedCursor ?? readDocRange(this.editorEl.nativeElement);
-    const blockIdx = insertAt ? insertAt.anchor.path[0] : this.doc.children.length - 1;
-
+    const blockIdx = this.cursor.anchor.path[0];
     const current = this.doc.children[blockIdx];
     const replaceEmpty = current?.type === 'paragraph' && current.children.length === 0;
 
@@ -544,15 +514,15 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
 
     const cursorIdx = before.length + toInsert.length - 1;
     const newCursor: DocPoint = { path: [cursorIdx], offset: 0 };
+    this.cursor = { anchor: newCursor, focus: newCursor };
     this.editorEl.nativeElement.focus();
-    applyDocRange({ anchor: newCursor, focus: newCursor }, this.editorEl.nativeElement);
+    applyDocRange(this.cursor, this.editorEl.nativeElement);
     this.updateActiveState();
   }
 
   insertTextAtCursor(text: string): void {
     this.editorEl.nativeElement.focus();
-    const range = readDocRange(this.editorEl.nativeElement);
-    if (!range) return;
+    const range  = this.cursor;
     const base   = isCollapsed(range) ? this.doc : modelDeleteRange(this.doc, range).doc;
     const cursor = isCollapsed(range) ? range.anchor : modelDeleteRange(this.doc, range).cursor;
     this.commitOp(modelInsertText(base, cursor, text, this.pendingMarks ?? getMarksAtPoint(base, cursor)));
@@ -562,9 +532,7 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
 
   replaceBeforeCursor(charsToDelete: number, text: string): void {
     this.editorEl.nativeElement.focus();
-    const range = readDocRange(this.editorEl.nativeElement);
-    if (!range) return;
-    const cursor = range.anchor;
+    const cursor = this.cursor.anchor;
     const delRange: DocRange = {
       anchor: { path: cursor.path, offset: Math.max(0, cursor.offset - charsToDelete) },
       focus: cursor,
@@ -584,9 +552,7 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
   }
 
   getTextBeforeCursor(): string {
-    const range = readDocRange(this.editorEl.nativeElement);
-    if (!range) return '';
-    const cursor = range.anchor;
+    const cursor = this.cursor.anchor;
     let result = '';
 
     for (let bi = 0; bi <= cursor.path[0] && bi < this.doc.children.length; bi++) {
@@ -628,9 +594,7 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
   }
 
   unwrapBlock(containerSelector: string, _contentSelector?: string): void {
-    const range = readDocRange(this.editorEl.nativeElement);
-    if (!range) return;
-    const blockIdx = range.anchor.path[0];
+    const blockIdx = this.cursor.anchor.path[0];
     const block = this.doc.children[blockIdx];
 
     let children: ParagraphNode[] | null = null;
@@ -651,9 +615,10 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
         ...this.doc.children.slice(blockIdx + 1),
       ],
     };
-    this.render();
     const newCursor: DocPoint = { path: [blockIdx], offset: 0 };
-    applyDocRange({ anchor: newCursor, focus: newCursor }, this.editorEl.nativeElement);
+    this.cursor = { anchor: newCursor, focus: newCursor };
+    this.render();
+    applyDocRange(this.cursor, this.editorEl.nativeElement);
     this.updateActiveState();
   }
 
@@ -662,9 +627,7 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
   onPaste(event: ClipboardEvent): void {
     event.preventDefault();
 
-    const range = readDocRange(this.editorEl.nativeElement);
-    if (!range) return;
-
+    const range  = this.cursor;
     const base   = isCollapsed(range) ? this.doc : modelDeleteRange(this.doc, range).doc;
     const cursor = isCollapsed(range) ? range.anchor : modelDeleteRange(this.doc, range).cursor;
 
@@ -677,7 +640,6 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
-    // Try image paste first when uploads are allowed
     if (this.canUpload()) {
       const imageFiles = Array.from(event.clipboardData?.items ?? [])
         .filter(i => i.type.startsWith('image/'))
@@ -690,7 +652,6 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
       }
     }
 
-    // Plain text paste — split on newlines
     const text = event.clipboardData?.getData('text/plain') ?? '';
     if (!text) return;
 
@@ -719,20 +680,17 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
     const imageFiles = Array.from(event.dataTransfer?.files ?? [])
       .filter(f => f.type.startsWith('image/'));
     if (!imageFiles.length) return;
-    const range = readDocRange(this.editorEl.nativeElement);
-    const cursor = range?.anchor ?? { path: [this.doc.children.length - 1], offset: 0 };
-    this.uploadFiles(imageFiles, cursor);
+    this.uploadFiles(imageFiles, this.cursor.anchor);
   }
 
   private uploadFiles(files: File[], atCursor: DocPoint): void {
     for (const file of files) {
       this.imageService.upload(file).subscribe({
         next: (res) => {
-          // Insert at current cursor if available, otherwise at the saved drop position
-          const range = readDocRange(this.editorEl.nativeElement);
-          const pt = range?.anchor ?? atCursor;
-          const result = modelInsertImg(this.doc, pt, res.url);
-          this.commitOp(result);
+          // Use the live cursor rather than the captured drop position in case
+          // another upload landed between the drop and this response.
+          const pt = this.cursor.anchor;
+          this.commitOp(modelInsertImg(this.doc, pt, res.url));
         },
         error: () => {},
       });
