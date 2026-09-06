@@ -4,7 +4,7 @@ import { ImageUploadComponent } from '../image-upload/image-upload.component';
 import { GridBuilderComponent } from '../grid-builder/grid-builder.component';
 import { ApiService } from '../../services/api.service';
 import { SmileCategoryWithSmiles } from '../../models/Smile';
-import { WysiwygEditorComponent } from '../wysiwyg-editor/wysiwyg-editor.component';
+import { WysiwygDocEditorComponent } from '../wysiwyg-editor/wysiwyg-doc-editor.component';
 
 @Component({
   selector: 'app-bb-toolbar',
@@ -16,7 +16,7 @@ export class BbToolbarComponent {
   private apiService = inject(ApiService);
 
   @Input() textarea: HTMLTextAreaElement | null = null;
-  @Input() editor: WysiwygEditorComponent | null = null;
+  @Input() editor: WysiwygDocEditorComponent | null = null;
   @Input() showSpoiler = true;
   @Input() showImageUpload = true;
 

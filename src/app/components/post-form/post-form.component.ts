@@ -9,9 +9,8 @@ import { ApiService } from '../../services/api.service';
 import { UserShort } from '../../models/UserShort';
 
 import { BbToolbarComponent } from '../bb-toolbar/bb-toolbar.component';
-import { WysiwygEditorComponent } from '../wysiwyg-editor/wysiwyg-editor.component';
+import { WysiwygDocEditorComponent } from '../wysiwyg-editor/wysiwyg-doc-editor.component';
 import { FormsModule } from '@angular/forms';
-import { bbCodeToHtml } from '../wysiwyg-editor/wysiwyg-editor.utils';
 
 type EditorMode = 'wysiwyg' | 'bbcode';
 type AutosaveStatus = 'idle' | 'typing' | 'saving' | 'saved';
@@ -30,13 +29,13 @@ interface PostDraft {
 
 @Component({
   selector: 'app-post-form',
-  imports: [ FormsModule, BbToolbarComponent, WysiwygEditorComponent],
+  imports: [ FormsModule, BbToolbarComponent, WysiwygDocEditorComponent],
   templateUrl: './post-form.component.html',
   styleUrl: './post-form.component.css',
   standalone: true,
 })
 export class PostFormComponent implements AfterViewInit, OnInit, OnDestroy {
-  @ViewChild('wysiwygEditor') wysiwygEditor?: WysiwygEditorComponent;
+  @ViewChild('wysiwygEditor') wysiwygEditor?: WysiwygDocEditorComponent;
   @ViewChild('messageField') messageField?: ElementRef<HTMLTextAreaElement>;
 
   get textareaEl(): HTMLTextAreaElement | null {
@@ -318,7 +317,7 @@ export class PostFormComponent implements AfterViewInit, OnInit, OnDestroy {
 
   appendBbCode(bbCode: string): void {
     if (this.editorMode() === 'wysiwyg') {
-      this.wysiwygEditor?.insertBlockAtCursor(bbCodeToHtml(bbCode));
+      this.wysiwygEditor?.insertTextAtCursor(bbCode);
     } else {
       const el = this.messageField?.nativeElement;
       if (el) { el.value += bbCode; el.focus(); }

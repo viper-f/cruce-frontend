@@ -10,11 +10,11 @@
 
         <div class="post-editor-container">
           <div class="textarea-wrapper">
-            <app-wysiwyg-editor
+            <app-wysiwyg-doc-editor
               #wysiwygEditor
               [hidden]="editorMode() !== 'wysiwyg'"
               (blur)="closeMention()">
-            </app-wysiwyg-editor>
+            </app-wysiwyg-doc-editor>
             <textarea
               #messageField
               rows="12"
