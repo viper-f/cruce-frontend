@@ -1,5 +1,5 @@
 import {
-  AfterViewInit, Component, computed, ElementRef, inject, OnDestroy, signal, ViewChild,
+  AfterViewInit, Component, computed, ElementRef, inject, Input, OnDestroy, signal, ViewChild,
 } from '@angular/core';
 import { BoardService } from '../../services/board.service';
 import { ImageService } from '../../services/image.service';
@@ -37,6 +37,9 @@ const ORIGIN: DocRange = { anchor: { path: [0], offset: 0 }, focus: { path: [0],
       #editorEl
       class="wysiwyg-editor"
       contenteditable="true"
+      role="textbox"
+      aria-multiline="true"
+      [attr.aria-label]="ariaLabel"
       (focus)="onFocus()"
       (blur)="onBlur()"
       (beforeinput)="onBeforeInput($event)"
@@ -54,6 +57,8 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
 
   private imageService = inject(ImageService);
   private boardService = inject(BoardService);
+
+  @Input() ariaLabel = 'Post editor';
 
   readonly canUpload = computed(() => this.boardService.board().use_image_uploading === 'y');
   readonly activeFormats = signal<Set<string>>(new Set());
