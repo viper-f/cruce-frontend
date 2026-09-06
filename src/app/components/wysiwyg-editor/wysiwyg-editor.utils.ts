@@ -135,7 +135,9 @@ function nodeToText(node: Node): string {
       const s = el.style;
       if (s.color)      r = `[color=${s.color}]${r}[/color]`;
       if (s.fontFamily) r = `[font="${s.fontFamily.replace(/['"]/g, '')}"]${r}[/font]`;
-      if (s.fontSize)   r = `[size=${parseInt(s.fontSize)}]${r}[/size]`;
+      // Only convert font-size if it was explicitly set by the user (not injected by
+      // Chrome's contenteditable normalization during Enter/delete/Enter sequences).
+      if (s.fontSize && el.dataset['userFontSize'])   r = `[size=${parseInt(s.fontSize)}]${r}[/size]`;
       return r;
     }
 
@@ -170,7 +172,7 @@ export function bbCodeToHtml(bb: string): string {
     .replace(/\[s\]([\s\S]*?)\[\/s\]/g,   '<s>$1</s>')
     .replace(/\[color=([^\]]+)\]([\s\S]*?)\[\/color\]/g, '<font color="$1">$2</font>')
     .replace(/\[font="?([^"\]]+)"?\]([\s\S]*?)\[\/font\]/g, '<font face="$1">$2</font>')
-    .replace(/\[size=(\d+)\]([\s\S]*?)\[\/size\]/g,      '<span style="font-size:$1px">$2</span>')
+    .replace(/\[size=(\d+)\]([\s\S]*?)\[\/size\]/g,      '<span style="font-size:$1px" data-user-font-size="true">$2</span>')
     .replace(/\[url=([^\]]+)\]([\s\S]*?)\[\/url\]/g,     '<a href="$1">$2</a>')
     .replace(/\[img\]([\s\S]*?)\[\/img\]/g,              '<img src="$1">')
     .replace(/\[center\]([\s\S]*?)\[\/center\]/g, '<div style="text-align:center">$1</div>')

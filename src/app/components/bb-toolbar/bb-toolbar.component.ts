@@ -266,7 +266,10 @@ export class BbToolbarComponent {
           if (this.isSizeActive(parseInt(sizePx))) {
             this.clearStyleInSelection('fontSize');
           } else {
-            this.applyInlineSpan(ed, el => { el.style.fontSize = `${sizePx}px`; });
+            this.applyInlineSpan(ed, el => {
+              el.style.fontSize = `${sizePx}px`;
+              el.dataset['userFontSize'] = 'true';
+            });
             ed.setActiveFontSize(parseInt(sizePx));
           }
           break;
