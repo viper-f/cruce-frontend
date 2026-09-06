@@ -34,6 +34,7 @@ import {
       (focus)="onFocus()"
       (blur)="onBlur()"
       (beforeinput)="onBeforeInput($event)"
+      (cut)="onCut($event)"
       (paste)="onPaste($event)"
       (dragover)="onDragOver($event)"
       (drop)="onDrop($event)"
@@ -164,15 +165,23 @@ export class WysiwygDocEditorComponent implements OnDestroy {
         break;
       }
 
-      case 'deleteByCut': {
-        if (!isCollapsed(range)) {
-          this.commitOp(modelDeleteRange(this.doc, range));
-          this.onInput();
-        }
-        this.pendingMarks = null;
-        break;
-      }
     }
+  }
+
+  // The cut event fires before any DOM changes, so window.getSelection() still
+  // holds the full selected text. We write it to the clipboard ourselves and
+  // delete the range from the model; preventing the default stops the browser
+  // from also trying to cut from the (stale after re-render) DOM.
+  onCut(event: ClipboardEvent): void {
+    const range = readDocRange(this.editorEl.nativeElement);
+    if (!range || isCollapsed(range)) return;
+
+    event.preventDefault();
+    event.clipboardData?.setData('text/plain', window.getSelection()?.toString() ?? '');
+
+    this.commitOp(modelDeleteRange(this.doc, range));
+    this.pendingMarks = null;
+    this.onInput();
   }
 
   private deleteAndInsert(range: DocRange, text: string): OpResult {
