@@ -1,5 +1,5 @@
 import {
-  Component, computed, ElementRef, inject, OnDestroy, signal, ViewChild,
+  AfterViewInit, Component, computed, ElementRef, inject, OnDestroy, signal, ViewChild,
 } from '@angular/core';
 import { BoardService } from '../../services/board.service';
 import { ImageService } from '../../services/image.service';
@@ -41,7 +41,7 @@ import {
     ></div>
   `,
 })
-export class WysiwygDocEditorComponent implements OnDestroy {
+export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
   @ViewChild('editorEl', { static: true }) private editorEl!: ElementRef<HTMLDivElement>;
 
   private imageService = inject(ImageService);
@@ -67,6 +67,10 @@ export class WysiwygDocEditorComponent implements OnDestroy {
 
   constructor() {
     document.addEventListener('selectionchange', this.selectionHandler);
+  }
+
+  ngAfterViewInit(): void {
+    this.render();
   }
 
   ngOnDestroy(): void {
