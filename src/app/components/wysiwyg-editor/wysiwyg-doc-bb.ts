@@ -11,7 +11,9 @@ import {
 // ─── Parser ──────────────────────────────────────────────────────────────────
 
 export function parseBbCode(bb: string): DocModel {
-  return { children: parseBlocks(bb) };
+  const children = parseBlocks(bb);
+  // Always keep at least one paragraph so the editor has a cursor target.
+  return { children: children.length > 0 ? children : [{ type: 'paragraph', children: [] }] };
 }
 
 function parseBlocks(text: string): BlockNode[] {

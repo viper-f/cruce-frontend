@@ -6,7 +6,7 @@
 
 import {
   DocModel, BlockNode, ParagraphNode, AlignBlock, QuoteNode, SpoilerNode, CodeNode,
-  InlineNode, TextNode, Mark, DocPoint, DocRange,
+  InlineNode, TextNode, ImgNode, Mark, DocPoint, DocRange,
 } from './wysiwyg-doc-model';
 
 export type OpResult = { doc: DocModel; cursor: DocPoint };
@@ -38,6 +38,19 @@ export function insertText(
     return {
       para: { ...para, children: normalize([...before, newNode, ...after]) },
       cursor: { path: point.path, offset: offset + text.length },
+    };
+  });
+}
+
+/** Insert an image at `point`. No-op inside code blocks. */
+export function insertImg(doc: DocModel, point: DocPoint, src: string): OpResult {
+  if (getCode(doc, point.path)) return { doc, cursor: point };
+  return updatePara(doc, point, (para, offset) => {
+    const imgNode: ImgNode = { type: 'img', src };
+    const [before, after] = splitAt(para.children, offset);
+    return {
+      para: { ...para, children: normalize([...before, imgNode, ...after]) },
+      cursor: { path: point.path, offset: offset + 1 },
     };
   });
 }
@@ -79,6 +92,14 @@ export function splitParagraph(doc: DocModel, point: DocPoint): OpResult {
 
   if (path.length === 1) {
     const block = doc.children[path[0]];
+    // Code blocks are single opaque text units — Enter inserts a literal newline.
+    if (block.type === 'code') {
+      const next = block.text.slice(0, point.offset) + '\n' + block.text.slice(point.offset);
+      return {
+        doc: { children: replaceBlock(doc, path[0], { ...block, text: next }) },
+        cursor: { path: point.path, offset: point.offset + 1 },
+      };
+    }
     if (block.type !== 'paragraph') return { doc, cursor: point };
 
     const [before, after] = splitAt(block.children, point.offset);
@@ -452,12 +473,16 @@ function hasMark(marks: Mark[], mark: Mark): boolean {
   return marks.some(m => JSON.stringify(m) === target);
 }
 
-function pathEq(a: number[], b: number[]): boolean {
+export function pathEq(a: number[], b: number[]): boolean {
   return a.length === b.length && a.every((v, i) => v === b[i]);
 }
 
-function pointEq(a: DocPoint, b: DocPoint): boolean {
+export function pointEq(a: DocPoint, b: DocPoint): boolean {
   return pathEq(a.path, b.path) && a.offset === b.offset;
+}
+
+export function isCollapsed(range: DocRange): boolean {
+  return pointEq(range.anchor, range.focus);
 }
 
 /** Return range with anchor ≤ focus in document order. */
