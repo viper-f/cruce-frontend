@@ -24,9 +24,14 @@ function parseBlocks(text: string): BlockNode[] {
 
   let m: RegExpExecArray | null;
   while ((m = blockOpen.exec(text)) !== null) {
-    // Inline/paragraph content before this block tag → plain paragraphs
+    // Inline/paragraph content before this block tag → plain paragraphs.
+    // Strip one trailing \n: serializeBlock always appends \n as a block
+    // separator, so that \n is structural, not a user-visible empty line.
+    // We still call paraLines even when the stripped result is '' so that a
+    // genuinely empty paragraph (blank line before the block) is preserved.
     if (m.index > pos) {
-      result.push(...paraLines(text.slice(pos, m.index)));
+      const before = text.slice(pos, m.index).replace(/\n$/, '');
+      result.push(...paraLines(before));
     }
 
     const tag   = (m[0].match(/\[(\w+)/) ?? [])[1]?.toLowerCase() ?? '';
@@ -45,6 +50,10 @@ function parseBlocks(text: string): BlockNode[] {
     // Trim leading/trailing newlines so block content doesn't produce ghost paragraphs
     const content = text.slice(after, ci).replace(/^\n+|\n+$/, '');
     pos = ci + close.length;
+    // Consume the one trailing \n that serializeBlock appends as a separator.
+    // Leaving it in would make the next paraLines() call produce a spurious
+    // empty paragraph at the start of whatever follows this block.
+    if (pos < text.length && text[pos] === '\n') pos++;
     blockOpen.lastIndex = pos;
 
     switch (tag) {
