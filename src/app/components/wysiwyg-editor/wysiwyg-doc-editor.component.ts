@@ -509,6 +509,37 @@ export class WysiwygDocEditorComponent implements OnDestroy {
     return blocks;
   }
 
+  insertBbCodeBlocks(bbCode: string): void {
+    this.editorEl.nativeElement.focus();
+
+    const { children: parsed } = parseBbCode(bbCode);
+    if (parsed.length === 0) return;
+
+    // Ensure the inserted content ends with a plain paragraph so the cursor
+    // has somewhere to land after the block.
+    const last = parsed[parsed.length - 1];
+    const toInsert: BlockNode[] = last.type !== 'paragraph'
+      ? [...parsed, { type: 'paragraph', children: [] } as ParagraphNode]
+      : parsed;
+
+    const range = readDocRange(this.editorEl.nativeElement);
+    const blockIdx = range ? range.anchor.path[0] : this.doc.children.length - 1;
+
+    const current = this.doc.children[blockIdx];
+    const replaceEmpty = current?.type === 'paragraph' && current.children.length === 0;
+
+    const before = this.doc.children.slice(0, replaceEmpty ? blockIdx : blockIdx + 1);
+    const after  = this.doc.children.slice(replaceEmpty ? blockIdx + 1 : blockIdx + 1);
+
+    this.doc = { children: [...before, ...toInsert, ...after] };
+    this.render();
+
+    const cursorIdx = before.length + toInsert.length - 1;
+    const newCursor: DocPoint = { path: [cursorIdx], offset: 0 };
+    applyDocRange({ anchor: newCursor, focus: newCursor }, this.editorEl.nativeElement);
+    this.updateActiveState();
+  }
+
   insertTextAtCursor(text: string): void {
     this.editorEl.nativeElement.focus();
     const range = readDocRange(this.editorEl.nativeElement);

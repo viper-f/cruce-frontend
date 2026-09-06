@@ -317,7 +317,7 @@ export class PostFormComponent implements AfterViewInit, OnInit, OnDestroy {
 
   appendBbCode(bbCode: string): void {
     if (this.editorMode() === 'wysiwyg') {
-      this.wysiwygEditor?.insertTextAtCursor(bbCode);
+      this.wysiwygEditor?.insertBbCodeBlocks(bbCode);
     } else {
       const el = this.messageField?.nativeElement;
       if (el) { el.value += bbCode; el.focus(); }
