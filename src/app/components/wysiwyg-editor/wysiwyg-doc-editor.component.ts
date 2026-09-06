@@ -25,7 +25,10 @@ import {
 @Component({
   selector: 'app-wysiwyg-doc-editor',
   standalone: true,
-  styles: [`:host .wysiwyg-editor img { max-width: 100%; height: auto; }`],
+  styles: [`
+    :host .wysiwyg-editor { white-space: pre-wrap; word-wrap: break-word; }
+    :host .wysiwyg-editor img { max-width: 100%; height: auto; }
+  `],
   template: `
     <div
       #editorEl
