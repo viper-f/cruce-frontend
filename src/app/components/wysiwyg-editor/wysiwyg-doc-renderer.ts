@@ -16,7 +16,7 @@ export function renderDoc(doc: DocModel): string {
 
 // ─── Block rendering ─────────────────────────────────────────────────────────
 
-function renderBlock(block: BlockNode, blockIdx: number): string {
+export function renderBlock(block: BlockNode, blockIdx: number): string {
   switch (block.type) {
     case 'paragraph':
       return renderPara(block, [blockIdx]);

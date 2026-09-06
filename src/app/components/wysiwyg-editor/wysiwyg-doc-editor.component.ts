@@ -8,6 +8,7 @@ import {
 } from './wysiwyg-doc-model';
 import { parseBbCode, serializeDoc } from './wysiwyg-doc-bb';
 import { renderDoc } from './wysiwyg-doc-renderer';
+import { patchDoc } from './wysiwyg-doc-patcher';
 import { readDocRange, applyDocRange, domPositionToDocPoint } from './wysiwyg-doc-cursor';
 import {
   OpResult,
@@ -212,10 +213,11 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
   // ─── Commit ───────────────────────────────────────────────────────────────────
 
   private commitOp(result: OpResult): void {
+    const prevDoc = this.doc;
     this.doc = result.doc;
     this.cursor = { anchor: result.cursor, focus: result.cursor };
-    this.render();
-    applyDocRange(this.cursor, this.editorEl.nativeElement);
+    const cursorHandled = patchDoc(this.editorEl.nativeElement, prevDoc, this.doc, result.cursor);
+    if (!cursorHandled) applyDocRange(this.cursor, this.editorEl.nativeElement);
     this.updateActiveState();
   }
 
