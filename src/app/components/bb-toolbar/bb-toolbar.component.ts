@@ -27,6 +27,7 @@ export class BbToolbarComponent {
   private spoilerSelEnd = 0;
   private urlSelStart = 0;
   private urlSelEnd = 0;
+  private videoInsertPos = 0;
 
   smileCategories = signal<SmileCategoryWithSmiles[]>([]);
   private smilesLoaded = false;
@@ -45,6 +46,9 @@ export class BbToolbarComponent {
         this.urlSelEnd = this.textarea.selectionEnd;
         this.hasUrlSelection = this.urlSelStart !== this.urlSelEnd;
       }
+    }
+    if (this.activeArea === 'video' && !this.editor && this.textarea) {
+      this.videoInsertPos = this.textarea.selectionStart;
     }
     if (area === 'smile' && this.activeArea === 'smile' && !this.smilesLoaded) {
       this.smilesLoaded = true;
@@ -76,6 +80,22 @@ export class BbToolbarComponent {
     this.activeArea = null;
     this.textarea.focus();
     this.textarea.setSelectionRange(this.urlSelStart + tag.length, this.urlSelStart + tag.length);
+  }
+
+  insertVideo(url: string) {
+    if (!url) { this.activeArea = null; return; }
+    if (this.editor) {
+      this.editor.insertTextAtCursor(`[video]${url}[/video]`);
+      this.activeArea = null;
+      return;
+    }
+    if (!this.textarea) return;
+    const text = this.textarea.value;
+    const tag = `[video]${url}[/video]`;
+    this.textarea.value = text.substring(0, this.videoInsertPos) + tag + text.substring(this.videoInsertPos);
+    this.activeArea = null;
+    this.textarea.focus();
+    this.textarea.setSelectionRange(this.videoInsertPos + tag.length, this.videoInsertPos + tag.length);
   }
 
   isFormatActive(tag: string): boolean {
@@ -188,7 +208,6 @@ export class BbToolbarComponent {
           ed.focus();
         }
         break;
-      case 'video':
       case 'audio':
         ed.insertTextAtCursor(`[${tag}][/${tag}]`);
         break;
