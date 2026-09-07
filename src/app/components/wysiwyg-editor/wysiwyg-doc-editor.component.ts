@@ -83,7 +83,12 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
   private lastOpTime = 0;
   private static readonly GROUP_MS = 500;
 
-  private preCompositionCursor: DocRange | null = null;
+  // Tracks the range of text currently composed (start point → end of last insert).
+  // Non-null from compositionstart until a non-composition beforeinput clears it.
+  // Using a range (not just a start cursor) lets each compositionend replace what
+  // the previous cycle inserted, so GBoard's rapid end→start→end cycles are
+  // idempotent rather than additive.
+  private composedRange: DocRange | null = null;
 
   onInput: () => void = () => {};
 
@@ -107,39 +112,59 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
   // ─── IME composition ──────────────────────────────────────────────────────────
 
   onCompositionStart(): void {
-    // Snapshot the cursor so compositionend knows the insertion point regardless
-    // of how the browser moves the selection during candidate display.
-    this.preCompositionCursor = { ...this.cursor };
+    // Only initialise composedRange when a fresh composition begins. If it is
+    // already set, this is an Android GBoard re-cycle (compositionend fires,
+    // then compositionstart fires again immediately) — keep the existing range
+    // so the next compositionend replaces the previously inserted text rather
+    // than appending it again.
+    if (this.composedRange === null) {
+      const anchor = this.cursor.anchor;
+      this.composedRange = { anchor, focus: anchor };
+    }
   }
 
   onCompositionEnd(event: CompositionEvent): void {
-    const savedCursor = this.preCompositionCursor;
-    this.preCompositionCursor = null;
-    if (!savedCursor) return;
+    const range = this.composedRange;
+    if (!range) return;
 
-    // The browser already committed composition text into the DOM. Apply the
-    // same change to the model so they stay in sync, then re-render.
     const text = event.data ?? '';
 
-    const base = isCollapsed(savedCursor)
-      ? this.doc
-      : modelDeleteRange(this.doc, savedCursor).doc;
-    const pt = isCollapsed(savedCursor)
-      ? savedCursor.anchor
-      : modelDeleteRange(this.doc, savedCursor).cursor;
+    // Delete whatever was inserted by the previous cycle of this composition
+    // (empty on the first cycle), then insert the latest committed text.
+    const delResult = isCollapsed(range)
+      ? null
+      : modelDeleteRange(this.doc, range);
+    const base = delResult?.doc ?? this.doc;
+    const pt   = delResult?.cursor ?? range.anchor;
 
     if (text) {
+      // Push to undo history only on the first cycle (range is still a point).
+      // Subsequent GBoard re-cycles are replacements of the same word and must
+      // stay in the same undo group.
+      if (isCollapsed(range)) this.pushHistory('other');
+
       const marks = this.pendingMarks ?? getMarksAtPoint(base, pt);
       this.pendingMarks = null;
-      this.commitOp(modelInsertText(base, pt, text, marks), 'insert');
+      const result = modelInsertText(base, pt, text, marks);
+
+      this.composedRange = { anchor: pt, focus: result.cursor };
+      this.doc = result.doc;
+      this.cursor = { anchor: result.cursor, focus: result.cursor };
+      // Full re-render (not patchDoc) so Android's IME loses its reference to
+      // the composing span and cannot re-insert the text on the next cycle.
+      this.render();
+      applyDocRange(this.cursor, this.editorEl.nativeElement);
+      this.updateActiveState();
       this.onInput();
     } else {
-      // Composition cancelled (Escape) — model is already correct; re-render
-      // to remove any candidate text the browser left in the DOM.
+      // Composition cancelled — remove any text we inserted in earlier cycles.
+      this.composedRange = null;
+      this.pendingMarks = null;
       this.doc = base;
       this.cursor = { anchor: pt, focus: pt };
       this.render();
       applyDocRange(this.cursor, this.editorEl.nativeElement);
+      this.updateActiveState();
     }
   }
 
@@ -163,6 +188,8 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
     // Preventing default here would break that; compositionend handles the commit.
     if (event.isComposing) return;
     event.preventDefault();
+    // Any non-composition input ends the composition tracking window.
+    this.composedRange = null;
 
     const range = this.cursor;
     const cursor = range.anchor;
@@ -278,6 +305,7 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
     event.preventDefault();
     event.clipboardData?.setData('text/plain', window.getSelection()?.toString() ?? '');
 
+    this.composedRange = null;
     this.commitOp(modelDeleteRange(this.doc, range));
     this.pendingMarks = null;
     this.onInput();
@@ -775,6 +803,7 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
 
   onPaste(event: ClipboardEvent): void {
     event.preventDefault();
+    this.composedRange = null;
 
     const range  = this.cursor;
     const base   = isCollapsed(range) ? this.doc : modelDeleteRange(this.doc, range).doc;
