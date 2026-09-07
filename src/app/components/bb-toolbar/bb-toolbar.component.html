@@ -28,7 +28,7 @@
     }
   </span>
   <span title="Smile" i18n-title="@@postform.smile" (click)="toggleArea('smile')"><i class="bi bi-emoji-smile"></i></span>
-  <span title="Video" i18n-title="@@postform.video" (click)="insertTag('video')"><i class="bi bi-camera-video"></i></span>
+  <span title="Video" i18n-title="@@postform.video" (click)="toggleArea('video')"><i class="bi bi-camera-video"></i></span>
   <span title="Audio" i18n-title="@@postform.audio" (click)="insertTag('audio')"><i class="bi bi-music-note"></i></span>
   @if (showImageUpload) {
     <span title="Upload image" i18n-title="@@postform.uploadImage" (click)="toggleArea('image')"><i class="bi bi-image"></i></span>
@@ -63,6 +63,12 @@
       <input #urlInput type="text" placeholder="https://" (mousedown)="$event.stopPropagation()" />
       <input #urlText type="text" [hidden]="hasUrlSelection" placeholder="Link text" i18n-placeholder="@@postform.urlTextPlaceholder" (mousedown)="$event.stopPropagation()" (keydown.enter)="insertUrl(urlInput.value, urlText.value)" />
       <button type="button" (mousedown)="$event.preventDefault()" (click)="insertUrl(urlInput.value, hasUrlSelection ? '' : urlText.value)" i18n="@@postform.urlInsert">Insert</button>
+    </div>
+  }
+  @if (activeArea === 'video') {
+    <div class="container" id="video-area">
+      <input #videoInput type="text" placeholder="https://" (mousedown)="$event.stopPropagation()" (keydown.enter)="insertVideo(videoInput.value)" />
+      <button type="button" (mousedown)="$event.preventDefault()" (click)="insertVideo(videoInput.value)" i18n="@@postform.videoInsert">Insert</button>
     </div>
   }
   @if (activeArea === 'color') {
