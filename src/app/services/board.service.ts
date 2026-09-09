@@ -16,7 +16,8 @@ export class BoardService {
     total_episode_number: 0,
     total_episode_post_number: 0,
     last_registered_user: null,
-    posts_per_page: 15
+    posts_per_page: 15,
+    visual_navlinks_after_header_panel: 'n'
   });
   readonly board = this.boardSignal.asReadonly();
 

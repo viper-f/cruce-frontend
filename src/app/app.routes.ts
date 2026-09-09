@@ -43,7 +43,9 @@ import { MaskListComponent } from './mask-list/mask-list.component';
 import { RecoveryCodesComponent } from './recovery-codes/recovery-codes.component';
 import { SettingsRestorationCodesComponent } from './settings-restoration-codes/settings-restoration-codes.component';
 import { RestorePasswordComponent } from './restore-password/restore-password.component';
+import { WipeOutMyUserComponent } from './wipe-out-my-user/wipe-out-my-user.component';
 import { adminGuard } from './guards/admin.guard';
+import { privateKeyGuard } from './guards/private-key.guard';
 import { CharacterFieldListComponent } from './character-field-list/character-field-list.component';
 import { AdminWidgetPanelsComponent } from './admin/admin-widget-panels/admin-widget-panels.component';
 import { AdminWidgetPanelEditComponent } from './admin/admin-widget-panel-edit/admin-widget-panel-edit.component';
@@ -52,7 +54,10 @@ import { AdminWidgetEditComponent } from './admin/admin-widget-edit/admin-widget
 import { ActiveUsersComponent } from './active-users/active-users.component';
 import { AdminDesignComponent } from './admin/admin-design/admin-design.component';
 import { AdminReactionsComponent } from './admin/admin-reactions/admin-reactions.component';
+import { AdminSmilesComponent } from './admin/admin-smiles/admin-smiles.component';
 import { PostPageComponent } from './post-page/post-page.component';
+import { LorePageComponent } from './lore-page/lore-page.component';
+import { LoreNavigationEditComponent } from './lore-navigation-edit/lore-navigation-edit.component';
 import { NotFoundComponent } from './error-pages/not-found/not-found.component';
 import { ForbiddenComponent } from './error-pages/forbidden/forbidden.component';
 import { ServerErrorComponent } from './error-pages/server-error/server-error.component';
@@ -77,6 +82,12 @@ export const routes: Routes = [
     data: { pageId: 'pun-restore-password' }
   },
   {
+    path: 'wipe-out-my-user',
+    component: WipeOutMyUserComponent,
+    title: 'Delete My Account',
+    data: { pageId: 'pun-wipe-out-my-user' }
+  },
+  {
     path: 'register',
     component: RegisterComponent,
     data: { pageId: 'pun-register' }
@@ -96,6 +107,7 @@ export const routes: Routes = [
   {
     path: 'direct-chat',
     component: DirectChatComponent,
+    canActivate: [privateKeyGuard],
     data: { pageId: 'pun-direct-chat' }
   },
   {
@@ -115,6 +127,12 @@ export const routes: Routes = [
     component: TopicCreateComponent,
     title: 'Create Topic',
     data: { pageId: 'pun-create-topic' }
+  },
+  {
+    path: 'lore-topic-create',
+    component: TopicCreateComponent,
+    title: 'Create Lore Topic',
+    data: { pageId: 'pun-create-topic', createEndpoint: 'lore-topic/create' }
   },
   {
     path: 'episode-create',
@@ -349,6 +367,11 @@ export const routes: Routes = [
         path: 'reactions',
         component: AdminReactionsComponent,
         title: 'Admin - Reactions'
+      },
+      {
+        path: 'smiles',
+        component: AdminSmilesComponent,
+        title: 'Admin - Smiles'
       }
     ]
   },
@@ -356,6 +379,16 @@ export const routes: Routes = [
     path: 'post-page/:id',
     component: PostPageComponent,
     data: { pageId: 'pun-post-page' }
+  },
+  {
+    path: 'lore/:topicId/page/:postId',
+    component: LorePageComponent,
+    data: { pageId: 'pun-lore-page' }
+  },
+  {
+    path: 'lore/:id/navigation-edit',
+    component: LoreNavigationEditComponent,
+    data: { pageId: 'pun-lore-navigation-edit' }
   },
   {
     path: '403',

@@ -64,6 +64,10 @@ export class UserService {
     });
   }
 
+  archiveAccount(): Observable<void> {
+    return this.apiService.post<void>('user/archive', {});
+  }
+
   searchUsers(term: string): Observable<UserShort[]> {
     return this.apiService.get<UserShort[]>(`user/autocomplete/${encodeURIComponent(term)}`);
   }

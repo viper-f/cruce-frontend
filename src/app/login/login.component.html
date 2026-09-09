@@ -41,6 +41,15 @@
         }
       </button>
 
+      @if (archivedReason() !== null) {
+        <div class="error-banner">
+          <p i18n="@@login.archivedAccount">This account has been archived and cannot be accessed.</p>
+          @if (archivedReason()) {
+            <p>{{ archivedReason() }}</p>
+          }
+        </div>
+      }
+
       <div class="form-footer">
         <p>
           <ng-container i18n="@@login.noAccount">Don't have an account?</ng-container>

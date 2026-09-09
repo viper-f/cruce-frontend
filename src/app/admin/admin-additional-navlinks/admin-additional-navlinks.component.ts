@@ -47,26 +47,30 @@ export class AdminAdditionalNavlinksComponent implements OnInit {
     return link.id < 0;
   }
 
-  hasRole(link: AdditionalNavlink, roleId: number): boolean {
-    return link.roles.includes(roleId);
+  hasRole(link: AdditionalNavlink, roleName: string): boolean {
+    return (link.roles as any[]).includes(roleName);
   }
 
-  toggleRole(link: AdditionalNavlink, roleId: number, checked: boolean) {
-    if (checked) {
-      link.roles = [...link.roles, roleId];
-    } else {
-      link.roles = link.roles.filter(r => r !== roleId);
-    }
+  toggleRole(link: AdditionalNavlink, roleName: string, checked: boolean) {
+    const current = link.roles as any[];
+    const newRoles = checked ? [...current, roleName] : current.filter(r => r !== roleName);
+    this.navlinks.update(list => list.map(l => l === link ? { ...l, roles: newRoles } : l));
   }
 
   save(link: AdditionalNavlink) {
+    const roleIds = (link.roles as any[])
+      .map(name => this.allRoles().find(r => r.name === name)?.id)
+      .filter(id => id !== undefined) as number[];
+
+    const payload = { ...link, roles: roleIds };
+
     if (this.isNew(link)) {
-      this.apiService.post<AdditionalNavlink>('admin/additional-navlink/create', link).subscribe({
+      this.apiService.post<AdditionalNavlink>('admin/additional-navlink/create', payload).subscribe({
         next: (created) => this.navlinks.update(list => list.map(l => l === link ? created : l)),
         error: (err) => console.error('Failed to create navlink', err)
       });
     } else {
-      this.apiService.put<AdditionalNavlink>(`admin/additional-navlink/${link.id}`, link).subscribe({
+      this.apiService.post<AdditionalNavlink>(`admin/additional-navlink/update/${link.id}`, payload).subscribe({
         error: (err) => console.error('Failed to update navlink', err)
       });
     }
@@ -77,7 +81,7 @@ export class AdminAdditionalNavlinksComponent implements OnInit {
       this.navlinks.update(list => list.filter(l => l !== link));
       return;
     }
-    this.apiService.delete(`admin/additional-navlink/${link.id}`).subscribe({
+    this.apiService.get(`admin/additional-navlink/delete/${link.id}`).subscribe({
       next: () => this.navlinks.update(list => list.filter(l => l !== link)),
       error: (err) => console.error('Failed to delete navlink', err)
     });

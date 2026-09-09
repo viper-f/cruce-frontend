@@ -13,6 +13,7 @@ interface PostsResponse {
   posts: Post[];
 }
 
+
 @Injectable({ providedIn: 'root' })
 export class TopicService {
   private apiService = inject(ApiService);
@@ -66,22 +67,18 @@ export class TopicService {
     });
 
     this.notificationService.reactionCreated$.subscribe(event => {
-      const currentTopicId = this.topic().id;
-      if (event.data.topic_id !== currentTopicId) return;
-
       const post = this.postsSignal().find(p => p.id === event.data.post_id);
       if (!post) return;
 
       const { reaction_id, url, user_id, user_name } = event.data;
-      const reactions = [...(post.reactions ?? [])];
-      const existing = reactions.find(r => r.reaction_id === reaction_id);
+      const existing = (post.reactions ?? []).find(r => r.reaction_id === reaction_id);
 
       if (existing) {
         this.postsSignal.update(posts => posts.map(p => {
           if (p.id !== event.data.post_id) return p;
           return {
             ...p,
-            reactions: p.reactions!.map(r =>
+            reactions: (p.reactions ?? []).map(r =>
               r.reaction_id === reaction_id
                 ? { ...r, number: r.number + 1, users: [...r.users, { id: user_id, name: user_name }] }
                 : r
@@ -136,6 +133,15 @@ export class TopicService {
             });
             this.notificationService.checkPostIds(postIds);
             this.notificationService.checkTopicId(topicId);
+          } else {
+            const topicType = this.topicSignal()?.type;
+            if (topicType === TopicType.character || topicType === TopicType.episode || topicType === TopicType.wanted_character) {
+              this.notificationService.sendMessage({
+                type: 'topic_view',
+                topic_id: topicId,
+                post_id: 0
+              });
+            }
           }
         } else {
           console.warn('Invalid posts response format', data);
@@ -154,8 +160,16 @@ export class TopicService {
     return this.apiService.post(`post/update/${id}`, data);
   }
 
-  createTopic(data: CreateTopicRequest) {
-    return this.apiService.post('topic/create', data);
+  deletePost(id: number) {
+    return this.apiService.post(`post/delete/${id}`, {});
+  }
+
+  removeLocalPost(postId: number) {
+    this.postsSignal.update(posts => posts.filter(p => p.id !== postId));
+  }
+
+  createTopic(data: CreateTopicRequest, endpoint = 'topic/create') {
+    return this.apiService.post(endpoint, data);
   }
 
   previewTopic(data: any) {
@@ -166,8 +180,12 @@ export class TopicService {
     return this.apiService.post(`topic/update/${id}`, data);
   }
 
+  private normalizePost(post: Post): Post {
+    return { ...post, reactions: Array.isArray(post.reactions) ? post.reactions : [] };
+  }
+
   updateLocalPost(updatedPost: Post) {
-    this.postsSignal.update(posts => posts.map(p => p.id === updatedPost.id ? updatedPost : p));
+    this.postsSignal.update(posts => posts.map(p => p.id === updatedPost.id ? this.normalizePost({ can_edit: p.can_edit, ...updatedPost }) : p));
   }
 
   updatePostReactions(postId: number, reactions: Post['reactions']) {
@@ -208,7 +226,7 @@ export class TopicService {
 
   private handleNewPost(post: Post) {
     if (this.postsSignal().some(p => p.id === post.id)) return;
-    this.postsSignal.update(posts => [...posts, post]);
+    this.postsSignal.update(posts => [...posts, this.normalizePost(post)]);
 
     // Increment the post count in the topic
     this.topicSignal.update(topic => {

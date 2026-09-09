@@ -8,6 +8,8 @@ export interface ClaimRecord {
   claim_expiration_date: string;
   character_id: number | null;
   claim_created_with_character_sheet: boolean | null;
+  claim_author_id: number | null;
+  claim_author_username: string | null;
 }
 
 export interface ClaimAutocompleteItem {

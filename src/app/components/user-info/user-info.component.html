@@ -1,0 +1,35 @@
+<div class="user-info-block">
+  <div class="user-info-header">
+    <i class="bi bi-person-fill user-info-icon"></i>
+    <a [routerLink]="['/profile', userInfo.user_id]" class="user-info-username">{{ userInfo.username }}</a>
+    <span [class]="statusClass(userInfo.user_status)">{{ statusLabel(userInfo.user_status) }}</span>
+  </div>
+  <div class="user-info-stats">
+    <div class="user-info-stat">
+      <i class="bi bi-calendar2-check"></i>
+      <span class="stat-label" i18n="@@userInfo.registered">Joined</span>
+      <span class="stat-value">{{ userInfo.date_registered | date }}</span>
+    </div>
+    <div class="user-info-stat">
+      <i class="bi bi-clock-history"></i>
+      <span class="stat-label" i18n="@@userInfo.lastVisit">Last visit</span>
+      <span class="stat-value">
+        @if (userInfo.date_last_visit) {
+          {{ userInfo.date_last_visit | date }}
+        } @else {
+          <span class="stat-none">—</span>
+        }
+      </span>
+    </div>
+    <div class="user-info-stat">
+      <i class="bi bi-chat-left-text"></i>
+      <span class="stat-label" i18n="@@userInfo.totalPosts">Posts</span>
+      <span class="stat-value">{{ userInfo.total_posts }}</span>
+    </div>
+    <div class="user-info-stat">
+      <i class="bi bi-people-fill"></i>
+      <span class="stat-label" i18n="@@userInfo.activeCharacters">Characters</span>
+      <span class="stat-value">{{ userInfo.active_characters }}</span>
+    </div>
+  </div>
+</div>

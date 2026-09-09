@@ -76,10 +76,23 @@ export class CharacterSheetHeaderComponent implements OnInit, OnChanges {
       this.characterService.acceptCharacter(this.character.id).subscribe({
         next: () => {
           if (this.character) {
-            this.character.character_status = 1;
+            this.character.character_status = 0;
           }
         },
         error: (err) => console.error('Failed to accept character', err)
+      });
+    }
+  }
+
+  declineCharacter() {
+    if (this.character) {
+      this.characterService.declineCharacter(this.character.id).subscribe({
+        next: () => {
+          if (this.character) {
+            this.character.character_status = 3;
+          }
+        },
+        error: (err) => console.error('Failed to decline character', err)
       });
     }
   }
@@ -93,6 +106,19 @@ export class CharacterSheetHeaderComponent implements OnInit, OnChanges {
           }
         },
         error: (err) => console.error('Failed to activate character', err)
+      });
+    }
+  }
+
+  moveToPending() {
+    if (this.character) {
+      this.characterService.pendingCharacter(this.character.id).subscribe({
+        next: () => {
+          if (this.character) {
+            this.character.character_status = 2;
+          }
+        },
+        error: (err) => console.error('Failed to move character to pending', err)
       });
     }
   }
@@ -118,6 +144,7 @@ export class CharacterSheetHeaderComponent implements OnInit, OnChanges {
       // In CharacterListComponent: getStatusLabel(char.character_status)
       // Let's check CharacterListComponent to be consistent.
       case 2: return 'Pending';
+      case 3: return 'Declined';
       default: return 'Unknown';
     }
   }
@@ -131,6 +158,7 @@ export class CharacterSheetHeaderComponent implements OnInit, OnChanges {
       case 0: return 'status-active'; // Or whatever 0 means
       case 1: return 'status-approved'; // Or whatever 1 means
       case 2: return 'status-pending';
+      case 3: return 'status-declined';
       default: return '';
     }
   }

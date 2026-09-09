@@ -5,8 +5,7 @@
   <form id="post" class="container" (submit)="onSubmit($event)">
     <fieldset>
       <legend style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-        <span i18n="@@topiccreate.writeMessage">Write your message and click "Send"</span>
-        @if (cancel.observed) {
+@if (cancel.observed) {
           @if (statusActive()) {
             <button type="button" class="button btn-deactivate" (click)="requestDeactivate()" i18n="@@common.deactivate">Deactivate</button>
           } @else {

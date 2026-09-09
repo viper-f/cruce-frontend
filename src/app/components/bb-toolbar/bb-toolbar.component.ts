@@ -1,6 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ImageUploadComponent } from '../image-upload/image-upload.component';
+import { ApiService } from '../../services/api.service';
+import { SmileCategoryWithSmiles } from '../../models/Smile';
 
 @Component({
   selector: 'app-bb-toolbar',
@@ -9,21 +11,32 @@ import { ImageUploadComponent } from '../image-upload/image-upload.component';
   templateUrl: './bb-toolbar.component.html',
 })
 export class BbToolbarComponent {
+  private apiService = inject(ApiService);
+
   @Input() textarea!: HTMLTextAreaElement;
   @Input() showSpoiler = true;
   @Input() showImageUpload = true;
 
   activeArea: string | null = null;
-  showImageUploadModal = false;
   showSpoilerModal = false;
   private spoilerSelStart = 0;
   private spoilerSelEnd = 0;
+
+  smileCategories = signal<SmileCategoryWithSmiles[]>([]);
+  private smilesLoaded = false;
 
   fonts = ['Arial', 'Verdana', 'Georgia', 'Times New Roman', 'Courier New', 'Impact'];
   colors = ['black', 'white', 'red', 'blue', 'green', 'yellow', 'purple', 'gray', 'silver'];
 
   toggleArea(area: string) {
     this.activeArea = this.activeArea === area ? null : area;
+    if (area === 'smile' && this.activeArea === 'smile' && !this.smilesLoaded) {
+      this.smilesLoaded = true;
+      this.apiService.get<SmileCategoryWithSmiles[]>('smiles').subscribe({
+        next: (data) => this.smileCategories.set(data),
+        error: (err) => console.error('Failed to load smiles', err)
+      });
+    }
   }
 
   insertTag(tag: string) {
@@ -39,7 +52,6 @@ export class BbToolbarComponent {
     const selectedText = text.substring(start, end);
     textarea.value = text.substring(0, start) + openTag + selectedText + closeTag + text.substring(end);
 
-    this.activeArea = null;
     textarea.focus();
     const newPos = start + openTag.length + selectedText.length;
     textarea.setSelectionRange(newPos, newPos);
@@ -70,6 +82,15 @@ export class BbToolbarComponent {
     textarea.value = text.substring(0, start) + tag + text.substring(start);
     textarea.focus();
     textarea.setSelectionRange(start + tag.length, start + tag.length);
-    this.showImageUploadModal = false;
+  }
+
+  insertSmile(url: string) {
+    const textarea = this.textarea;
+    const start = textarea.selectionStart;
+    const text = textarea.value;
+    const tag = `[img]${url}[/img]`;
+    textarea.value = text.substring(0, start) + tag + text.substring(start);
+    textarea.focus();
+    textarea.setSelectionRange(start + tag.length, start + tag.length);
   }
 }

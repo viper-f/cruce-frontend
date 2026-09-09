@@ -1,0 +1,19 @@
+<div id="pun-main" class="main lore-page">
+  <div class="lore-layout">
+    <nav class="lore-nav">
+      <ul>
+        @for (page of pages(); track page.post_id) {
+          @if (!page.is_hidden) {
+            <li><a [routerLink]="['/lore', topicId(), 'page', page.post_id]">{{ page.name }}</a></li>
+          }
+        }
+      </ul>
+    </nav>
+
+    <div class="main-content">
+      @if (post(); as p) {
+        <div class="page-content" appRouterLinks [innerHTML]="p.content_html | safeHtml"></div>
+      }
+    </div>
+  </div>
+</div>

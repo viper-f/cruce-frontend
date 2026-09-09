@@ -16,8 +16,10 @@
       <td title="Code" i18n-title="@@postform.code" (click)="insertTag('code')"><i class="bi bi-code-slash"></i></td>
       <td title="Color" i18n-title="@@postform.color" (click)="toggleArea('color')"><i class="bi bi-palette"></i></td>
       <td title="Smile" i18n-title="@@postform.smile" (click)="toggleArea('smile')"><i class="bi bi-emoji-smile"></i></td>
+      <td title="Video" i18n-title="@@postform.video" (click)="insertTag('video')"><i class="bi bi-camera-video"></i></td>
+      <td title="Audio" i18n-title="@@postform.audio" (click)="insertTag('audio')"><i class="bi bi-music-note"></i></td>
       @if (showImageUpload) {
-        <td title="Upload image" i18n-title="@@postform.uploadImage" (click)="showImageUploadModal = true"><i class="bi bi-image"></i></td>
+        <td title="Upload image" i18n-title="@@postform.uploadImage" (click)="toggleArea('image')"><i class="bi bi-image"></i></td>
       }
       @if (showSpoiler) {
         <td title="Spoiler" (click)="openSpoilerModal()"><i class="bi bi-eye-slash"></i></td>
@@ -57,6 +59,36 @@
       </table>
     </div>
   }
+  @if (activeArea === 'smile') {
+    <div class="container" id="smile-area">
+      @for (category of smileCategories(); track category.id) {
+        <div class="smile-category">
+          @if (category.name) {
+            <div class="smile-category-name">{{ category.name }}</div>
+          }
+          <div class="smile-list">
+            @for (smile of category.smiles; track smile.id) {
+              <img
+                [src]="smile.url"
+                [title]="smile.text_form"
+                class="smile-icon"
+                (click)="insertSmile(smile.url)"
+                alt=""
+              />
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+  @if (activeArea === 'image') {
+    <div class="container" id="image-upload-area">
+      <app-image-upload
+        (close)="activeArea = null"
+        (insert)="onInsertImage($event)">
+      </app-image-upload>
+    </div>
+  }
 </div>
 
 @if (showSpoilerModal) {
@@ -70,11 +102,4 @@
       </div>
     </div>
   </div>
-}
-
-@if (showImageUploadModal) {
-  <app-image-upload
-    (close)="showImageUploadModal = false"
-    (insert)="onInsertImage($event)">
-  </app-image-upload>
 }

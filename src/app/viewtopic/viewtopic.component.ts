@@ -15,7 +15,8 @@ import {ForumService} from '../services/forum.service';
 import {TopicReadByComponent} from '../components/topic-read-by/topic-read-by.component';
 import { CharacterSheetHeaderComponent } from '../components/character-sheet-header/character-sheet-header.component';
 import { WantedCharacterHeaderComponent } from '../components/wanted-character-header/wanted-character-header.component';
-import { SafeHtmlPipe } from '../pipes/safe-html.pipe'
+import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
+import { RouterLinksDirective } from '../directives/router-links.directive';
 import { CharacterService } from '../services/character.service';
 import { AuthService } from '../services/auth.service';
 import { BoardService } from '../services/board.service';
@@ -26,6 +27,8 @@ import { WantedCharacterCreateComponent } from '../wanted-character-create/wante
 import { WantedCharacterService } from '../services/wanted-character.service';
 import { EpisodeService } from '../services/episode.service';
 import { PreviewService } from '../services/preview.service';
+import { LoreTopicHeaderComponent } from '../components/lore-topic-header/lore-topic-header.component';
+import { UserInfoComponent } from '../components/user-info/user-info.component';
 
 function coerceToPage(value: unknown): number {
   const num = numberAttribute(value, 1);
@@ -47,7 +50,10 @@ function coerceToPage(value: unknown): number {
     SafeHtmlPipe,
     EpisodeCreateComponent,
     CharacterCreateComponent,
-    WantedCharacterCreateComponent
+    WantedCharacterCreateComponent,
+    LoreTopicHeaderComponent,
+    RouterLinksDirective,
+    UserInfoComponent,
   ],
   templateUrl: './viewtopic.component.html',
   standalone: true,
@@ -118,6 +124,7 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
   editingPostId = signal<number | null>(null);
   editingTopic = signal(false);
   showDeactivateModal = signal(false);
+  postToDelete = signal<Post | null>(null);
 
   reactionPickerPostId = signal<number | null>(null);
   activeReactions = signal<Reaction[]>([]);
@@ -240,6 +247,7 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
   isGeneral() { return this.topic().type === TopicType.general; }
   isCharacter() { return this.topic().type === TopicType.character; }
   isWantedCharacter() { return this.topic().type === TopicType.wanted_character; }
+  isLore() { return this.topic().type === TopicType.lore; }
 
   ngOnInit() {
     this.pageLoadedSubscription = this.topicService.pageLoaded$.subscribe(pageState => {
@@ -304,6 +312,21 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
 
   cancelEdit() {
     this.editingPostId.set(null);
+  }
+
+  deletePost(post: Post, event: Event) {
+    event.preventDefault();
+    this.postToDelete.set(post);
+  }
+
+  confirmDeletePost() {
+    const post = this.postToDelete();
+    if (!post) return;
+    this.postToDelete.set(null);
+    this.topicService.deletePost(post.id).subscribe({
+      next: () => this.topicService.removeLocalPost(post.id),
+      error: (err: any) => console.error('Failed to delete post', err)
+    });
   }
 
   quotePost(post: Post, event: Event) {
@@ -419,6 +442,10 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
       character_profile_id: characterProfileId
     };
 
+    if (!this.authService.isAuthenticated()) {
+      payload.guest_name = this.guestName;
+    }
+
     this.topicService.previewTopic(payload).subscribe({
       next: (previewPost: any) => {
         this.previewService.set({
@@ -452,8 +479,10 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
 
     if (!title || !this.id()) return;
 
+    const stickyCheckbox = form.querySelector('input[name="is_sticky_first_post"]') as HTMLInputElement;
     const payload = {
-      title: title
+      name: title,
+      is_sticky_first_post: stickyCheckbox?.checked ?? false
     };
 
     this.topicService.updateTopic(this.id()!, payload).subscribe({
@@ -466,6 +495,26 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
         this.cancelEditTopic();
       },
       error: (err: any) => console.error('Failed to update topic', err)
+    });
+  }
+
+  onUpdateLoreTopic(event: Event) {
+    event.preventDefault();
+    const form = event.target as HTMLFormElement;
+    const title = (form.querySelector('input[name="title"]') as HTMLInputElement)?.value;
+
+    if (!title || !this.id()) return;
+
+    this.apiService.post(`lore-topic/update/${this.id()}`, { name: title }).subscribe({
+      next: (updatedTopic: any) => {
+        if (updatedTopic && updatedTopic.id) {
+          this.topicService.updateLocalTopic(updatedTopic);
+        } else {
+          if (this.id()) this.topicService.loadTopic(this.id()!).subscribe({ next: (data) => this.topicService.setTopic(data) });
+        }
+        this.cancelEditTopic();
+      },
+      error: (err: any) => console.error('Failed to update lore topic', err)
     });
   }
 
@@ -576,10 +625,7 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
   }
 
   addReaction(postId: number, reactionId: number) {
-    this.apiService.post<PostReaction[]>('post-reaction/create', { post_id: postId, reaction_id: reactionId }).subscribe({
-      next: (reactions) => {
-        this.topicService.updatePostReactions(postId, reactions);
-      },
+    this.apiService.post<void>('post-reaction/create', { post_id: postId, reaction_id: reactionId }).subscribe({
       error: (err) => console.error('Failed to add reaction', err)
     });
     this.reactionPickerPostId.set(null);

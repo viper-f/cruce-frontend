@@ -24,6 +24,7 @@ export interface Post {
   date_created: string;
   date_created_localized: string;
   can_edit?: boolean;
+  can_delete?: boolean;
   author_user_id: number;
   author_user_name: string;
   reactions?: PostReaction[];

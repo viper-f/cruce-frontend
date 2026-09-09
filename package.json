@@ -6,7 +6,11 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "test:visual": "playwright test tests/visual-tour.spec.ts",
+    "test:browserstack": "browserstack-node-sdk playwright test tests/visual-tour.spec.ts",
+    "postinstall": "npm update browserstack-node-sdk",
+    "test:visual-browserstack": "browserstack-node-sdk playwright test tests/visual-tour.spec.ts"
   },
   "private": true,
   "dependencies": {
@@ -31,6 +35,7 @@
     "@playwright/test": "^1.58.2",
     "@types/jasmine": "~5.1.0",
     "@types/node": "^25.5.0",
+    "browserstack-node-sdk": "^1.53.0",
     "jasmine-core": "~5.6.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",

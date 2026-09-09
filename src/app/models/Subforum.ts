@@ -33,6 +33,7 @@ export interface SubforumPermissions {
   subforum_create_episode_topic: boolean;
   subforum_create_character_topic: boolean;
   subforum_create_wanted_character_topic?: boolean;
+  subforum_create_lore_topic?: boolean;
   subforum_post: boolean;
   subforum_delete_topic: boolean;
   subforum_delete_others_topic: boolean;

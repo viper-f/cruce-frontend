@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, Input, OnInit, ViewChild } from '@angular/core';
 import { LongTextFieldComponent } from '../components/long-text-field/long-text-field.component';
 import { CharacterProfileComponent } from '../components/character-profile/character-profile.component';
 import { AuthService } from '../services/auth.service';
@@ -15,6 +15,8 @@ import { PreviewService } from '../services/preview.service';
   standalone: true,
 })
 export class TopicCreateComponent implements OnInit {
+  @Input() createEndpoint = 'topic/create';
+
   private authService = inject(AuthService);
   private topicService = inject(TopicService);
   private previewService = inject(PreviewService);
@@ -37,6 +39,12 @@ export class TopicCreateComponent implements OnInit {
       this.previewService.clear();
     }
 
+    this.route.data.subscribe(data => {
+      if (data['createEndpoint']) {
+        this.createEndpoint = data['createEndpoint'];
+      }
+    });
+
     this.route.queryParams.subscribe(params => {
       if (params['fid']) {
         this.subforumId = +params['fid'];
@@ -54,6 +62,7 @@ export class TopicCreateComponent implements OnInit {
     const formData = new FormData(form);
     const title = formData.get('req_subject') as string;
     const content = this.messageField.messageField.nativeElement.value;
+    const isStickyFirstPost = (form.querySelector('input[name="is_sticky_first_post"]') as HTMLInputElement)?.checked ?? false;
 
     if (!title || !content || !this.subforumId) {
       console.error('Missing required fields');
@@ -65,7 +74,8 @@ export class TopicCreateComponent implements OnInit {
       title: title,
       content: content,
       use_character_profile: this.selectedCharacterId !== null,
-      character_profile_id: this.selectedCharacterId
+      character_profile_id: this.selectedCharacterId,
+      is_sticky_first_post: isStickyFirstPost
     };
 
     const isPreview = ((event as SubmitEvent).submitter as HTMLInputElement | null)?.name === 'preview';
@@ -85,7 +95,7 @@ export class TopicCreateComponent implements OnInit {
             } as Topic,
             posts: [post],
             returnUrl: this.router.url,
-            formPayload: { ...request }
+            formPayload: { ...request, createEndpoint: this.createEndpoint }
           });
           this.router.navigate(['/preview']);
         },
@@ -94,7 +104,7 @@ export class TopicCreateComponent implements OnInit {
       return;
     }
 
-    this.topicService.createTopic(request).subscribe({
+    this.topicService.createTopic(request, this.createEndpoint).subscribe({
       next: (response: any) => {
         console.log('Topic created successfully', response);
         // Assuming response contains the new topic ID, redirect to it

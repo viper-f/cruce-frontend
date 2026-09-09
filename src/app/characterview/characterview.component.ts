@@ -3,6 +3,7 @@ import { RouterLink, Router } from '@angular/router';
 import { CharacterSheetHeaderComponent } from '../components/character-sheet-header/character-sheet-header.component';
 import { CommonModule, DatePipe } from '@angular/common';
 import { CharacterService } from '../services/character.service';
+import { UserInfoComponent } from '../components/user-info/user-info.component';
 
 @Component({
   selector: 'app-characterview',
@@ -10,7 +11,8 @@ import { CharacterService } from '../services/character.service';
     RouterLink,
     CharacterSheetHeaderComponent,
     CommonModule,
-    DatePipe
+    DatePipe,
+    UserInfoComponent
   ],
   templateUrl: './characterview.component.html',
   standalone: true,

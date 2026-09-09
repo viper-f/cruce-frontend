@@ -4,7 +4,7 @@ import { CategoryService } from '../../services/category.service';
 import { ApiService } from '../../services/api.service';
 import { Category } from '../../models/Category';
 import { Subforum } from '../../models/Subforum';
-import { Topic } from '../../models/Topic';
+import { Topic, TopicStatus, TopicType } from '../../models/Topic';
 
 interface PanelState {
   view: 'subforums' | 'topics';
@@ -29,6 +29,14 @@ export class TopicCommanderComponent implements OnInit {
 
   left: PanelState = this.createPanel();
   right: PanelState = this.createPanel();
+
+  deleteModal: {
+    visible: boolean;
+    panel: PanelState | null;
+    characterTopics: Topic[];
+    wantedTopics: Topic[];
+    totalCount: number;
+  } = { visible: false, panel: null, characterTopics: [], wantedTopics: [], totalCount: 0 };
 
   constructor() {
     effect(() => {
@@ -118,19 +126,58 @@ export class TopicCommanderComponent implements OnInit {
 
   closeTopics(panel: PanelState) {
     const topicIds = Array.from(panel.selectedTopicIds);
-    console.log(`[MOCK] Closing topics ${topicIds.join(', ')}`);
-    // TODO: this.apiService.post('topic/close', { topic_ids: topicIds }).subscribe(...)
+    this.apiService.post('topics/bulk-update', { topic_ids: topicIds, status: TopicStatus.inactive }).subscribe({
+      next: () => this.openSubforum(panel, panel.openSubforum!),
+      error: (err) => console.error('Failed to close topics', err)
+    });
   }
 
   openTopics(panel: PanelState) {
     const topicIds = Array.from(panel.selectedTopicIds);
-    console.log(`[MOCK] Opening topics ${topicIds.join(', ')}`);
-    // TODO: this.apiService.post('topic/open', { topic_ids: topicIds }).subscribe(...)
+    this.apiService.post('topics/bulk-update', { topic_ids: topicIds, status: TopicStatus.active }).subscribe({
+      next: () => this.openSubforum(panel, panel.openSubforum!),
+      error: (err) => console.error('Failed to open topics', err)
+    });
+  }
+
+  makeStickyTopics(panel: PanelState) {
+    const topicIds = Array.from(panel.selectedTopicIds);
+    this.apiService.post('topics/bulk-update', { topic_ids: topicIds, is_sticky: true }).subscribe({
+      next: () => this.openSubforum(panel, panel.openSubforum!),
+      error: (err) => console.error('Failed to make topics sticky', err)
+    });
+  }
+
+  removeStickyTopics(panel: PanelState) {
+    const topicIds = Array.from(panel.selectedTopicIds);
+    this.apiService.post('topics/bulk-update', { topic_ids: topicIds, is_sticky: false }).subscribe({
+      next: () => this.openSubforum(panel, panel.openSubforum!),
+      error: (err) => console.error('Failed to remove sticky from topics', err)
+    });
   }
 
   deleteTopics(panel: PanelState) {
+    const selected = panel.topics.filter(t => panel.selectedTopicIds.has(t.id));
+    this.deleteModal = {
+      visible: true,
+      panel,
+      characterTopics: selected.filter(t => t.type === TopicType.character),
+      wantedTopics: selected.filter(t => t.type === TopicType.wanted_character),
+      totalCount: selected.length
+    };
+  }
+
+  cancelDelete() {
+    this.deleteModal.visible = false;
+  }
+
+  confirmDelete() {
+    const panel = this.deleteModal.panel!;
     const topicIds = Array.from(panel.selectedTopicIds);
-    console.log(`[MOCK] Deleting topics ${topicIds.join(', ')}`);
-    // TODO: this.apiService.post('topic/delete', { topic_ids: topicIds }).subscribe(...)
+    this.deleteModal.visible = false;
+    this.apiService.post('admin/topics/delete', { topic_ids: topicIds }).subscribe({
+      next: () => this.openSubforum(panel, panel.openSubforum!),
+      error: (err) => console.error('Failed to delete topics', err)
+    });
   }
 }

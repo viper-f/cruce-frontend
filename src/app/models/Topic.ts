@@ -16,6 +16,7 @@ export interface Topic {
   post_number: number;
   last_post_author_user_id: number|null;
   last_post_author_username: string|null;
+  first_post_id?: number | null;
   last_post_id?: number | null;
   last_viewed_id?: number | null;
   type: TopicType;
@@ -23,6 +24,8 @@ export interface Topic {
   episode: Episode|null;
   character: Character|null;
   wanted_character: WantedCharacter|null;
+  is_sticky?: boolean;
+  is_sticky_first_post?: boolean;
   can_edit?: boolean;
   not_viewed?: boolean;
   permissions?: SubforumPermissions | null;
@@ -32,7 +35,8 @@ export enum TopicType {
   general = 0,
   episode = 1,
   character = 2,
-  wanted_character = 3
+  wanted_character = 3,
+  lore = 4
 }
 
 export enum TopicStatus {
@@ -47,4 +51,5 @@ export interface CreateTopicRequest {
   content: string;
   use_character_profile: boolean;
   character_profile_id: number | null;
+  is_sticky_first_post?: boolean;
 }

@@ -17,6 +17,8 @@ export class AdminFactionsComponent implements OnInit {
   factions = this.factionService.factionTree;
   pendingFactions = this.factionService.pendingFactions;
 
+  showDeleteErrorModal = false;
+
   private tempIdCounter = -1;
 
   ngOnInit() {
@@ -76,6 +78,19 @@ export class AdminFactionsComponent implements OnInit {
         error: (err) => console.error('Failed to save faction', err)
       });
     }
+  }
+
+  deleteFaction(faction: Faction) {
+    this.factionService.deleteFaction(faction.id).subscribe({
+      next: () => this.factions.update(list => list.filter(f => f.id !== faction.id)),
+      error: (err) => {
+        if (err.status === 409) {
+          this.showDeleteErrorModal = true;
+        } else {
+          console.error('Failed to delete faction', err);
+        }
+      }
+    });
   }
 
   private replaceFaction(temp: Faction, created: Faction) {

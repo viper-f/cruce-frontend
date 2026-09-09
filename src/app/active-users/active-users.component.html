@@ -9,9 +9,9 @@
           @for (user of users(); track user.user_id) {
             <li class="active-user">
               <span class="timestamp">{{ user.last_active | date:'dd.MM.yy HH:mm:ss' }}</span>
-              <ng-container i18n="@@activeUsers.entry">User</ng-container>
+              <ng-container i18n="@@activeUsers.entry">User </ng-container>
               <a [routerLink]="['/profile', user.user_id]">{{ user.username }}</a>
-              <ng-container i18n="@@activeUsers.isOnPage">is on the page</ng-container>
+              <ng-container i18n="@@activeUsers.isOnPage"> is on the page </ng-container>
               @if (pageRoute(user); as route) {
                 <a [routerLink]="route">{{ pageLabel(user) }}</a>
               } @else {

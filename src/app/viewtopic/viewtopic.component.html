@@ -33,8 +33,12 @@
 
   @if (editingTopic() && isGeneral()) {
     <div style="clear: both; display: flex; gap: 10px; align-items: center; margin: 1em 0;">
-      <form (submit)="onUpdateTopic($event)" style="flex: 1; display: flex; gap: 10px; align-items: center;">
+      <form (submit)="onUpdateTopic($event)" style="flex: 1; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
         <input type="text" name="title" [value]="topic().name" style="flex: 1; font-size: 1.2em; padding: 5px;">
+        <label style="display: flex; align-items: center; gap: 4px; white-space: nowrap;">
+          <input type="checkbox" name="is_sticky_first_post" [checked]="topic().is_sticky_first_post">
+          <ng-container i18n="@@topiccreate.stickyFirstPost">Stick the first post</ng-container>
+        </label>
         <button type="submit" class="button" i18n="@@common.save">Save</button>
         @if (topic().status === 1) {
           <button type="button" class="button btn-activate" (click)="activateTopic()" i18n="@@common.activate">Activate</button>
@@ -68,6 +72,18 @@
       <app-wanted-character-header [wantedCharacter]="topic().wanted_character"></app-wanted-character-header>
     }
   }
+  @if(isLore()) {
+    @if (editingTopic()) {
+      <div style="clear: both; display: flex; gap: 10px; align-items: center; margin: 1em 0;">
+        <form (submit)="onUpdateLoreTopic($event)" style="flex: 1; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+          <input type="text" name="title" [value]="topic().name" style="flex: 1; font-size: 1.2em; padding: 5px;">
+          <button type="submit" class="button" i18n="@@common.save">Save</button>
+          <button type="button" class="button" (click)="cancelEditTopic()" i18n="@@common.cancel">Cancel</button>
+        </form>
+      </div>
+    }
+    <app-lore-topic-header [topicId]="id()!" [canEdit]="topic().can_edit ?? false"></app-lore-topic-header>
+  }
   @if(isCharacter() && topic().character != null) {
     @if (editingTopic()) {
       <app-character-create
@@ -80,13 +96,38 @@
     }
   }
 
+  @if (isCharacter() && topic().character?.user_info) {
+    <div class="category">
+      <div class="main-content">
+        <div class="main-item">
+          <app-user-info [userInfo]="topic().character!.user_info!" />
+        </div>
+      </div>
+    </div>
+  }
+  @if (isWantedCharacter() && topic().wanted_character?.user_info) {
+    <div class="category">
+      <div class="main-content">
+        <div class="main-item">
+          <app-user-info [userInfo]="topic().wanted_character!.user_info!" />
+        </div>
+      </div>
+    </div>
+  }
+
   @for(post of posts(); track (post.id || $index); let i = $index; let isEven = $even) {
   <div id="{{post.id}}" class="post" [class.altstyle]="isEven">
     <h3>
       <span class="post-meta">{{ post.date_created_localized }}</span>
       <strong class="post-number">
         <span class="post-link-btn" (click)="copyPostLink(post.id)" title="Copy link" i18n-title="@@viewtopic.copyLink"><i class="bi bi-link-45deg"></i></span>
-        #{{ (pageNumber() - 1) * postsPerPage() + i + 1 }}
+        @if (topic().is_sticky_first_post && pageNumber() > 1 && i === 0) {
+          #1
+        } @else if (topic().is_sticky_first_post && pageNumber() > 1) {
+          #{{ (pageNumber() - 1) * postsPerPage() + i }}
+        } @else {
+          #{{ (pageNumber() - 1) * postsPerPage() + i + 1 }}
+        }
       </strong>
     </h3>
     <div class="container">
@@ -104,7 +145,7 @@
                 </div>
               </form>
             } @else {
-              <div class="post-content" [innerHTML]="post.content_html | safeHtml"></div>
+              <div class="post-content" appRouterLinks [innerHTML]="post.content_html | safeHtml"></div>
             }
           </div>
           <div class="post-reactions">
@@ -159,6 +200,9 @@
             <span><a href="#" (click)="quotePost(post, $event)" i18n="@@viewtopic.quote">Quote</a></span>
             @if(post.can_edit) {
               <span><a href="#" (click)="editPost(post, $event)" i18n="@@viewtopic.edit">Edit</a></span>
+            }
+            @if(post.can_delete) {
+              <span><a href="#" (click)="deletePost(post, $event)" i18n="@@viewtopic.delete">Delete</a></span>
             }
           </p>
         </div>
@@ -216,7 +260,8 @@
                 [accountName]="accountName"
                 [loadProfiles]="loadProfiles"
                 [showAccount]="showAccount"
-                (characterSelected)="onCharacterSelected($event)">
+                (characterSelected)="onCharacterSelected($event)"
+                (guestNameChanged)="onGuestNameChanged($event)">
               </app-character-profile>
             </div>
 
@@ -239,8 +284,23 @@
   <div class="main-footer"></div>
 </div>
 
+<app-breadcrumbs [items]="breadcrumbs"></app-breadcrumbs>
+
 @if (reactionPickerPostId() !== null) {
   <div class="reaction-picker-backdrop" (click)="closeReactionPicker()"></div>
+}
+
+@if (postToDelete() !== null) {
+  <div class="modal-overlay">
+    <div class="modal-content">
+      <h2 i18n="@@viewtopic.deletePostConfirmTitle">Delete post?</h2>
+      <p i18n="@@viewtopic.deletePostConfirmText">This will permanently delete the post. This action cannot be undone. Are you sure?</p>
+      <div class="buttons">
+        <button type="button" class="button btn-deactivate" (click)="confirmDeletePost()" i18n="@@common.delete">Delete</button>
+        <button type="button" class="button" (click)="postToDelete.set(null)" i18n="@@common.cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
 }
 
 @if (showDeactivateModal()) {

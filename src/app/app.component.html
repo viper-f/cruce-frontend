@@ -9,9 +9,15 @@
       </div>
     </div>
 
-    <div id="pun-navlinks" class="section" app-navlinks></div>
+    @if (!navlinksAfterHeader()) {
+      <div id="pun-navlinks" class="section" app-navlinks></div>
+    }
 
-    <div id="header-widget-panel" [innerHTML]="headerPanelHtml()"></div>
+    <div id="header-widget-panel" appRouterLinks [innerHTML]="headerPanelHtml()"></div>
+
+    @if (navlinksAfterHeader()) {
+      <div id="pun-navlinks" class="section" app-navlinks></div>
+    }
 
     <div id="pun-status" class="section">
       <div class="container">
@@ -23,6 +29,7 @@
     </div>
 <router-outlet />
 
+  <div id="footer-widget-panel" appRouterLinks [innerHTML]="footerPanelHtml()"></div>
   <div id="pun-footer" class="section" app-footer></div>
 </div>
 <div id="html-bottom"></div>

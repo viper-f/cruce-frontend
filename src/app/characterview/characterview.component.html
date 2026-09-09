@@ -48,5 +48,15 @@
       </table>
     </div>
   </div>
+
+  @if (char.user_info) {
+    <div class="category">
+      <div class="main-content">
+        <div class="main-item">
+          <app-user-info [userInfo]="char.user_info" />
+        </div>
+      </div>
+    </div>
+  }
 </div>
 }

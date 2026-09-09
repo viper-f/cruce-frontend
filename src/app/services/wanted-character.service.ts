@@ -68,4 +68,8 @@ export class WantedCharacterService {
   createClaimRecord(claimId: number): Observable<void> {
     return this.apiService.post<void>('claim-record/create', { claim_type: 'wanted_character', claim_id: claimId });
   }
+
+  revokeClaimRecord(claimRecordId: number): Observable<void> {
+    return this.apiService.post<void>('claim-record/revoke', { claim_record_id: claimRecordId });
+  }
 }

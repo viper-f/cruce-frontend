@@ -13,6 +13,10 @@ export class CharacterClaimService {
     return this.apiService.post<CharacterClaim>('character-claim/create', { claim, faction_ids: factionIds });
   }
 
+  createRoleClaim(characterName: string, factionId: number): Observable<void> {
+    return this.apiService.post<void>('role-claim/create', { character_name: characterName, faction_id: factionId });
+  }
+
   load(): void {
     this.apiService.get<ClaimFactionResponse[]>('character-claims').subscribe({
       next: (data) => this.factions.set(data),

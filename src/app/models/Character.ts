@@ -3,6 +3,7 @@ import {Field} from './Field';
 import {FieldTemplate} from './FieldTemplate';
 import {Faction} from './Faction';
 import {ClaimRecord} from './CharacterClaim';
+import {UserInfo} from './User';
 
 export interface Character {
   id: number;
@@ -16,6 +17,7 @@ export interface Character {
   factions: Faction[] | null;
   episodes: CharacterEpisode[];
   claim_record: ClaimRecord | null;
+  user_info?: UserInfo | null;
 }
 
 export interface CharacterListItem {
@@ -23,6 +25,11 @@ export interface CharacterListItem {
   name: string;
   is_claim: boolean;
   wanted_character_id: number | null;
+  claim_record_id: number | null;
+  claim_author_id: number | null;
+  claim_author_username: string | null;
+  claim_guest_hash: string | null;
+  claim_expiration_date: string | null;
 }
 
 export interface CharacterEpisode {

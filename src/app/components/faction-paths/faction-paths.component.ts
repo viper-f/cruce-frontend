@@ -22,6 +22,7 @@ export class FactionPathsComponent implements OnInit {
 
   @Input() initialFactions: Faction[] = [];
   @Input() allowCreate: boolean = true;
+  @Input() includePending: boolean = false;
   @Output() factionsChange = new EventEmitter<Faction[][]>();
 
   pathLevels = signal<FactionLevel[][]>([[]]);
@@ -77,7 +78,7 @@ export class FactionPathsComponent implements OnInit {
     factions.forEach((faction, index) => {
       const parentId = index === 0 ? 0 : factions[index - 1].id;
       if (parentId < 0) return;
-      this.factionService.getFactionChildren(parentId).subscribe(children => {
+      this.factionService.getFactionChildren(parentId, this.includePending).subscribe(children => {
         this.pathLevels.update(paths => {
           const updated = [...paths];
           const levels = [...updated[pathIndex]];
@@ -98,7 +99,7 @@ export class FactionPathsComponent implements OnInit {
   addFactionLevel(pathIndex: number, parentId: number) {
     if (parentId < 0) return;
 
-    this.factionService.getFactionChildren(parentId).subscribe(children => {
+    this.factionService.getFactionChildren(parentId, this.includePending).subscribe(children => {
       this.pathLevels.update(paths => {
         const updated = [...paths];
         const levels = updated[pathIndex] ?? [];

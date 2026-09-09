@@ -1,0 +1,22 @@
+<div class="modal-overlay">
+  <div class="modal-content">
+    <h2 i18n="@@claimCreateModal.title">Add claim</h2>
+    <form (submit)="onSubmit()">
+      <div class="form-group">
+        <label for="claim-character-name" i18n="@@claimCreateModal.characterName">Character name</label>
+        <input type="text" id="claim-character-name" [(ngModel)]="characterName" name="character_name" required />
+      </div>
+
+      <app-faction-paths
+        [allowCreate]="false"
+        [includePending]="true"
+        (factionsChange)="onFactionsChanged($event)">
+      </app-faction-paths>
+
+      <div class="buttons">
+        <button type="submit" class="button" [disabled]="!characterName.trim() || leafFactionId === null" i18n="@@claimCreateModal.submit">Create</button>
+        <button type="button" class="button" (click)="onCancel()" i18n="@@claimCreateModal.cancel">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>

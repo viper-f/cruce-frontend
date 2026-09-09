@@ -17,6 +17,14 @@ export class GlobalSettingsService {
     });
   }
 
+  getSetting(name: string): string | null {
+    return this.settingsSignal().find(s => s.setting_name === name)?.setting_value ?? null;
+  }
+
+  isEnabled(name: string): boolean {
+    return this.getSetting(name) === 'y';
+  }
+
   updateSettings(settings: Setting[]): Observable<void> {
     return this.apiService.post<void>('global-settings/update', settings);
   }

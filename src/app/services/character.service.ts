@@ -156,12 +156,20 @@ export class CharacterService {
     return this.apiService.post(`character/accept/${id}`, {});
   }
 
+  declineCharacter(id: number) {
+    return this.apiService.post(`character/decline/${id}`, {});
+  }
+
   activateCharacter(id: number) {
     return this.apiService.post<{ character_status: number, topic_status: number }>(`character/activate/${id}`, null);
   }
 
   deactivateCharacter(id: number) {
     return this.apiService.post<{ character_status: number, topic_status: number }>(`character/deactivate/${id}`, null);
+  }
+
+  pendingCharacter(id: number) {
+    return this.apiService.post(`character/pending/${id}`, {});
   }
 
   private wantedCharacterTemplateSignal = signal<FieldTemplate[]>([]);
