@@ -29,8 +29,9 @@
             <label for="language" i18n="@@settings.language">Language</label><br />
             <span class="input">
               <select id="language" name="language" [(ngModel)]="language">
-                <option value="en-US">English</option>
-                <option value="ru-RU">Russian</option>
+                @for (loc of availableLocales(); track loc.code) {
+                  <option [value]="loc.code">{{ loc.human_name }}</option>
+                }
               </select>
             </span>
           </p>

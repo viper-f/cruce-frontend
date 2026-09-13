@@ -6,6 +6,7 @@ import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
 import { ApiService } from '../services/api.service';
 import { UpdateSettingsRequest } from '../models/User';
+import { Locale } from '../models/Locale';
 import { CroppedImageFieldComponent } from '../components/cropped-image-field/cropped-image-field.component';
 import { BbToolbarComponent } from '../components/bb-toolbar/bb-toolbar.component';
 import { BoardService } from '../services/board.service';
@@ -100,7 +101,10 @@ export class SettingsComponent implements OnInit {
   get avatarWidth(): number { return this.boardService.board().user_avatar_width ?? 100; }
   get avatarHeight(): number { return this.boardService.board().user_avatar_height ?? 100; }
 
-  language: string = 'en-US';
+  language: string = 'en-CA';
+  availableLocales = signal<Array<{ code: string; human_name: string }>>([
+    { code: 'en-CA', human_name: 'English' }
+  ]);
   timezone: string = 'UTC+00:00';
   interfaceDesign: string | null = null;
   editorType: 0 | 1 = 0;
@@ -143,13 +147,22 @@ export class SettingsComponent implements OnInit {
     const currentUser = this.authService.currentUser();
     if (currentUser) {
       this.avatarUrl = currentUser.avatar || '';
-      this.language = currentUser.interface_language || 'en-US';
+      this.language = currentUser.interface_language || 'en-CA';
       this.timezone = currentUser.interface_timezone || 'UTC';
       this.fontSize = currentUser.interface_font_size || 1.0;
       this.interfaceDesign = currentUser.interface_design ?? null;
       this.editorType = currentUser.editor_type ?? 0;
       this.doNotBlur = currentUser.do_not_blur ?? false;
     }
+    this.apiService.get<Locale[]>('locales').subscribe({
+      next: (list) => {
+        const installed = list
+          .filter(l => !!l.is_installed && l.code !== 'en-CA')
+          .map(l => ({ code: l.code, human_name: l.human_name }));
+        this.availableLocales.set([{ code: 'en-CA', human_name: 'English' }, ...installed]);
+      },
+      error: (err) => console.error('Failed to load locales', err)
+    });
     this.apiService.get<DesignVariation[]>('design-variation/list').subscribe({
       next: (list) => this.designVariations.set(list),
       error: (err) => console.error('Failed to load design variations', err)
