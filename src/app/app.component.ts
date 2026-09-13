@@ -17,6 +17,7 @@ import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 import { RouterLinksDirective } from './directives/router-links.directive';
 import { environment } from '../environments/environment';
 import { HeaderComponent } from './components/header/header.component';
+import { CharacterService } from './services/character.service';
 
 interface WidgetField {
   field_name: string;
@@ -92,6 +93,7 @@ export class AppComponent implements OnInit {
   currentDate = new Date();
   private notificationService = inject(NotificationService);
   private pushService = inject(PushService);
+  private characterService = inject(CharacterService);
   private featureService = inject(FeatureService);
   private currencyService = inject(CurrencyService);
   private document = inject<Document>(DOCUMENT);
@@ -117,6 +119,7 @@ export class AppComponent implements OnInit {
       } else {
         this.notificationService.disconnect();
         this.pushService.unsubscribeOnLogout();
+        this.characterService.clearUserCharacterProfiles();
       }
     });
 
