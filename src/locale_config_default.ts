@@ -1,6 +1,7 @@
 export interface LocaleDefinition {
   code: string;
-  langPrefixes: string[];
+  langPrefixes: string[  {
+];
   translations: () => Promise<Record<string, string>>;
   angularLocale: () => Promise<any>;
 }

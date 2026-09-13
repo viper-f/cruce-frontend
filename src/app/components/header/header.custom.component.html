@@ -1,0 +1,18 @@
+ <div id="pun-navlinks" class="section" app-navlinks> </div>
+
+  <div id="pun-ulinks" class="section" app-ulinks></div>
+
+<div id="header-widget-panel" approuterLinks="" [innerHTML]="headerPanelHtml()"></div>
+   <div class="title-site">
+      <h1>{{ title() }}</h1>
+    </div>
+
+
+
+<div id="pun-status" class="section">
+  <div class="container">
+    @if (authService.isAuthenticated()) {
+                <app-notifications></app-notifications>
+    }
+  </div>
+</div>

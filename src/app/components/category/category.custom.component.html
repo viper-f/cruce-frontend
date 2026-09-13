@@ -1,0 +1,62 @@
+<div class="maintitle">
+  <h2><span>{{category.name}}</span></h2>
+</div>
+<div class="main-content">
+  <div class="main-item">
+    <table>
+      <thead>
+      <tr>
+        <th class="tcl" scope="col" i18n="@@home.forum">Forum</th>
+        <th class="tc2" scope="col" i18n="@@home.topics">Description</th>
+        <th class="tcr" scope="col" i18n="@@home.lastPost">Last post</th>
+      </tr>
+      </thead>
+      <tbody>
+      @for (subforum of category.subforums; track subforum.id) {
+        <tr class="rowodd" [class.has-new-messages]="subforum.has_new_messages">
+          <td class="tcl">
+            <div class="intd">
+              <div class="icon"></div>
+              <div class="tclcon">
+               <h3><a routerLink="/viewforum/{{subforum.id}}">{{subforum.name}}</a></h3>
+                <svg class="i-topic" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M1.5 12C1.0875 12 0.7345 11.8533 0.441 11.5597C0.1475 11.2662 0.0005 10.913 0 10.5V1.5C0 1.0875 0.147 0.7345 0.441 0.441C0.735 0.1475 1.088 0.0005 1.5 0H6L7.5 1.5H13.5C13.9125 1.5 14.2657 1.647 14.5597 1.941C14.8538 2.235 15.0005 2.588 15 3V10.5C15 10.9125 14.8533 11.2657 14.5597 11.5597C14.2662 11.8538 13.913 12.0005 13.5 12H1.5Z" fill="#F26B38"/>
+</svg>
+{{subforum.topic_number}} 
+               <svg class="i-post" viewBox="0 0 17 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M8.02725 0C6.2895 0 4.93875 6.70552e-08 3.88725 0.1125C2.82375 0.22725 1.9815 0.465 1.3095 1.002C0.6195 1.554 0.297 2.27175 0.14475 3.177C-3.35276e-08 4.041 0 5.1405 0 6.5115V6.64875C0 7.98525 3.35276e-08 8.91 0.15 9.59925C0.231 9.9705 0.3585 10.293 0.55875 10.5915C0.75675 10.8855 1.00875 11.133 1.3095 11.373C1.78275 11.7517 2.34075 11.9805 3 12.123V14.0625C3.00009 14.161 3.02607 14.2578 3.07533 14.3432C3.1246 14.4286 3.19543 14.4995 3.28072 14.5488C3.36601 14.5982 3.46278 14.6243 3.56133 14.6245C3.65988 14.6247 3.75675 14.599 3.84225 14.55C4.28175 14.2987 4.671 14.025 5.02725 13.767L5.25525 13.6012C5.50894 13.4113 5.76805 13.2288 6.03225 13.0538C6.66525 12.6428 7.26975 12.375 8.0625 12.375H8.09775C9.8355 12.375 11.1862 12.375 12.2377 12.2625C13.3012 12.1477 14.1435 11.91 14.8155 11.373C15.1155 11.133 15.3682 10.8855 15.5655 10.5915C15.7665 10.293 15.894 9.9705 15.975 9.59925C16.125 8.91 16.125 7.98525 16.125 6.64875V6.5115C16.125 5.1405 16.125 4.041 15.9802 3.17775C15.828 2.27175 15.5055 1.554 14.8155 1.002C14.1435 0.46425 13.3012 0.22725 12.2377 0.11325C11.1862 2.23517e-08 9.8355 0 8.09775 0H8.02725Z" fill="#F26B38"/>
+</svg>
+ 
+                {{subforum.post_number}}
+              </div>
+            </div>
+          </td>
+          <td class="tc2">
+
+            <div class="forumdesc" approuterLinks="" [innerHTML]="(subforum.description_html ?? subforum.description) | safeHtml"></div>
+          </td>
+           <td class="tcr">
+               <div class="intd">
+            @if (subforum.last_post_topic_id == null) {
+              <span i18n="@@home.noPosts">No posts</span>
+            } @else if (subforum.show_last_topic === true) {
+              <a class="lastpost-link" [routerLink]="['/viewtopic', subforum.last_post_topic_id]">{{subforum.last_post_topic_name}}</a>
+            } @else {
+              <a class="lastpost-link" [routerLink]="['/viewtopic', subforum.last_post_topic_id]" [queryParams]="{ post_id: subforum.last_post_id }">{{subforum.last_post_topic_name}}</a>
+            }
+                 @if(subforum.last_post_author_name != null) {
+                   <br>
+              <span class="lastpost">
+                <span class="datetime">{{subforum.date_last_post_localized}}</span>
+                -
+                <span class="byuser">{{subforum.last_post_author_name}}</span>
+              </span>
+                 }
+               </div>
+          </td>
+        </tr>
+      }
+      </tbody>
+    </table>
+  </div>
+</div>

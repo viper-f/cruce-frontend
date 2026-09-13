@@ -1,0 +1,76 @@
+<div id="pun-statistics" class="main-item">
+  <div class="maintitle">
+    <h2><span i18n="@@home.statistics">Board statistics</span></h2>
+  </div>
+  <div class="main-content">
+    <div class="statscon">
+      <p><span><ng-container i18n="@@home.totalTopics">Total topics</ng-container>: <strong>{{board().total_topic_number}}</strong></span></p>
+      <p><span><ng-container i18n="@@home.totalPosts">Total posts</ng-container>: <strong>{{board().total_post_number}}</strong></span></p>
+      <p><span><ng-container i18n="@@home.totalUsers">Total users</ng-container>: <strong>{{board().total_user_number}}</strong></span></p>
+      <p><span><ng-container i18n="@@home.newestUser">Newest user</ng-container>:
+        <strong>
+          @if (board().last_registered_user) {
+            <a [routerLink]="['/profile', board().last_registered_user?.id]">{{ board().last_registered_user?.username }}</a>
+          }
+        </strong>
+      </span></p>
+    </div>
+
+    <div id="pun-active-lists">
+    <div id="pun-active" class="modmenu">
+  <p class="container" style="text-align: left">
+    @if (authService.isAuthenticated()) {
+      <a style="font-weight: bold" [routerLink]="['/active-users']" i18n="@@currentlyActive.title">Currently active</a>
+    } @else {
+      <span style="font-weight: bold" i18n="@@currentlyActive.title">Currently active</span>
+    }
+    <ng-container i18n="@@currentlyActive.guests"> {{ activeGuests() }} гостей,</ng-container>
+    <ng-container i18n="@@currentlyActive.users"> {{ activeUsers().length }} игроков:</ng-container>
+    @for (user of activeUsers(); track user.id; let last = $last) {
+      <a class="group4" [routerLink]="['/profile', user.id]">{{ user.username }}</a>@if (!last) {, }
+    }
+  </p>
+</div>
+
+<div id="pun-recently-active" class="modmenu">
+  <div class="container" style="text-align: left">
+    <span class="mode-toggle" style="flex-shrink: 0; margin-left: 12px">
+      <button type="button" [class.active]="recentMode() === 'users'" (click)="setRecentMode('users')">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M12 14c-5 0-8 2-8 4v1h16v-1c0-2-3-4-8-4z"/></svg>
+        <span i18n="@@recentlyActive.users">Users</span>
+      </button>
+      <button type="button" [class.active]="recentMode() === 'characters'" (click)="setRecentMode('characters')">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+        <span i18n="@@recentlyActive.characters">Characters</span>
+      </button>
+    </span>
+    <p style="margin: 0">
+      @if (recentMode() === 'users') {
+        <span style="font-weight: bold" i18n="@@recentlyActive.activeUsers">Active in 24 hours users</span>
+      } @else {
+        <span style="font-weight: bold" i18n="@@recentlyActive.activeCharacters">Active in 24 hours characters</span>
+      }
+      ({{ recentMode() === 'users' ? recentUsers().length : recentCharacters().length }}):
+      @if (recentMode() === 'users') {
+        @for (user of recentUsers(); track user.id; let last = $last) {
+          <a class="group4" [routerLink]="['/profile', user.id]">{{ user.username }}</a>@if (!last) {, }
+        }
+      } @else {
+        @for (character of recentCharacters(); track character.id; let last = $last) {
+          <a class="group4" [routerLink]="['/character', character.id]">{{ character.name }}</a>@if (!last) {, }
+        }
+      }
+    </p>
+  </div>
+</div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="statscon game-stats">
+  <p><span><ng-container i18n="@@home.totalEpisodes">Total episodes</ng-container>: <strong>{{board().total_episode_number}}</strong></span></p>
+  <p><span><ng-container i18n="@@home.totalGamePosts">Total game posts</ng-container>: <strong>{{board().total_episode_post_number}}</strong></span></p>
+  <p><span><ng-container i18n="@@home.totalCharacters">Total characters</ng-container>: <strong>{{board().total_character_number}}</strong></span></p>
+</div>

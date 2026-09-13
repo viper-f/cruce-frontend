@@ -1,0 +1,126 @@
+@if (episode != null) {
+<div class="episode-header-wrapper">
+  <div class="episode-block-media">
+    @if (getField('image'); as field) {
+      <app-field-display 
+        [type]="field.type" 
+        [fieldMachineName]="field.fieldMachineName" 
+        [fieldName]="field.fieldName" 
+        [fieldValue]="field.fieldValue">
+      </app-field-display>
+    }
+  </div>
+
+  
+  <div class="episode-block-details">
+    
+    
+    <div class="episode-row row-title">
+      <h2>{{ episode.name }}</h2>
+    </div>
+
+    
+    <div class="episode-row row-statuses">
+      @if (episode.episode_status === 0) {
+        <span class="status-badge status-active" i18n="@@common.statusActive">Active</span>
+      } @else if (episode.episode_status === 1) {
+        <span class="status-badge status-inactive" i18n="@@common.statusClosed">Inactive</span>
+      }
+      @if (ratingBadge) {
+        <span class="status-badge episode-rating-badge">{{ ratingBadge }}</span>
+      }
+         @if (showActionsButton) {
+      <button type="button" id="episode-actions-btn" class="button episode-actions-btn" (click)="openActionsModal()" i18n="@@episode.actionsButton">Episode actions</button>
+    }
+    </div>
+
+    
+    <div class="episode-row row-description">
+      @if (getField('description'); as field) {
+        <app-field-display 
+          [type]="field.type" 
+          [fieldMachineName]="field.fieldMachineName" 
+          [fieldName]="field.fieldName" 
+          [fieldValue]="field.fieldValue">
+        </app-field-display>
+      }
+    </div>
+
+    
+    <div class="episode-row row-meta">
+      @if (episode.open_to_everyone) {
+        <div class="episode-open-badge" i18n="@@episode.openToEveryone">Open to everyone</div>
+      }
+
+      <div class="episode-characters">
+        <h3>Participants</h3>
+        <div class="character-list">
+          @for (char of episode.characters; track char.id) {
+            <div class="character-item">
+              <a routerLink="/character/{{ char.id }}" class="character-link">{{ char.name }}</a>
+            </div>
+          }
+        </div>
+      </div>
+
+      @if (episode.masks && episode.masks.length > 0) {
+        <div class="episode-masks">
+          <h3>Masks</h3>
+          <div class="mask-list">
+            @for (mask of episode.masks; track mask.id) {
+              <div class="mask-item">{{ mask.mask_name }} ({{ mask.user_name }})</div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    
+    <div class="episode-row row-fields">
+      @if (getField('ep_date'); as field) {
+        <app-field-display 
+          [type]="field.type" 
+          [fieldMachineName]="field.fieldMachineName" 
+          [fieldName]="field.fieldName" 
+          [fieldValue]="field.fieldValue">
+        </app-field-display>
+      }
+    </div>
+
+     <div class="episode-row row-fields">
+      @if (getField('ep_place'); as field) {
+        <app-field-display 
+          [type]="field.type" 
+          [fieldMachineName]="field.fieldMachineName" 
+          [fieldName]="field.fieldName" 
+          [fieldValue]="field.fieldValue">
+        </app-field-display>
+      }
+    </div>
+
+  </div>
+</div>
+
+@if (showActionsModal()) {
+  <app-episode-actions-modal
+    [episode]="episode"
+    [canChangeStatus]="canChangeStatus"
+    [hasCharacters]="userCharacterProfiles().length > 0"
+    [stateChangePending]="stateChangePending()"
+    [stateChangeError]="stateChangeError()"
+    [pendingStatus]="pendingStatus()"
+    [customAvatars]="customAvatars()"
+    [avatarsLoading]="avatarsLoading()"
+    [canUploadImages]="canUploadImages()"
+    [avatarWidth]="avatarWidth()"
+    [avatarHeight]="avatarHeight()"
+    [getUploadFn]="getUploadFnBound"
+    (close)="closeActionsModal()"
+    (pendingStatusChange)="pendingStatus.set($event)"
+    (saveStatus)="changeEpisodeStatus()"
+    (removeAvatar)="removeCustomAvatar($event)"
+    (urlInputChange)="setUrlInput($event.characterId, $event.value)"
+    (applyFromUrl)="applyCustomAvatarFromUrl($event)">
+  </app-episode-actions-modal>
+}
+}
