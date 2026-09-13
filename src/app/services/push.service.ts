@@ -1,6 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { ApiService } from './api.service';
+import { AuthService } from './auth.service';
 
 function urlBase64ToUint8Array(base64String: string): Uint8Array {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
@@ -16,6 +17,7 @@ function keyToBase64(key: ArrayBuffer): string {
 @Injectable({ providedIn: 'root' })
 export class PushService {
   private apiService = inject(ApiService);
+  private authService = inject(AuthService);
 
   readonly supported =
     typeof window !== 'undefined' &&
@@ -128,19 +130,23 @@ export class PushService {
   }
 
   private async doUnsubscribe(): Promise<void> {
-    if (!this.supported) return;
+    if (!this.supported || this.busy()) return;
+    this.busy.set(true);
     try {
       const reg = await navigator.serviceWorker.ready;
       const sub = await reg.pushManager.getSubscription();
       if (sub) {
-        await firstValueFrom(
-          this.apiService.post<void>('push/unsubscribe', { endpoint: sub.endpoint })
-        );
+        if (this.authService.authToken()) {
+          await firstValueFrom(
+            this.apiService.post<void>('push/unsubscribe', { endpoint: sub.endpoint })
+          );
+        }
         await sub.unsubscribe();
       }
     } catch (err) {
       console.error('PushService: unsubscribe failed', err);
     } finally {
+      this.busy.set(false);
       this.lastPostedEndpoint = null;
       localStorage.removeItem('push_endpoint');
       this.pushEnabled.set(false);
