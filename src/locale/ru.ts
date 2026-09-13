@@ -383,6 +383,7 @@ export const TRANSLATIONS_RU = {
   "admin.locales.name": "Язык",
   "admin.locales.frontend": "Файл фронтенда",
   "admin.locales.backend": "Файл бэкенда",
+  "admin.locales.defaultLocale": "По умолчанию",
   "admin.locales.status": "Статус",
   "admin.locales.actions": "Действия",
   "admin.locales.installed": "Установлена",
