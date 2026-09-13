@@ -37,7 +37,7 @@ export class AdminLocalesComponent implements OnInit {
 
   ngOnInit() {
     this.apiService.get<Locale[]>('locales').subscribe({
-      next: (list) => this.locales.set(list),
+      next: (list) => this.locales.set(list.map(l => ({ ...l, is_installed: !!l.is_installed }))),
       error: (err) => console.error('Failed to load locales', err),
     });
   }
