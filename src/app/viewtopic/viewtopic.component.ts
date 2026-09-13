@@ -377,6 +377,7 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
     if (this.pageLoadedSubscription) {
       this.pageLoadedSubscription.unsubscribe();
     }
+    this.topicService.clear();
   }
 
   onSidebarModeChange(active: boolean) {

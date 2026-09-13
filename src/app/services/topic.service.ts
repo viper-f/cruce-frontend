@@ -138,6 +138,11 @@ export class TopicService {
     });
   }
 
+  clear(): void {
+    this.postsSignal.set([]);
+    this.topicSignal.update(t => ({ ...t, id: 0 }));
+  }
+
   loadPost(id: number) {
     return this.apiService.get<Post>(`post/${id}`);
   }
