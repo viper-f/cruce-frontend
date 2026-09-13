@@ -16,7 +16,6 @@ export const LOCALES: LocaleDefinition[] = [
     code: 'ch-CH',
     langPrefixes: ['ch'],
     translations: () => import('./locale/ch').then(m => m.TRANSLATIONS_CH),
-    angularLocale: () => import('@angular/common/locales/ch'),
   },
 ];
 
