@@ -24,6 +24,7 @@ export class CharacterService {
 
   clearUserCharacterProfiles() {
     this.userCharacterProfilesSignal.set([]);
+    this.topicProfilesCache.clear();
   }
   private characterProfileTemplateSignal = signal<FieldTemplate[]>([]);
   readonly characterProfileTemplate = this.characterProfileTemplateSignal.asReadonly();
