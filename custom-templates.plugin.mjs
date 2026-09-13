@@ -14,6 +14,14 @@ import { execSync } from 'child_process';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+// Bootstrap locale_config.ts from the default if not present
+const localeConfig        = resolve(__dirname, 'src/locale_config.ts');
+const localeConfigDefault = resolve(__dirname, 'src/locale_config_default.ts');
+if (!existsSync(localeConfig) && existsSync(localeConfigDefault)) {
+  copyFileSync(localeConfigDefault, localeConfig);
+  console.log('[build] locale_config.ts not found — copied from locale_config_default.ts');
+}
+
 const jsonPath = resolve(__dirname, 'src/environments/custom_templates.json');
 const templates = existsSync(jsonPath)
   ? JSON.parse(readFileSync(jsonPath, 'utf-8'))

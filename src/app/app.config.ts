@@ -3,11 +3,8 @@ import { provideRouter, withComponentInputBinding, withInMemoryScrolling } from 
 import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { registerLocaleData } from '@angular/common';
-import localeRu from '@angular/common/locales/ru';
 import { authInterceptor } from './auth.interceptor';
-
-registerLocaleData(localeRu);
+import { LOCALES, DEFAULT_LOCALE } from '../locale_config';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -18,8 +15,8 @@ export const appConfig: ApplicationConfig = {
     {
       provide: LOCALE_ID,
       useFactory: () => {
-        const storedLocale = localStorage.getItem('locale');
-        return storedLocale === 'ru-RU' ? 'ru-RU' : 'en-CA';
+        const stored = localStorage.getItem('locale');
+        return LOCALES.find(d => d.code === stored)?.code ?? DEFAULT_LOCALE;
       }
     }
   ]

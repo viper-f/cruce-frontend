@@ -11,11 +11,13 @@ import {FeatureService} from './services/feature.service';
 import {CurrencyService} from './services/currency.service';
 import {UserService} from './services/user.service';
 import {NotificationService} from './services/notification.service';
+import {PushService} from './services/push.service';
 import {ApiService} from './services/api.service';
 import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 import { RouterLinksDirective } from './directives/router-links.directive';
 import { environment } from '../environments/environment';
 import { HeaderComponent } from './components/header/header.component';
+import { CharacterService } from './services/character.service';
 
 interface WidgetField {
   field_name: string;
@@ -90,6 +92,8 @@ export class AppComponent implements OnInit {
   currentUser = this.authService.currentUser;
   currentDate = new Date();
   private notificationService = inject(NotificationService);
+  private pushService = inject(PushService);
+  private characterService = inject(CharacterService);
   private featureService = inject(FeatureService);
   private currencyService = inject(CurrencyService);
   private document = inject<Document>(DOCUMENT);
@@ -105,15 +109,26 @@ export class AppComponent implements OnInit {
     this.listenForAuthChanges();
     this.setupRouteListener();
 
-    // Effect to connect/disconnect notification service based on auth state
+    // Effect to connect/disconnect notification service and manage push subscriptions based on auth state
     effect(() => {
       const user = this.currentUser();
       const token = this.authService.authToken();
       if (user && user.id !== 0 && token) {
         this.notificationService.connect(token);
+        this.pushService.subscribeOnLogin();
       } else {
         this.notificationService.disconnect();
+        this.pushService.unsubscribeOnLogout();
+        this.characterService.clearUserCharacterProfiles();
       }
+    });
+
+    // Effect to set document title and PWA manifest name from the board's site_name
+    effect(() => {
+      const name = this.boardService.board().site_name;
+      if (!name) return;
+      document.title = name;
+      this.updateManifest(name);
     });
 
     // Effect to apply font size
@@ -129,6 +144,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.pushService.init();
     this.boardService.loadBoard();
     this.featureService.loadFeatures().subscribe(() => {
       if (this.featureService.isFeatureActive('currency')) {
@@ -393,6 +409,30 @@ export class AppComponent implements OnInit {
       case 'user': return ['/profile', entityId];
       default: return null;
     }
+  }
+
+  private manifestBlobUrl: string | null = null;
+
+  private updateManifest(siteName: string): void {
+    const origin = window.location.origin;
+    const manifest = {
+      name: siteName,
+      short_name: siteName,
+      start_url: origin + '/',
+      display: 'standalone',
+      icons: [{ src: origin + '/favicon.ico', sizes: 'any', type: 'image/x-icon' }],
+    };
+    if (this.manifestBlobUrl) URL.revokeObjectURL(this.manifestBlobUrl);
+    this.manifestBlobUrl = URL.createObjectURL(
+      new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' })
+    );
+    let link = this.document.querySelector<HTMLLinkElement>('link[rel="manifest"]');
+    if (!link) {
+      link = this.document.createElement('link');
+      link.rel = 'manifest';
+      this.document.head.appendChild(link);
+    }
+    link.href = this.manifestBlobUrl;
   }
 
   protected readonly Date = Date;

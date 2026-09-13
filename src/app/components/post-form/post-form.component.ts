@@ -6,6 +6,7 @@ import { AuthService } from '../../services/auth.service';
 import { ImageService } from '../../services/image.service';
 import { BoardService } from '../../services/board.service';
 import { ApiService } from '../../services/api.service';
+import { CharacterService } from '../../services/character.service';
 import { UserShort } from '../../models/UserShort';
 
 import { BbToolbarComponent } from '../bb-toolbar/bb-toolbar.component';
@@ -53,6 +54,7 @@ export class PostFormComponent implements AfterViewInit, OnInit, OnDestroy {
   private imageService = inject(ImageService);
   private boardService = inject(BoardService);
   private apiService = inject(ApiService);
+  private characterService = inject(CharacterService);
 
   editorMode = signal<EditorMode>(
     this.authService.currentUser()?.editor_type === 1 ? 'bbcode' : 'wysiwyg'
@@ -141,14 +143,14 @@ export class PostFormComponent implements AfterViewInit, OnInit, OnDestroy {
 
     if (!existingId) {
       this.apiService.post<PostDraft>('post-draft/create', {
-        character_id: this.characterId,
+        character_id: this.draftCharacterId(),
         topic_id: this.topicId,
         is_manual: false,
         content,
       }).subscribe({ next: onSuccess, error: onError });
     } else {
       this.apiService.post<PostDraft>(`post-draft/update/${existingId}`, {
-        character_id: this.characterId,
+        character_id: this.draftCharacterId(),
         topic_id: this.topicId,
         is_manual: false,
         content,
@@ -201,7 +203,7 @@ export class PostFormComponent implements AfterViewInit, OnInit, OnDestroy {
     const autoDraft = this.drafts().find(d => !d.is_manual);
     this.apiService.post<PostDraft>('post-draft/create', {
       draft_id: autoDraft?.draft_id,
-      character_id: this.characterId,
+      character_id: this.draftCharacterId(),
       topic_id: this.topicId,
       is_manual: true,
       content: this.getValue(),
@@ -217,7 +219,7 @@ export class PostFormComponent implements AfterViewInit, OnInit, OnDestroy {
         this.setValue(data.content);
         this.loadedDraftId.set(draft.id);
         this.currentDraftGroupId.set(data.draft_id);
-        this.characterIdChange.emit(data.character_id);
+        this.characterIdChange.emit(this.profileIdFromCharacterId(data.character_id));
         this.showDraftList.set(false);
       },
       error: err => console.error('Failed to load draft', err),
@@ -250,7 +252,7 @@ export class PostFormComponent implements AfterViewInit, OnInit, OnDestroy {
 
   updateManualDraft(draft: PostDraft) {
     this.apiService.post<PostDraft>(`post-draft/update/${draft.id}`, {
-      character_id: this.characterId,
+      character_id: this.draftCharacterId(),
       topic_id: this.topicId,
       is_manual: true,
       content: this.getValue(),
@@ -258,6 +260,24 @@ export class PostFormComponent implements AfterViewInit, OnInit, OnDestroy {
       next: () => this.loadDrafts(),
       error: err => console.error('Failed to update manual draft', err),
     });
+  }
+
+  // Returns the character entity ID (CharacterProfile.character_id) for the
+  // currently selected profile, for use in draft payloads.
+  private draftCharacterId(): number | null {
+    if (this.characterId === null) return null;
+    const profile = this.characterService.userCharacterProfiles()
+      .find(p => p.id === this.characterId);
+    return profile?.character_id ?? null;
+  }
+
+  // Given a character entity ID returned from a loaded draft, find the
+  // CharacterProfile.id so the UI selector can restore the selection.
+  private profileIdFromCharacterId(characterEntityId: number | null): number | null {
+    if (characterEntityId === null) return null;
+    const profile = this.characterService.userCharacterProfiles()
+      .find(p => p.character_id === characterEntityId);
+    return profile?.id ?? null;
   }
 
   // --- Public API used by viewtopic ---

@@ -1,5 +1,8 @@
 # See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
+# Per-installation locale override (bootstrapped from locale_config_default.ts on first build)
+/src/locale_config.ts
+
 # Compiled output
 /dist
 /tmp

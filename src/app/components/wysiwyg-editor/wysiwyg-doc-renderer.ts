@@ -8,6 +8,25 @@ import {
   DocModel, BlockNode, ParagraphNode, InlineNode, Mark,
 } from './wysiwyg-doc-model';
 
+function youtubeEmbedUrl(url: string): string | null {
+  try {
+    const u = new URL(url);
+    let id: string | null = null;
+    if (u.hostname === 'youtu.be') {
+      id = u.pathname.slice(1).split('?')[0];
+    } else if (u.hostname.includes('youtube.com')) {
+      if (u.pathname === '/watch') {
+        id = u.searchParams.get('v');
+      } else if (u.pathname.startsWith('/embed/')) {
+        id = u.pathname.slice('/embed/'.length).split('?')[0];
+      }
+    }
+    return id ? `https://www.youtube.com/embed/${id}` : null;
+  } catch {
+    return null;
+  }
+}
+
 // ─── Public API ──────────────────────────────────────────────────────────────
 
 export function renderDoc(doc: DocModel): string {
@@ -58,6 +77,12 @@ export function renderBlock(block: BlockNode, blockIdx: number): string {
         `</div>`
       );
     }
+
+    case 'video': {
+      const embedUrl = youtubeEmbedUrl(block.url);
+      if (!embedUrl) return `<div class="wysiwyg-video" contenteditable="false"></div>`;
+      return `<div class="wysiwyg-video" contenteditable="false"><iframe src="${esc(embedUrl)}" width="560" height="315" frameborder="0" allowfullscreen loading="lazy"></iframe></div>`;
+    }
   }
 }
 
@@ -106,6 +131,11 @@ function renderBlockStatic(block: BlockNode): string {
         const content = p.children.length > 0 ? p.children.map(renderInline).join('') : '<br>';
         return `<div style="text-align:${block.align}">${content}</div>`;
       }).join('');
+    }
+    case 'video': {
+      const embedUrl = youtubeEmbedUrl(block.url);
+      if (!embedUrl) return `<div class="wysiwyg-video" contenteditable="false"></div>`;
+      return `<div class="wysiwyg-video" contenteditable="false"><iframe src="${esc(embedUrl)}" width="560" height="315" frameborder="0" allowfullscreen loading="lazy"></iframe></div>`;
     }
   }
 }

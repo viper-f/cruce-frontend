@@ -85,7 +85,7 @@ export class BbToolbarComponent {
   insertVideo(url: string) {
     if (!url) { this.activeArea = null; return; }
     if (this.editor) {
-      this.editor.insertTextAtCursor(`[video]${url}[/video]`);
+      this.editor.insertBbCodeBlocks(`[video]${url}[/video]`);
       this.activeArea = null;
       return;
     }

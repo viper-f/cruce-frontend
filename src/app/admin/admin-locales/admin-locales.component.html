@@ -4,37 +4,138 @@
   <thead>
     <tr>
       <th i18n="@@admin.locales.name">Language</th>
+      <th i18n="@@admin.locales.status">Status</th>
       <th i18n="@@admin.locales.frontend">Frontend file</th>
       <th i18n="@@admin.locales.backend">Backend file</th>
+      <th i18n="@@admin.locales.actions">Actions</th>
     </tr>
   </thead>
   <tbody>
     @for (locale of locales(); track locale.id) {
       <tr>
-        <td>{{ locale.human_name }}</td>
+        <td>{{ locale.human_name }} <span class="muted">({{ locale.code }})</span></td>
         <td>
-          <button type="button" (click)="downloadFrontend(locale)" [disabled]="getState('frontend_' + locale.id) === 'loading'">
+          @if (locale.is_installed) {
+            <span i18n="@@admin.locales.installed">Installed</span>
+          } @else {
+            <span class="muted" i18n="@@admin.locales.notInstalled">Not installed</span>
+          }
+        </td>
+        <td>
+          <button type="button" (click)="downloadFrontend(locale)" [disabled]="getDownloadState('frontend_' + locale.id) === 'loading'">
             {{ locale.front_end_file_name }}
-            @if (getState('frontend_' + locale.id) === 'loading') {
+            @if (getDownloadState('frontend_' + locale.id) === 'loading') {
               <span i18n="@@admin.locales.downloading">…</span>
             }
           </button>
-          @if (getState('frontend_' + locale.id) === 'error') {
+          @if (getDownloadState('frontend_' + locale.id) === 'error') {
             <span class="error-text" i18n="@@admin.locales.downloadError">Download failed</span>
           }
         </td>
         <td>
-          <button type="button" (click)="downloadBackend(locale)" [disabled]="getState('backend_' + locale.id) === 'loading'">
+          <button type="button" (click)="downloadBackend(locale)" [disabled]="getDownloadState('backend_' + locale.id) === 'loading'">
             {{ locale.back_end_file_name }}
-            @if (getState('backend_' + locale.id) === 'loading') {
+            @if (getDownloadState('backend_' + locale.id) === 'loading') {
               <span i18n="@@admin.locales.downloading">…</span>
             }
           </button>
-          @if (getState('backend_' + locale.id) === 'error') {
+          @if (getDownloadState('backend_' + locale.id) === 'error') {
             <span class="error-text" i18n="@@admin.locales.downloadError">Download failed</span>
           }
+        </td>
+        <td>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+            @if (!locale.is_installed) {
+              <button type="button" (click)="confirmInstall(locale)" i18n="@@admin.locales.install">Install</button>
+            }
+            @if (locale.is_installed && !isProtected(locale)) {
+              <button type="button" (click)="confirmUninstall(locale)" i18n="@@admin.locales.uninstall">Uninstall</button>
+            }
+            @if (!locale.is_installed && !isProtected(locale)) {
+              <button type="button" (click)="confirmDelete(locale)" i18n="@@admin.locales.delete">Delete</button>
+            }
+            @if (isProtected(locale)) {
+              <span class="muted" i18n="@@admin.locales.defaultLocale">Default</span>
+            }
+          </div>
         </td>
       </tr>
     }
   </tbody>
 </table>
+
+<h3 i18n="@@admin.locales.uploadTitle">Upload new locale</h3>
+
+<form (ngSubmit)="upload()" class="form-section">
+  <div class="form-row">
+    <label i18n="@@admin.locales.uploadName">Language name</label>
+    <input type="text" [ngModel]="uploadName()" (ngModelChange)="uploadName.set($event)" name="human_name" required />
+  </div>
+  <div class="form-row">
+    <label i18n="@@admin.locales.uploadCode">Locale code</label>
+    <input type="text" [ngModel]="uploadCode()" (ngModelChange)="uploadCode.set($event)" name="code" placeholder="es-ES" required />
+  </div>
+  <div class="form-row">
+    <label i18n="@@admin.locales.uploadFrontend">Frontend file (.ts)</label>
+    <input type="file" accept=".ts" (change)="onFrontendFileChange($event)" name="frontend_file" required />
+  </div>
+  <div class="form-row">
+    <label i18n="@@admin.locales.uploadBackend">Backend file (.json)</label>
+    <input type="file" accept=".json" (change)="onBackendFileChange($event)" name="backend_file" required />
+  </div>
+  <button type="submit"
+          [disabled]="uploadState() === 'loading' || !uploadName() || !uploadCode() || !uploadFrontendFile() || !uploadBackendFile()"
+          i18n="@@admin.locales.uploadSubmit">Upload</button>
+  @if (uploadState() === 'error') {
+    <span class="error-text" i18n="@@admin.locales.uploadError">Upload failed</span>
+  }
+  @if (uploadState() === 'success') {
+    <span class="success-text" i18n="@@admin.locales.uploadSuccess">Uploaded successfully</span>
+  }
+</form>
+
+@if (pendingLocale(); as pending) {
+  <div class="modal-overlay" (click)="cancelAction()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      @if (pending.action === 'install') {
+        <h2 i18n="@@admin.locales.installTitle">Install {{ pending.locale.human_name }}?</h2>
+        <p i18n="@@admin.locales.installWarning">This will commit the locale file to the repository and update the locale config. The frontend will be rebuilt, which may take several minutes.</p>
+      } @else if (pending.action === 'uninstall') {
+        <h2 i18n="@@admin.locales.uninstallTitle">Uninstall {{ pending.locale.human_name }}?</h2>
+        <p i18n="@@admin.locales.uninstallWarning">This will remove the locale file from the repository and update the locale config. The frontend will be rebuilt, which may take several minutes.</p>
+      } @else {
+        <h2 i18n="@@admin.locales.deleteTitle">Delete {{ pending.locale.human_name }}?</h2>
+        <p i18n="@@admin.locales.deleteWarning">This will permanently delete the locale files from the server. This cannot be undone.</p>
+      }
+      <div class="modal-actions">
+        <button
+          class="button button--confirm"
+          [class.button--confirm-danger]="pending.action === 'uninstall' || pending.action === 'delete'"
+          (click)="confirmAction()"
+          [disabled]="actionState() === 'loading' || actionState() === 'success'"
+        >
+          @switch (actionState()) {
+            @case ('loading') { <span i18n="@@common.loading">Loading…</span> }
+            @case ('success') { <span i18n="@@admin.locales.actionSuccess">Done!</span> }
+            @case ('error') { <span i18n="@@admin.locales.actionError">Failed</span> }
+            @default {
+              @if (pending.action === 'install') {
+                <span i18n="@@admin.locales.install">Install</span>
+              } @else if (pending.action === 'uninstall') {
+                <span i18n="@@admin.locales.uninstall">Uninstall</span>
+              } @else {
+                <span i18n="@@admin.locales.delete">Delete</span>
+              }
+            }
+          }
+        </button>
+        <button
+          class="button"
+          (click)="cancelAction()"
+          [disabled]="actionState() === 'loading'"
+          i18n="@@common.cancel"
+        >Cancel</button>
+      </div>
+    </div>
+  </div>
+}

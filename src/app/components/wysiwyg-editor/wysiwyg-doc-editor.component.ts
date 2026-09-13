@@ -266,10 +266,29 @@ export class WysiwygDocEditorComponent implements AfterViewInit, OnDestroy {
 
   onKeyDown(event: KeyboardEvent): void {
     if (!event.ctrlKey && !event.metaKey) return;
+    // event.code ('KeyB', 'KeyI', …) is layout-independent — always the physical key.
+    // event.key on Windows + non-Latin layout gives the Cyrillic character instead of 'b'/'i'/…
+    const keyChar = event.code?.startsWith('Key')
+      ? event.code.slice(3).toLowerCase()
+      : event.key.toLowerCase();
+
+    // Handle undo/redo here so we can preventDefault before the browser applies
+    // its own native undo to the contenteditable DOM (which would corrupt our model).
+    if (keyChar === 'z') {
+      event.preventDefault();
+      event.shiftKey ? this.redo() : this.undo();
+      return;
+    }
+    if (keyChar === 'y') {
+      event.preventDefault();
+      this.redo();
+      return;
+    }
+
     const cmd: Record<string, string> = {
       b: 'bold', i: 'italic', u: 'underline', s: 'strikeThrough',
     };
-    const command = cmd[event.key.toLowerCase()];
+    const command = cmd[keyChar];
     if (!command) return;
     event.preventDefault();
     this.exec(command);

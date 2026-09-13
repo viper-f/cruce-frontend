@@ -97,6 +97,7 @@ private systemNotificationsSignal = signal<NotificationData[]>([]);
 
   private messageQueue: string[] = [];
   private explicitlyClosed = false;
+  private heartbeatTimer: number | null = null;
   private draftId: string | null = null;
   private draftInterval: number | null = null;
   private lastMsgId: number | null = null;
@@ -274,6 +275,7 @@ private systemNotificationsSignal = signal<NotificationData[]>([]);
     if (this.ws) {
       this.explicitlyClosed = true;
       if (this.reconnectTimer) clearTimeout(this.reconnectTimer);
+      if (this.heartbeatTimer) { clearInterval(this.heartbeatTimer); this.heartbeatTimer = null; }
       this.ws.close();
     }
   }
@@ -324,6 +326,7 @@ private systemNotificationsSignal = signal<NotificationData[]>([]);
       this.processMessageQueue();
       this.sendDraftConfirmation();
       this.wsConnectedSubject.next();
+      this.heartbeatTimer = window.setInterval(() => this.sendMessage({ type: 'ping' }), 20000);
     };
 
     this.ws.onmessage = (event) => {
@@ -340,6 +343,7 @@ private systemNotificationsSignal = signal<NotificationData[]>([]);
 
     this.ws.onclose = () => {
       if (this.connectionTimeout) clearTimeout(this.connectionTimeout);
+      if (this.heartbeatTimer) { clearInterval(this.heartbeatTimer); this.heartbeatTimer = null; }
       this.ws = null;
       if (!this.explicitlyClosed) {
         this.handleConnectionFailure();
@@ -472,6 +476,8 @@ private systemNotificationsSignal = signal<NotificationData[]>([]);
         break;
       case 'page_changed':
         this.pageChangedSubject.next(notification as PageChangedEvent);
+        break;
+      case 'pong':
         break;
       case 'user_refresh_required':
         this.authService.refreshToken().subscribe({

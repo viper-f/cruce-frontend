@@ -10,11 +10,13 @@ import { CroppedImageFieldComponent } from '../components/cropped-image-field/cr
 import { BbToolbarComponent } from '../components/bb-toolbar/bb-toolbar.component';
 import { BoardService } from '../services/board.service';
 import { ImageService } from '../services/image.service';
+import { PushService } from '../services/push.service';
 
 interface UserNotificationSetting {
   notification_type: string;
   disable_toast: boolean;
   disable_sound: boolean;
+  disable_push: boolean;
   disable_all: boolean;
 }
 
@@ -91,6 +93,7 @@ export class SettingsComponent implements OnInit {
   private boardService = inject(BoardService);
 
   private imageService = inject(ImageService);
+  readonly pushService = inject(PushService);
 
   readonly userAvatarUploadFn = (file: File) => this.imageService.uploadUserAvatar(file);
 
@@ -155,6 +158,7 @@ export class SettingsComponent implements OnInit {
       next: (list) => this.notificationSettings.set(list),
       error: (err) => console.error('Failed to load notification settings', err)
     });
+    this.pushService.prefetchVapidKey();
   }
 
   isColumnAll(col: keyof UserNotificationSetting): boolean {

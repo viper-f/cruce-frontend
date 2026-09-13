@@ -4,7 +4,7 @@
 // serializeDoc : DocModel → string
 
 import {
-  DocModel, BlockNode, ParagraphNode, AlignBlock, QuoteNode, CodeNode, SpoilerNode,
+  DocModel, BlockNode, ParagraphNode, AlignBlock, QuoteNode, CodeNode, SpoilerNode, VideoNode,
   InlineNode, TextNode, Mark,
 } from './wysiwyg-doc-model';
 
@@ -54,7 +54,7 @@ function findMatchingClose(text: string, tag: string, from: number): number {
 function parseBlocks(text: string): BlockNode[] {
   const result: BlockNode[] = [];
   // Matches the opening tag of every block-level construct.
-  const blockOpen = /\[code\]|\[quote(?:=[^\]]*)?\]|\[spoiler(?:=[^\]]*)?\]|\[center\]|\[right\]|\[left\]/gi;
+  const blockOpen = /\[code\]|\[quote(?:=[^\]]*)?\]|\[spoiler(?:=[^\]]*)?\]|\[center\]|\[right\]|\[left\]|\[video\]/gi;
   let pos = 0;
 
   let m: RegExpExecArray | null;
@@ -107,6 +107,9 @@ function parseBlocks(text: string): BlockNode[] {
       }
       case 'spoiler':
         result.push({ type: 'spoiler', title: attr, children: paraLines(content) });
+        break;
+      case 'video':
+        result.push({ type: 'video', url: content } as VideoNode);
         break;
       case 'center':
       case 'right':
@@ -232,6 +235,8 @@ function serializeBlock(block: BlockNode): string {
         ? `[spoiler=${block.title}]${inner}[/spoiler]\n`
         : `[spoiler]${inner}[/spoiler]\n`;
     }
+    case 'video':
+      return `[video]${block.url}[/video]\n`;
   }
 }
 

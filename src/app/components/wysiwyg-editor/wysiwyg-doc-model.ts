@@ -45,7 +45,12 @@ export type SpoilerNode = {
   children: ParagraphNode[];
 };
 
-export type BlockNode = ParagraphNode | AlignBlock | QuoteNode | CodeNode | SpoilerNode;
+export type VideoNode = {
+  type: 'video';
+  url: string;
+};
+
+export type BlockNode = ParagraphNode | AlignBlock | QuoteNode | CodeNode | SpoilerNode | VideoNode;
 
 export type DocModel = { children: BlockNode[] };
 

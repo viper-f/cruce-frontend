@@ -5,18 +5,23 @@ import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';
 import { AppComponent } from './app/app.component';
 import { loadTranslations } from '@angular/localize';
+import { registerLocaleData } from '@angular/common';
 import { createCustomElement } from '@angular/elements';
 import { PostInsertComponent } from './app/components/post-insert/post-insert.component';
 import { SpoilerBoxComponent } from './app/components/spoiler-box/spoiler-box.component';
-
-const storedLocale = localStorage.getItem('locale');
+import { LOCALES } from './locale_config';
 
 function detectGuestLocale(): string | null {
   const languages: readonly string[] = navigator.languages?.length ? navigator.languages : [navigator.language];
-  return languages.some(l => l.startsWith('ru')) ? 'ru-RU' : null;
+  for (const def of LOCALES) {
+    if (languages.some(l => def.langPrefixes.some(p => l.startsWith(p)))) return def.code;
+  }
+  return null;
 }
 
+const storedLocale = localStorage.getItem('locale');
 const locale = storedLocale ?? detectGuestLocale();
+const locDef = LOCALES.find(d => d.code === locale);
 
 function registerCustomElements(appRef: ApplicationRef): void {
   const PostInsertElement = createCustomElement(PostInsertComponent, { injector: appRef.injector });
@@ -26,15 +31,16 @@ function registerCustomElements(appRef: ApplicationRef): void {
   customElements.define('spoiler-box', SpoilerBoxElement);
 }
 
-if (locale === 'ru-RU') {
-  import('./locale/ru').then(module => {
-    loadTranslations(module.TRANSLATIONS_RU);
-    bootstrapApplication(AppComponent, appConfig)
-      .then(registerCustomElements)
-      .catch((err) => console.error(err));
-  });
-} else {
-  bootstrapApplication(AppComponent, appConfig)
-    .then(registerCustomElements)
-    .catch((err) => console.error(err));
+async function bootstrap(): Promise<void> {
+  if (locDef) {
+    const [translations, { default: angularLocale }] = await Promise.all([
+      locDef.translations(),
+      locDef.angularLocale(),
+    ]);
+    registerLocaleData(angularLocale);
+    loadTranslations(translations);
+  }
+  await bootstrapApplication(AppComponent, appConfig).then(registerCustomElements);
 }
+
+bootstrap().catch(err => console.error(err));

@@ -345,6 +345,11 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
   ngOnInit() {
     document.addEventListener('visibilitychange', this.onVisibilityChange);
 
+    this.topicService.ownPostAdded$.pipe(takeUntil(this.destroy$)).subscribe(postId => {
+      this.isSubmitting.set(false);
+      setTimeout(() => document.getElementById(String(postId))?.scrollIntoView({ behavior: 'smooth' }));
+    });
+
     this.pageLoadedSubscription = this.topicService.pageLoaded$.subscribe(pageState => {
       const topicId = this.id();
       // Only sync if the page state is for the current topic
@@ -372,6 +377,7 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
     if (this.pageLoadedSubscription) {
       this.pageLoadedSubscription.unsubscribe();
     }
+    this.topicService.clear();
   }
 
   onSidebarModeChange(active: boolean) {
@@ -534,13 +540,11 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
 
     this.topicService.createPost(payload).subscribe({
       next: () => {
-        this.isSubmitting.set(false);
         this.postForm.reloadDrafts();
         if (!this.authService.isAuthenticated()) {
           window.location.reload();
-        } else {
-          this.topicService.notifyOwnPostSubmitted(this.id()!);
         }
+        // isSubmitting stays true — placeholder remains until the WS post_created event arrives
       },
       error: (err: any) => {
         this.isSubmitting.set(false);

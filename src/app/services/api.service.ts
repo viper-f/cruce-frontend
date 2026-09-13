@@ -41,6 +41,12 @@ export class ApiService {
     });
   }
 
+  postForm<T>(endpoint: string, formData: FormData): Observable<T> {
+    return this.http.post<T>(`${this.apiUrl}/${endpoint}`, formData, {
+      headers: this.getHeaders()
+    });
+  }
+
   put<T>(endpoint: string, body: any): Observable<T> {
     return this.http.put<T>(`${this.apiUrl}/${endpoint}`, body, {
       headers: this.getHeaders()

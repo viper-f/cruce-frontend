@@ -17,6 +17,7 @@ const DESCRIPTIONS: Record<string, string> = {
   'src/app/components/episode_header': $localize`:@@frontend_component.src_app_components_episode_header.description:Episode header displaying title, participants and episode metadata`,
   'src/app/components/character_sheet_header': $localize`:@@frontend_component.src_app_components_character_sheet_header.description:Character sheet header with avatar, name and key character details`,
   'src/app/components/wanted_character_header': $localize`:@@frontend_component.src_app_components_wanted_character_header.description:Wanted character ad header with role description and requirements`,
+  'src/app/components/wanted_character_card': $localize`:@@frontend_component.src_app_components_wanted_character_card.description:Wanted character card shown in the wanted characters list`,
 };
 
 @Component({
