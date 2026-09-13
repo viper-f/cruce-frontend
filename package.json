@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "prestart": "node -e \"import('fs').then(({existsSync,copyFileSync})=>{if(!existsSync('src/locale_config.ts')&&existsSync('src/locale_config_default.ts')){copyFileSync('src/locale_config_default.ts','src/locale_config.ts');console.log('[start] locale_config.ts copied from default')}})\"",
     "start": "ng serve",
     "build": "node custom-templates.plugin.mjs",
     "watch": "ng build --watch --configuration development",
