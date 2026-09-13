@@ -33,11 +33,11 @@ function registerCustomElements(appRef: ApplicationRef): void {
 
 async function bootstrap(): Promise<void> {
   if (locDef) {
-    const [translations, { default: angularLocale }] = await Promise.all([
+    const [translations, angularLocaleModule] = await Promise.all([
       locDef.translations(),
-      locDef.angularLocale(),
+      locDef.angularLocale?.(),
     ]);
-    registerLocaleData(angularLocale);
+    if (angularLocaleModule) registerLocaleData(angularLocaleModule.default);
     loadTranslations(translations);
   }
   await bootstrapApplication(AppComponent, appConfig).then(registerCustomElements);
