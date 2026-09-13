@@ -135,6 +135,7 @@ export const TRANSLATIONS_EN = {
   "admin.locales.downloading": "…",
   "admin.locales.frontend": "Frontend file",
   "admin.locales.name": "Language",
+  "admin.locales.defaultLocale": "Default",
   "admin.locales.status": "Status",
   "admin.locales.actions": "Actions",
   "admin.locales.installed": "Installed",

@@ -44,15 +44,20 @@
           }
         </td>
         <td>
-          @if (!locale.is_installed) {
-            <button type="button" (click)="confirmInstall(locale)" i18n="@@admin.locales.install">Install</button>
-            @if (!isProtected(locale)) {
+          <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+            @if (!locale.is_installed) {
+              <button type="button" (click)="confirmInstall(locale)" i18n="@@admin.locales.install">Install</button>
+            }
+            @if (locale.is_installed && !isProtected(locale)) {
+              <button type="button" (click)="confirmUninstall(locale)" i18n="@@admin.locales.uninstall">Uninstall</button>
+            }
+            @if (!locale.is_installed && !isProtected(locale)) {
               <button type="button" (click)="confirmDelete(locale)" i18n="@@admin.locales.delete">Delete</button>
             }
-          }
-          @if (locale.is_installed && !isProtected(locale)) {
-            <button type="button" (click)="confirmUninstall(locale)" i18n="@@admin.locales.uninstall">Uninstall</button>
-          }
+            @if (isProtected(locale)) {
+              <span class="muted" i18n="@@admin.locales.defaultLocale">Default</span>
+            }
+          </div>
         </td>
       </tr>
     }
