@@ -85,7 +85,6 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
   postId = input<number | undefined, unknown>(undefined, { transform: numberAttribute, alias: 'post_id' });
 
   topic = this.topicService.topic;
-  posts = this.currentPagePosts;
   subforum = this.forumService.subforum;
   userCharacterProfiles = this.characterService.userCharacterProfiles;
 
@@ -654,7 +653,7 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
         this.previewService.set({
           formType: 'post',
           topic: this.topic(),
-          posts: this.posts(),
+          posts: this.currentPagePosts(),
           previewPost: previewPost,
           returnUrl: this.router.url,
           formPayload: { ...payload }
