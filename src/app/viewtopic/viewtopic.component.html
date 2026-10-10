@@ -164,7 +164,7 @@
   }
 
   <div [class.content-blurred]="shouldBlur">
-  @for(post of posts(); track (post.id || $index); let i = $index; let isEven = $even) {
+  @for(post of currentPagePosts(); track (post.id || $index); let i = $index; let isEven = $even) {
   <div id="{{post.id}}" [class]="'post ' + topicTypeClass() + (isEven ? ' altstyle' : '') + (post.is_gm_post ? ' post-gm' : '')">
     <h3>
       <span class="post-meta">{{ post.date_created_localized }}</span>
@@ -296,7 +296,7 @@
   </div>
   }
 
-  @if (topicService.hasNewPostsOnAnotherPage()) {
+  @if (hasNewPostsOnAnotherPage()) {
     <div class="new-posts-notice">
       <a [routerLink]="['/viewtopic', id()]" [queryParams]="{ page: totalPages() }" i18n="@@viewtopic.newPostsOnAnotherPage">There are new posts on another page</a>
     </div>

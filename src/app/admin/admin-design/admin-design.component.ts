@@ -20,6 +20,11 @@ interface StaticFile {
   file_type: string;
 }
 
+interface AssetFile {
+  name: string;
+  mod_time: string;
+}
+
 const FILE_TYPE: Record<FileKey, string> = {
   favicon: 'favicon.ico',
   custom_style: 'custom_style.css',
@@ -52,11 +57,16 @@ export class AdminDesignComponent implements OnInit {
     main_style: 'idle',
   });
 
+  assetFiles = signal<AssetFile[]>([]);
+  assetUploadState = signal<UploadState>('idle');
+  deletingAsset = signal<string | null>(null);
+
   ngOnInit() {
     this.loadVariations();
     this.loadFileVersions('favicon');
     this.loadFileVersions('custom_style');
     this.loadFileVersions('main_style');
+    this.loadAssets();
   }
 
   private loadFileVersions(key: FileKey) {
@@ -70,6 +80,13 @@ export class AdminDesignComponent implements OnInit {
     this.apiService.get<DesignVariation[]>('design-variation/list').subscribe({
       next: (list) => this.variations.set(list),
       error: (err) => console.error('Failed to load design variations', err)
+    });
+  }
+
+  private loadAssets() {
+    this.apiService.get<AssetFile[]>('asset/list').subscribe({
+      next: (files) => this.assetFiles.set(files),
+      error: (err) => console.error('Failed to load assets', err)
     });
   }
 
@@ -134,6 +151,45 @@ export class AdminDesignComponent implements OnInit {
         console.error(`Failed to upload ${FILE_TYPE[key]}`, err);
         this.setUploadState(key, 'error');
         setTimeout(() => this.setUploadState(key, 'idle'), 3000);
+      }
+    });
+  }
+
+  onAssetSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    this.assetUploadState.set('loading');
+
+    this.apiService.post<{ files: AssetFile[] }>('asset/upload', formData).subscribe({
+      next: (res) => {
+        this.assetFiles.set(res.files);
+        this.assetUploadState.set('success');
+        setTimeout(() => this.assetUploadState.set('idle'), 3000);
+        input.value = '';
+      },
+      error: (err) => {
+        console.error('Failed to upload asset', err);
+        this.assetUploadState.set('error');
+        setTimeout(() => this.assetUploadState.set('idle'), 3000);
+      }
+    });
+  }
+
+  deleteAsset(name: string) {
+    this.deletingAsset.set(name);
+    this.apiService.post<{ files: AssetFile[] }>('asset/delete', { name }).subscribe({
+      next: (res) => {
+        this.assetFiles.set(res.files);
+        this.deletingAsset.set(null);
+      },
+      error: (err) => {
+        console.error('Failed to delete asset', err);
+        this.deletingAsset.set(null);
       }
     });
   }

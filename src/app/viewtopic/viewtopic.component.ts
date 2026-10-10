@@ -85,7 +85,6 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
   postId = input<number | undefined, unknown>(undefined, { transform: numberAttribute, alias: 'post_id' });
 
   topic = this.topicService.topic;
-  posts = this.topicService.posts;
   subforum = this.forumService.subforum;
   userCharacterProfiles = this.characterService.userCharacterProfiles;
 
@@ -110,6 +109,19 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
   isTopicLoading = computed(() => !!this.id() && this.topic().id !== this.id());
 
   postsPerPage = computed(() => this.boardService.board().posts_per_page || 15);
+
+  currentPagePosts = computed(() => {
+    const page = this.pageNumber();
+    const apiPosts = this.topicService.posts();
+    const wsPosts = this.topicService.wsNewPosts()
+      .filter(e => e.page === page)
+      .map(e => e.post);
+    return [...apiPosts, ...wsPosts];
+  });
+
+  hasNewPostsOnAnotherPage = computed(() =>
+    this.topicService.wsNewPosts().some(e => e.page !== this.pageNumber())
+  );
 
   totalPages = computed(() => {
     const totalPosts = this.topic()?.post_number || 0;
@@ -370,9 +382,13 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
   ngOnInit() {
     document.addEventListener('visibilitychange', this.onVisibilityChange);
 
-    this.topicService.ownPostAdded$.pipe(takeUntil(this.destroy$)).subscribe(postId => {
+    this.topicService.ownPostAdded$.pipe(takeUntil(this.destroy$)).subscribe(({ postId, page }) => {
       this.isSubmitting.set(false);
-      setTimeout(() => document.getElementById(String(postId))?.scrollIntoView({ behavior: 'smooth' }));
+      if (page !== this.pageNumber()) {
+        this.router.navigate(['/viewtopic', this.id()], { queryParams: { page } });
+      } else {
+        setTimeout(() => document.getElementById(String(postId))?.scrollIntoView({ behavior: 'smooth' }));
+      }
     });
 
     this.pageLoadedSubscription = this.topicService.pageLoaded$.subscribe(pageState => {
@@ -637,7 +653,7 @@ export class ViewtopicComponent implements OnInit, OnDestroy {
         this.previewService.set({
           formType: 'post',
           topic: this.topic(),
-          posts: this.posts(),
+          posts: this.currentPagePosts(),
           previewPost: previewPost,
           returnUrl: this.router.url,
           formPayload: { ...payload }

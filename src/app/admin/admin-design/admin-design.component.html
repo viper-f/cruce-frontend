@@ -161,4 +161,42 @@
       </ul>
     </div>
   </section>
+
+  <!-- Assets -->
+  <section class="design-section">
+    <h3 i18n="@@admin.design.assets">Assets</h3>
+    <div class="upload-row">
+      <label class="upload-label">
+        <input
+          type="file"
+          class="file-input"
+          (change)="onAssetSelected($event)"
+          [disabled]="assetUploadState() === 'loading'"
+        />
+        <span class="btn-upload" [class]="'btn-upload--' + assetUploadState()">
+          @switch (assetUploadState()) {
+            @case ('loading') { <span class="spinner"></span> }
+            @case ('success') { <span i18n="@@common.uploaded">Uploaded</span> }
+            @case ('error') { <span i18n="@@common.uploadFailed">Failed</span> }
+            @default { <span i18n="@@admin.design.uploadAsset">Upload asset</span> }
+          }
+        </span>
+      </label>
+    </div>
+    @if (assetFiles().length > 0) {
+      <div class="versions">
+        <h4 i18n="@@admin.design.uploadedAssets">Uploaded assets</h4>
+        <ul class="version-list">
+          @for (f of assetFiles(); track f.name) {
+            <li class="version-item">
+              <span class="version-filename">{{ f.name }}</span>
+              <span class="version-date">{{ f.mod_time | date:'yyyy-MM-dd HH:mm' }}</span>
+              <a class="version-link" [href]="'/assets/' + f.name" target="_blank" i18n="@@admin.design.view">View</a>
+              <button class="button" (click)="deleteAsset(f.name)" [disabled]="deletingAsset() === f.name" i18n="@@common.delete">Delete</button>
+            </li>
+          }
+        </ul>
+      </div>
+    }
+  </section>
 </div>
