@@ -1,4 +1,4 @@
-import {Component, ElementRef, inject, OnDestroy, OnInit, signal, ViewChild} from '@angular/core';
+import {Component, effect, ElementRef, inject, OnDestroy, OnInit, signal, ViewChild} from '@angular/core';
 import {User} from '../models/User';
 import {DirectChat, DirectChatListItem} from '../models/DirectChat';
 import {DirectChatService} from '../services/direct-chat.service';
