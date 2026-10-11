@@ -189,11 +189,10 @@ export class DirectChatService {
     this.loadNewerMessages(chat.chat_id, msgs[msgs.length - 1].id);
   }
 
-  loadChatList(): void {
-    this.apiService.get<DirectChatListItem[]>('direct-chats').subscribe({
-      next: (data) => this.chatListSignal.set(data),
-      error: (err) => console.error('Failed to load direct chats', err)
-    });
+  loadChatList(): Observable<DirectChatListItem[]> {
+    return this.apiService.get<DirectChatListItem[]>('direct-chats').pipe(
+      tap(data => this.chatListSignal.set(data))
+    );
   }
 
   createChat(recipientId: number): Observable<{ chat_id: number }> {
