@@ -120,8 +120,8 @@
                 <textarea #chatInput (keydown.enter)="handleSend()" placeholder="Ваше сообщение..."></textarea>
               </div>
               <div class="buttons">
-                <input type="button" class="button" value="Отправить" (click)="handleSend()">
-
+                <input type="button" class="button" value="Отправить" (click)="handleSend()" [disabled]="isSending()">
+                @if (isSending()) { <span class="spinner"></span> }
               </div>
             </div>
           </div>

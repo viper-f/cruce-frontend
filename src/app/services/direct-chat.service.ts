@@ -5,7 +5,7 @@ import { UserService } from './user.service';
 import { NotificationService } from './notification.service';
 import { DirectChatListItem, DirectChatResponse, DirectMessageRaw } from '../models/DirectChat';
 import { Message } from '../models/Message';
-import { Observable, from, of, ReplaySubject } from 'rxjs';
+import { Observable, Subject, from, of, ReplaySubject } from 'rxjs';
 import { take, switchMap, tap } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
@@ -37,6 +37,9 @@ export class DirectChatService {
 
   private messagesSignal = signal<Message[]>([]);
   readonly messages = this.messagesSignal.asReadonly();
+
+  private ownMessageConfirmedSubject = new Subject<void>();
+  readonly ownMessageConfirmed$ = this.ownMessageConfirmedSubject.asObservable();
 
   private isLoadingOlderSignal = signal(false);
   readonly isLoadingOlder = this.isLoadingOlderSignal.asReadonly();
@@ -209,6 +212,7 @@ export class DirectChatService {
       next: (message) => {
         if (this.messagesSignal().some(m => m.id === message.id)) return;
         this.messagesSignal.update(msgs => [...msgs, message]);
+        if (message.isMe) this.ownMessageConfirmedSubject.next();
         const chat = this.currentChatSignal();
         if (chat && (chat.last_read_message_id === null || message.id > chat.last_read_message_id)) {
           this.notificationService.sendMessage({
