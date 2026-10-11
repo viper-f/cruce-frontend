@@ -1,4 +1,4 @@
-import {Component, ElementRef, effect, inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {User} from '../models/User';
 import {DirectChat, DirectChatListItem} from '../models/DirectChat';
 import {DirectChatService} from '../services/direct-chat.service';
@@ -83,21 +83,14 @@ export class DirectChatComponent implements OnInit, OnDestroy {
   ngOnInit() {
     const targetChatId = this.route.snapshot.paramMap.get('chat_id');
 
-    this.directChatService.resolvePrivateKey().subscribe(() => {
-      this.directChatService.loadChatList();
-    });
-
-    if (targetChatId) {
-      const unsub = effect(() => {
-        const list = this.directChatService.chatList();
-        if (list.length === 0) return;
+    this.directChatService.resolvePrivateKey().pipe(
+      switchMap(() => this.directChatService.loadChatList())
+    ).subscribe(list => {
+      if (targetChatId) {
         const chat = list.find(c => c.chat_id === +targetChatId);
-        if (chat) {
-          this.directChatService.loadDirectChat(chat.chat_id);
-          unsub.destroy();
-        }
-      });
-    }
+        if (chat) this.directChatService.loadDirectChat(chat.chat_id);
+      }
+    });
 
     this.searchSubject.pipe(
       debounceTime(300),
